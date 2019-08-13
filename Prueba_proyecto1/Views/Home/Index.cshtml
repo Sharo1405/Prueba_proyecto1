@@ -1,0 +1,37 @@
+﻿
+<script src="Blockly/blockly_compressed.js"></script>
+<script src="Blockly/blocks_compressed.js"></script>
+<script src="Blockly/en.js"></script>
+<script src="Blockly/javascript_compressed.js"></script>
+
+<div id="blocklyDiv" style="height: 480px; width: 600px;">
+
+
+</div>
+
+<xml id="toolbox" style="display: none">
+    <block type="controls_if"></block>
+    <block type="controls_repeat_ext"></block>
+    <block type="logic_compare"></block>
+    <block type="math_number"></block>
+    <block type="math_arithmetic"></block>
+    <block type="text"></block>
+    <block type="text_print"></block>
+</xml>
+<script>
+    var workspace = Blockly.inject('blocklyDiv',
+        { toolbox: document.getElementById('toolbox') });
+    function codigoBloques() {
+        var code = Blockly.JavaScript.workspaceToCode(workspace);
+        document.getElementById('codResultante').innerHTML = code;
+    }
+</script>
+
+<div>
+    <textarea id="codResultante" rows="15" cols="125"></textarea>   
+    <button id="mostrador" onclick="codigoBloques()" class="button" style="font-size: 16px; background-color: rebeccapurple; color:orchid;"> Mostrar Cod Bloques</button>
+</div>
+
+
+
+
