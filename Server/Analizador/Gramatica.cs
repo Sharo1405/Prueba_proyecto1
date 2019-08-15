@@ -142,6 +142,8 @@ namespace Server.Analizador
             MarkReservedWords("ProcedureAlreadyExists");
             MarkReservedWords("ObjectAlreadyExists");
             MarkReservedWords("default");
+            MarkReservedWords("not");
+            MarkReservedWords("@");
             #endregion
 
             #region VARIABLES_PRESERVADAS
@@ -265,6 +267,8 @@ namespace Server.Analizador
             var ObjectAlreadyExists = ToTerm("ObjectAlreadyExists");
 
             var defaultt = ToTerm("default");
+            var notpalabra = ToTerm("not");
+            
             #endregion
 
             #region SIGNOS
@@ -272,6 +276,7 @@ namespace Server.Analizador
             var cllave = ToTerm("}");
             var acorchete = ToTerm("[");
             var ccorchete = ToTerm("]");
+            var arroba = ToTerm("@");
             var aparentesis = ToTerm("(");
             var cparentesis = ToTerm(")");
             var dospuntos = ToTerm(":");
@@ -305,7 +310,7 @@ namespace Server.Analizador
             var menosigual = ToTerm("-=");
             var dividirigual = ToTerm("/=");
             var interrogacion = ToTerm("?");
-
+            
             #endregion
 
             #region NO_TERMINALES
@@ -316,7 +321,7 @@ namespace Server.Analizador
             var TIPOS = new NonTerminal("TIPOS");
             var ITEMCREATETYPE = new NonTerminal("ITEMCREATETYPE");
             var OPCIONESITEMCREATETYPES = new NonTerminal("OPCIONESITEMCREATETYPES");
-            var INSTANCIAOBJETO = new NonTerminal("INSTANCIAOBJETO");
+            //var INSTANCIAOBJETO = new NonTerminal("INSTANCIAOBJETO");
             var LISTAVALORES = new NonTerminal("LISTAVALORES");
             var E = new NonTerminal("E");
             var ACCESOOBJETO = new NonTerminal("ACCESOOBJETO");
@@ -359,7 +364,7 @@ namespace Server.Analizador
             var LISTATIPOS = new NonTerminal("LISTATIPOS");
 
 
-            var DECLARACION = new NonTerminal("DECLARACION");
+            //var DECLARACION = new NonTerminal("DECLARACION");
             var LISTADECLARADA = new NonTerminal("LISTADECLARADA");
             var IFSTATEMENT = new NonTerminal("IFSTATEMENT");
             var IF_LISTA = new NonTerminal("IF_LISta");
@@ -382,7 +387,6 @@ namespace Server.Analizador
             var FUNCIONESCOLLECTIONS = new NonTerminal("FUNCIONESCOLLECTIONS");
             var FUNCIONESMETODOS = new NonTerminal("FUNCIONESMETODOS");
             var PARAMETROS = new NonTerminal("PARAMETROS");
-            var LLAMADASFUNCIONES = new NonTerminal("LLAMADASFUNCIONES");
             var PROCEDIMIENTOS = new NonTerminal("PROCEDIMIENTOS");
             var LISTAVARIABLES = new NonTerminal("LISTAVARIABLES");
             var FUNCIONESNATIVASCADENAS = new NonTerminal("FUNCIONESNATIVASCADENAS");
@@ -395,6 +399,21 @@ namespace Server.Analizador
             var EXCEPCIONES = new NonTerminal("EXCEPCIONES");
             var TRYCATCHH = new NonTerminal("TRYCATCHH");
             var TIPOEXCEPCION = new NonTerminal("TIPOEXCEPCION");
+
+            var OPCIONESINSTANCIAOBJETO = new NonTerminal("OPCIONESINSTANCIAOBJETO");
+
+            var DECLARATODO = new NonTerminal("DECLARATODO");
+            var DECLA = new NonTerminal("DECLA");
+            var ARROBAID = new NonTerminal("ARROBAID");
+
+            var FUNCIONDENTRO = new NonTerminal("FUNCIONDENTRO");
+
+            var DECLAASGINACION = new NonTerminal("DECLAASGINACION");
+            var OTROSARROBAID = new NonTerminal("OTROSARROBAID");
+            var PUNTOIDS = new NonTerminal("PUNTOIDS");
+            var PUNTOIDS2 = new NonTerminal("PUNTOIDS2");
+            var AUMENTOSSOLOS = new NonTerminal("AUMENTOSSOLOS");
+            var TIPOCASTEO = new NonTerminal("TIPOCASTEO");
             #endregion
 
             #region TERMINALES
@@ -403,322 +422,54 @@ namespace Server.Analizador
             var tstring = new StringLiteral("tstring", "\"", StringOptions.AllowsAllEscapes);
             //BOOLEANO -----> verdadero, falso -----> YA ESTA
             //DATE TIME
-            var tdatetime = new StringLiteral("tdatetime", "'", StringOptions.AllowsDoubledQuote);
-            RegexBasedTerminal arroba = new RegexBasedTerminal("arroba", "@");
+            var tdatetime = new StringLiteral("tdatetime", "'", StringOptions.AllowsDoubledQuote);            
             #endregion
 
             #region GRAMATICA
             this.Root = INICIO;
 
+            INICIO.Rule = CUERPO;
+
             CUERPO.Rule = MakeStarRule(CUERPO, SENTENCIA);
 
-            SENTENCIA.Rule = CREATETYPE + puntoycoma
-                            | INSTANCIAOBJETO + puntoycoma
-                            | ACCESOASIGNACION + puntoycoma
-                            | ALTERTYPE + puntoycoma
-                            | ELIMINARUSERTYPE + puntoycoma
-                            | CREARDATABASE + puntoycoma
-                            | USEE + puntoycoma
-                            | DROPDATABASE + puntoycoma
-                            | CREARTABLA + puntoycoma
-                            | ALTERTABLE + puntoycoma
-                            | DROPTABLE + puntoycoma
-                            | TRUNCATEE + puntoycoma
-                            | COMMITT + puntoycoma
-                            | ROLLBACKK + puntoycoma
-                            | CREATEUSER + puntoycoma
-                            | GRANT + puntoycoma
-                            | REVOKEE + puntoycoma
-
-                            /*| INSERTARR + puntoycoma
-                            | UPDATEE + puntoycoma
-                            | DELETEE + puntoycoma
-                            | SELECTT + puntoycoma*/
-                            
-                            | TODOCONSULTAS + puntoycoma
-
-                            | BATCHH + puntoycoma
-                            | FUNCIONAGREGACION + puntoycoma
-                            | DECLARACION + puntoycoma 
-                            | IFSTATEMENT
-                            | SWITCHSTATEMENT
-                            | WHILEE
-                            | DOWHILE + puntoycoma
-                            | FORR
-                            | MAPCOLLECTIONS + puntoycoma
-                            | LISTCOLLECTIONS + puntoycoma
-                            | SETCOLLECTIONS + puntoycoma
-                            | FUNCIONESMETODOS
-                            | LLAMADASFUNCIONES
-                            | PROCEDIMIENTOS
-                            | SENTENCIATRANSFERENCIA + puntoycoma
-                            | CURSORES + puntoycoma
-                            | FOREACH_ACCESOCURSOR
-                            | LOG + puntoycoma
-                            | EXCEPCIONES + puntoycoma
-                            | TRYCATCHH;
-
-            TODOCONSULTAS.Rule = INSERTARR
-                            | UPDATEE
-                            | DELETEE
-                            | SELECTT;
-
-            STATEMENTBLOCK.Rule = allave + CUERPO + cllave;
-
-            CREATETYPE.Rule = create + type + iff + not + exists + id + aparentesis + ITEMCREATETYPE  + cparentesis
-                            | create + type + aparentesis + ITEMCREATETYPE + cparentesis;
-
-            ITEMCREATETYPE.Rule = ITEMCREATETYPE + coma + OPCIONESITEMCREATETYPES
-                                | OPCIONESITEMCREATETYPES;
-
-            OPCIONESITEMCREATETYPES.Rule = id + TIPOS
-                                         | TIPOS + id;
-
-            INSTANCIAOBJETO.Rule = id + arroba + id //Estudiante @est;
-                                 | arroba + id + igual + neww + id //@est = new Estudiante;
-                                 | id + arroba + id +igual + neww + id //Estudiante @est2 = new Estudiante; 
-                                 | id + arroba + id + igual + allave + LISTAVALORES + cllave //Estudiante @est3 = {201504481, “Julio Arango”}
-                                 | arroba + id + igual + allave + LISTAVALORES + cllave; //@est3 = {201504481, “Julio Arango”}
-
-            LISTAVALORES.Rule = LISTAVALORES + coma + E
-                              | E;
-
-            TIPOS.Rule = TIPOSPRIMITIVOS
-                    | id
-                    | counter
-                    | map + menorq + LISTATIPOS + mayorq //para columnas de tablas
-                    | map //para tipo normal variable
-                    | set + menorq + LISTATIPOS + mayorq //para columnas de tablas
-                    | list + menorq + TIPOS + mayorq //para columnas de tablas
-                    | list;
-
-            TIPOSPRIMITIVOS.Rule = intt
-                    | stringg
-                    | boolean
-                    | doublee
-                    | date
-                    | time;
-
-            LISTATIPOS.Rule = LISTATIPOS + coma + TIPOS
-                            | TIPOS;
-
-            ACCESOASIGNACION.Rule = ACCESOOBJETO
-                                  | ACCESOOBJETO + igual + E;
-       
-            ACCESOOBJETO.Rule = arroba + id + punto + E
-                              | arroba + id 
-                              | LISTAVARIABLES
-                              | id + punto + E;
-
-            LISTAVARIABLES.Rule = LISTAVARIABLES + coma + arroba + id
-                                | arroba + id;
-
-            ALTERTYPE.Rule = alter + type + id + add + aparentesis + ITEMCREATETYPE + cparentesis
-                           | alter + type + id + delete + aparentesis + LISTAID + cparentesis;
-
-            LISTAID.Rule = LISTAID + coma + id
-                         | id;
-
-            ELIMINARUSERTYPE.Rule = delete + type + id;
-
-            CREARDATABASE.Rule = create + database + iff + not + exists + id
-                               | create + database + id;
-
-            USEE.Rule = use + id;
-
-            DROPDATABASE.Rule = drop + database + id;
-
-            CREARTABLA.Rule = create + table + iff + not + exists + id + aparentesis + DEFINICIONCOLUMNAS + cparentesis
-                            | create + table + id + aparentesis + DEFINICIONCOLUMNAS + cparentesis;
-
-            DEFINICIONCOLUMNAS.Rule = DEFINICIONCOLUMNAS + coma + COLUMNAS
-                                    | COLUMNAS;
-
-            COLUMNAS.Rule = id + TIPOS + primary + key
-                          | id + TIPOS
-                          | primary + key + aparentesis + LISTAID + cparentesis;
-
-            ALTERTABLE.Rule = alter + table + id + add + ITEMCREATETYPE
-                            | alter + table + id + drop + ITEMCREATETYPE;
-
-            DROPTABLE.Rule = drop + table + iff + exists + id
-                           | drop + table + id;
-
-            TRUNCATEE.Rule = truncate + table + id;
-
-            COMMITT.Rule = commit;
-
-            ROLLBACKK.Rule = rollback;
-
-            CREATEUSER.Rule = create + user + id + with + password + E;
-
-            GRANT.Rule = id + on + id;
-
-            REVOKEE.Rule = revoke + id + on + id;
-
-
-            INSERTARR.Rule = insert + into + id + values + aparentesis + LISTAVALORES + cparentesis
-                           | insert + into + id + aparentesis + LISTAID + cparentesis + values + aparentesis + LISTAVALORES + cparentesis;
-
-            UPDATEE.Rule = update + id + set + LISTAASIGNACION + where + E
-                         | update + id + set + LISTAASIGNACION;
-
-            LISTAASIGNACION.Rule = LISTAASIGNACION + coma + ITEMASIGNACION
-                                 | ITEMASIGNACION;
-
-            ITEMASIGNACION.Rule = ACCESOASIGNACION
-                                 | id + igual + E;
-
-            DELETEE.Rule = delete + from + id + where + E
-                         | delete + from + id
-                         | delete + id + acorchete + E + ccorchete+ from + id + where + E; //delete de un registro de un map
-
-            SELECTT.Rule = select + aparentesis + OPCIONSELECT + cparentesis + from + id + where + E + ORDERBY + limit + E
-                         | select + aparentesis + OPCIONSELECT + cparentesis + from + id + where + E + limit + E
-                         | select + aparentesis + OPCIONSELECT + cparentesis + from + id + ORDERBY + limit + E
-                         | select + aparentesis + OPCIONSELECT + cparentesis + from + id + where + E + ORDERBY
-                         | select + aparentesis + OPCIONSELECT + cparentesis + from + id + ORDERBY
-                         | select + aparentesis + OPCIONSELECT + cparentesis + from + id + where + E
-                         | select + aparentesis + OPCIONSELECT + cparentesis + from + id + limit + E
-                         | select + aparentesis + OPCIONSELECT + cparentesis + from + id;
-            //WHERE userid IN (199, 200, 207); el IN es para las listas
-
-            OPCIONSELECT.Rule = LISTAID
-                              | por;
-
-            ORDERBY.Rule = ORDERBY + coma + order + by + id + ORDEN
-                         | order + by + id + ORDEN;
-
-            ORDEN.Rule = asc
-                       | desc;
-
-            BATCHH.Rule = begin + batch + CONTENIDOBATCHH + apply + batch;
-
-            CONTENIDOBATCHH.Rule = MakeStarRule(CONTENIDOBATCHH, ITEMBATCH);
-
-            ITEMBATCH.Rule = INSERTARR
-                           | UPDATEE
-                           | DELETEE;
-
-            FUNCIONAGREGACION.Rule = ITEMFAGREGACION + aparentesis + menorq + TODOCONSULTAS + mayorq + aparentesis;
-            //van en E funciones de agragacion
-
-            ITEMFAGREGACION.Rule = count
-                                 | min
-                                 | max
-                                 | sum
-                                 | avg;
-
-
-            DECLARACION.Rule = TIPOS + LISTADECLARADA + igual + E
-                             | TIPOS + LISTADECLARADA;
-
-            LISTADECLARADA.Rule = LISTADECLARADA + coma + arroba + id
-                                | arroba + id;
-
-            IFSTATEMENT.Rule = IF_LISTA + elsee + STATEMENTBLOCK
-                             | IF_LISTA;
-
-            IF_LISTA.Rule = iff + aparentesis + E + cparentesis + STATEMENTBLOCK
-                          | IF_LISTA + elsee + iff + aparentesis + E + cparentesis + STATEMENTBLOCK;
-
-
-            SWITCHSTATEMENT.Rule = switchh + aparentesis + E + cparentesis + SWITCHBLOCK;
-
-            SWITCHBLOCK.Rule = allave + SWITCHBLOCKSTATEMENTGROUPS + SWITCHLABELS + cllave
-                             | allave + SWITCHBLOCKSTATEMENTGROUPS + cllave
-                             | allave + SWITCHLABELS + cllave;
-
-            SWITCHBLOCKSTATEMENTGROUPS.Rule = SWITCHBLOCKSTATEMENTGRO
-                                            | SWITCHBLOCKSTATEMENTGROUPS + SWITCHBLOCKSTATEMENTGRO;
-
-            SWITCHBLOCKSTATEMENTGRO.Rule = SWITCHLABELS + CUERPO;
-
-            SWITCHLABELS.Rule = SWITCHLABEL
-                              | SWITCHLABELS + SWITCHLABEL;
-
-            SWITCHLABEL.Rule = casee + E + dospuntos
-                             | defaultt + dospuntos;
-
-
-            WHILEE.Rule = whilee + aparentesis + E + cparentesis + STATEMENTBLOCK;
-
-            DOWHILE.Rule = doo + STATEMENTBLOCK + whilee + aparentesis + E + cparentesis;
-
-            FORR.Rule = forr + aparentesis + INICIALIZACION + puntoycoma + E + ACTUALIZACION + cparentesis + STATEMENTBLOCK;
-
-            INICIALIZACION.Rule = DECLARACION
-                                | ACCESOASIGNACION;
-
-            ACTUALIZACION.Rule = ACCESOASIGNACION
-                                | arroba + id + incremento
-                                | arroba + id + decremento;
-
-
-            MAPCOLLECTIONS.Rule = map + arroba + id + igual + neww + map + menorq + TIPOSPRIMITIVOS + coma + TIPOS + mayorq
-                                | map + arroba + id + igual + acorchete + E + ccorchete + puntoycoma;
-
-            LISTCOLLECTIONS.Rule = list + arroba + id + igual + neww + list + menorq + TIPOS + mayorq
-                                 | list + arroba + id + igual + acorchete + E + ccorchete;
-
-            SETCOLLECTIONS.Rule = set + arroba + id + igual + neww + set + menorq + TIPOS + mayorq
-                                | set + arroba + id + igual + acorchete + E + ccorchete;
-
-
-            FUNCIONESCOLLECTIONS.Rule = insert + aparentesis + E + coma + E + cparentesis
-                                      | insert + aparentesis + E + cparentesis
-                                      | get + aparentesis + E + cparentesis
-                                      | set + aparentesis + E + coma + E + cparentesis
-                                      | remove + aparentesis + E + cparentesis
-                                      | size + aparentesis + cparentesis
-                                      | clear + aparentesis + cparentesis
-                                      | contains + aparentesis + E + cparentesis;
-
-            FUNCIONESMETODOS.Rule = TIPOS + id + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
-                                  | TIPOS + id + aparentesis + cparentesis + STATEMENTBLOCK; ;
-
-            PARAMETROS.Rule = PARAMETROS + coma + TIPOS + arroba + id
-                           | TIPOS + arroba + id;
-
-            LLAMADASFUNCIONES.Rule = id + aparentesis + E + cparentesis //llamadas funciones
-                                   | call + id + aparentesis + LISTAVALORES + cparentesis; // llamadas a procedimientos
-
-            PROCEDIMIENTOS.Rule = procedure + id + aparentesis + PARAMETROS + cparentesis + coma + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
-                                | procedure + id + aparentesis + PARAMETROS + cparentesis + coma + aparentesis + cparentesis + STATEMENTBLOCK
-                                | procedure + id + aparentesis + cparentesis + coma + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
-                                | procedure + id + aparentesis + cparentesis + coma + aparentesis + cparentesis + STATEMENTBLOCK;
-
-
-            FUNCIONESNATIVASCADENAS.Rule = length + aparentesis + cparentesis
-                                         | toUpperCase + aparentesis + cparentesis
-                                         | toLowerCase + aparentesis + cparentesis
-                                         | startsWith + aparentesis + cparentesis
-                                         | endsWith + aparentesis + cparentesis
-                                         | subString + aparentesis + cparentesis;
-
-
-            FUNCIONESNATIVASABSTRACCION.Rule = getYear + aparentesis + cparentesis
-                                             | getMonth + aparentesis + cparentesis
-                                             | getDay + aparentesis + cparentesis
-                                             | getHour + aparentesis + cparentesis
-                                             | getMinuts + aparentesis + cparentesis
-                                             | getSeconds + aparentesis + cparentesis
-                                             | today + aparentesis + cparentesis
-                                             | now + aparentesis + cparentesis;
-
-
-            SENTENCIATRANSFERENCIA.Rule = continuee
-                                        | breakk
-                                        | returnn
-                                        | returnn + E;
-
-            CURSORES.Rule = cursor + arroba + id + iss + TODOCONSULTAS
-                          | open + arroba + id
-                          | close + arroba + id;
-
-            FOREACH_ACCESOCURSOR.Rule = forr + each + aparentesis + PARAMETROS + inn + id + STATEMENTBLOCK;
-
-            LOG.Rule = log + aparentesis + E + cparentesis;
+            SENTENCIA.Rule = ACCESOASIGNACION + puntoycoma
+                           | CREATETYPE + puntoycoma
+                           | DECLARATODO + puntoycoma
+                           | DECLAASGINACION + puntoycoma
+                           | ALTERTYPE + puntoycoma
+                           | ELIMINARUSERTYPE + puntoycoma
+                           | CREARDATABASE + puntoycoma
+                           | USEE + puntoycoma
+                           | DROPDATABASE + puntoycoma
+                           | CREARTABLA + puntoycoma
+                           | ALTERTABLE + puntoycoma
+                           | DROPTABLE + puntoycoma
+                           | TRUNCATEE + puntoycoma
+                           | COMMITT + puntoycoma
+                           | ROLLBACKK + puntoycoma
+                           | CREATEUSER + puntoycoma
+                           | GRANT + puntoycoma
+                           | REVOKEE + puntoycoma
+                           | TODOCONSULTAS + puntoycoma
+                           | BATCHH + puntoycoma
+                           | FUNCIONAGREGACION + puntoycoma
+                           | IFSTATEMENT
+                           | SWITCHSTATEMENT
+                           | WHILEE
+                           | DOWHILE + puntoycoma
+                           | AUMENTOSSOLOS + puntoycoma
+                           | FORR
+                           | MAPCOLLECTIONS + puntoycoma
+                           | LISTCOLLECTIONS + puntoycoma
+                           | SETCOLLECTIONS + puntoycoma
+                           | FUNCIONESMETODOS + puntoycoma
+                           | PROCEDIMIENTOS
+                           | SENTENCIATRANSFERENCIA + puntoycoma
+                           | CURSORES + puntoycoma
+                           | FOREACH_ACCESOCURSOR
+                           | LOG + puntoycoma
+                           | EXCEPCIONES + puntoycoma
+                           | TRYCATCHH;
 
             EXCEPCIONES.Rule = throww + neww + TIPOEXCEPCION;
 
@@ -743,11 +494,286 @@ namespace Server.Analizador
                                | ProcedureAlreadyExists
                                | ObjectAlreadyExists;
 
-            TRYCATCHH.Rule = tryy + STATEMENTBLOCK + catchh + aparentesis + TIPOEXCEPCION + cparentesis + STATEMENTBLOCK;
+            TRYCATCHH.Rule = tryy + STATEMENTBLOCK + catchh + aparentesis + TIPOEXCEPCION + arroba + id + cparentesis + STATEMENTBLOCK
+                           | tryy + STATEMENTBLOCK + catchh + aparentesis + TIPOEXCEPCION + id + cparentesis + STATEMENTBLOCK;
+
+            LOG.Rule = log + aparentesis + E + cparentesis;
+
+            CURSORES.Rule = cursor + arroba + id + iss + TODOCONSULTAS
+                          | open + arroba + id
+                          | close + arroba + id;
+
+            FOREACH_ACCESOCURSOR.Rule = forr + each + aparentesis + PARAMETROS + cparentesis + inn + arroba + id + STATEMENTBLOCK;
 
 
-            //falta meter todo lo de () {} []
-            E.Rule = E + interrogacion + E + dospuntos + E
+            SENTENCIATRANSFERENCIA.Rule = continuee
+                                        | breakk
+                                        | returnn
+                                        | returnn + E;
+
+
+            FUNCIONESNATIVASABSTRACCION.Rule = getYear + aparentesis + cparentesis
+                                             | getMonth + aparentesis + cparentesis
+                                             | getDay + aparentesis + cparentesis
+                                             | getHour + aparentesis + cparentesis
+                                             | getMinuts + aparentesis + cparentesis
+                                             | getSeconds + aparentesis + cparentesis
+                                             | today + aparentesis + cparentesis
+                                             | now + aparentesis + cparentesis;
+
+            FUNCIONESNATIVASCADENAS.Rule = length + aparentesis + cparentesis
+                                         | toUpperCase + aparentesis + cparentesis
+                                         | toLowerCase + aparentesis + cparentesis
+                                         | startsWith + aparentesis + cparentesis
+                                         | endsWith + aparentesis + cparentesis
+                                         | subString + aparentesis + cparentesis;
+
+            PROCEDIMIENTOS.Rule = procedure + id + aparentesis + PARAMETROS + cparentesis + coma + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
+                                | procedure + id + aparentesis + PARAMETROS + cparentesis + coma + aparentesis + cparentesis + STATEMENTBLOCK
+                                | procedure + id + aparentesis + cparentesis + coma + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
+                                | procedure + id + aparentesis + cparentesis + coma + aparentesis + cparentesis + STATEMENTBLOCK
+                                | call + id + aparentesis + E + cparentesis
+                                | call + id + aparentesis + cparentesis;
+
+
+            FUNCIONESMETODOS.Rule = id + aparentesis + E + cparentesis //llamadas funciones SOLO PUEDE SER ID EN TIPOS
+                                  | id + aparentesis + cparentesis                                  
+                                  | TIPOS + id + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
+                                  | TIPOS + id + aparentesis + cparentesis + STATEMENTBLOCK;
+
+            PARAMETROS.Rule = PARAMETROS + coma + TIPOS + arroba + id
+                           | TIPOS + arroba + id;
+
+            FUNCIONESCOLLECTIONS.Rule = insert + aparentesis + E + coma + E + cparentesis
+                                      | insert + aparentesis + E + cparentesis
+                                      | get + aparentesis + E + cparentesis
+                                      | set + aparentesis + E + coma + E + cparentesis
+                                      | remove + aparentesis + E + cparentesis
+                                      | size + aparentesis + cparentesis
+                                      | clear + aparentesis + cparentesis
+                                      | contains + aparentesis + E + cparentesis;
+
+            MAPCOLLECTIONS.Rule = map + ARROBAID + igual + neww + map + menorq + TIPOSPRIMITIVOS + coma + TIPOS + mayorq
+                                | map + ARROBAID + igual + acorchete + E + ccorchete;
+
+            LISTCOLLECTIONS.Rule = list + arroba + id + igual + neww + list + menorq + TIPOS + mayorq
+                                 | list + arroba + id + igual + acorchete + E + ccorchete;
+
+            SETCOLLECTIONS.Rule = set + arroba + id + igual + neww + set + menorq + TIPOS + mayorq
+                                | set + arroba + id + igual + acorchete + E + ccorchete;
+
+            FORR.Rule = forr + aparentesis + INICIALIZACION + puntoycoma + E + puntoycoma + ACTUALIZACION + cparentesis + STATEMENTBLOCK;
+
+            INICIALIZACION.Rule = DECLARATODO
+                                | DECLAASGINACION
+                                | ACCESOASIGNACION;
+
+            ACTUALIZACION.Rule =  AUMENTOSSOLOS
+                                | E + igual + E;
+
+            AUMENTOSSOLOS.Rule = ARROBAID + LISTAID + incremento
+                               | ARROBAID + LISTAID + decremento
+                               | ARROBAID + incremento
+                               | ARROBAID + decremento
+                               | ARROBAID + LISTAID + masigual + E
+                               | ARROBAID + LISTAID + menosigual + E
+                               | ARROBAID + masigual + E
+                               | ARROBAID + menosigual + E;
+
+            WHILEE.Rule = whilee + aparentesis + E + cparentesis + STATEMENTBLOCK;
+
+            DOWHILE.Rule = doo + STATEMENTBLOCK + whilee + aparentesis + E + cparentesis;
+
+            SWITCHSTATEMENT.Rule = switchh + aparentesis + E + cparentesis + SWITCHBLOCK;
+
+            SWITCHBLOCK.Rule = allave + SWITCHBLOCKSTATEMENTGROUPS + SWITCHLABELS + cllave
+                             | allave + SWITCHBLOCKSTATEMENTGROUPS + cllave
+                             | allave + SWITCHLABELS + cllave;
+
+            SWITCHBLOCKSTATEMENTGROUPS.Rule = SWITCHBLOCKSTATEMENTGRO
+                                            | SWITCHBLOCKSTATEMENTGROUPS + SWITCHBLOCKSTATEMENTGRO;
+
+            SWITCHBLOCKSTATEMENTGRO.Rule = SWITCHLABELS + CUERPO;
+
+            SWITCHLABELS.Rule = SWITCHLABEL
+                              | SWITCHLABELS + SWITCHLABEL;
+
+            SWITCHLABEL.Rule = casee + E + dospuntos
+                             | defaultt + dospuntos;
+
+
+            STATEMENTBLOCK.Rule = allave + CUERPO + cllave;
+
+
+
+            IFSTATEMENT.Rule = IF_LISTA + elsee + STATEMENTBLOCK
+                             | IF_LISTA;
+
+            IF_LISTA.Rule = iff + aparentesis + E + cparentesis + STATEMENTBLOCK
+                          | IF_LISTA + elsee + iff + aparentesis + E + cparentesis + STATEMENTBLOCK;
+
+            ACCESOASIGNACION.Rule = ARROBAID + igual + E
+                                 | ARROBAID + PUNTOIDS + igual + E
+                                 | ARROBAID + punto + FUNCIONESCOLLECTIONS
+                                 | ARROBAID + PUNTOIDS + punto + FUNCIONESCOLLECTIONS
+                                 | ARROBAID + punto + FUNCIONESNATIVASCADENAS
+                                 | ARROBAID + PUNTOIDS + punto + FUNCIONESNATIVASCADENAS
+                                 | ARROBAID + punto + FUNCIONESNATIVASABSTRACCION
+                                 | ARROBAID + PUNTOIDS + punto + FUNCIONESNATIVASABSTRACCION;
+
+            PUNTOIDS.Rule = MakePlusRule(PUNTOIDS, PUNTOIDS2);
+
+            PUNTOIDS2.Rule = punto + id;
+
+
+            FUNCIONAGREGACION.Rule = ITEMFAGREGACION + aparentesis + menorq + TODOCONSULTAS + mayorq + cparentesis;
+            //van en E funciones de agragacion
+
+            ITEMFAGREGACION.Rule = count
+                                 | min
+                                 | max
+                                 | sum
+                                 | avg;
+
+            TODOCONSULTAS.Rule = INSERTARR
+                           | UPDATEE 
+                           | DELETEE 
+                           | SELECTT;
+
+            BATCHH.Rule = begin + batch + CONTENIDOBATCHH + apply + batch;
+
+            CONTENIDOBATCHH.Rule = MakePlusRule(CONTENIDOBATCHH, ITEMBATCH);
+
+            ITEMBATCH.Rule = INSERTARR + puntoycoma
+                           | UPDATEE + puntoycoma
+                           | DELETEE + puntoycoma;
+
+
+            SELECTT.Rule = select + OPCIONSELECT + from + id + where + E + ORDERBY + limit + E
+                         | select + OPCIONSELECT + from + id + where + E + limit + E
+                         | select + OPCIONSELECT + from + id + ORDERBY + limit + E
+                         | select + OPCIONSELECT + from + id + where + E + ORDERBY
+                         | select + OPCIONSELECT + from + id + ORDERBY
+                         | select + OPCIONSELECT + from + id + where + E
+                         | select + OPCIONSELECT + from + id + limit + E
+                         | select + OPCIONSELECT + from + id;
+            //WHERE userid IN (199, 200, 207); el IN es para las listas
+
+            OPCIONSELECT.Rule = E
+                              | por;
+
+            ORDERBY.Rule = ORDERBY + coma + order + by + id + ORDEN
+                         | order + by + id + ORDEN;
+
+            ORDEN.Rule = asc
+                       | desc;
+
+            DELETEE.Rule = delete + from + id + where + E
+                         | delete + from + id
+                         | delete + id + E + from + id + where + E; //delete de un registro de un map
+
+            UPDATEE.Rule = update + id + set + LISTAASIGNACION + where + E
+                        | update + id + set + LISTAASIGNACION;
+
+            LISTAASIGNACION.Rule = MakePlusRule(LISTAASIGNACION , coma , ITEMASIGNACION);
+
+
+            ITEMASIGNACION.Rule = E + igual + E
+                                | E;
+                                 //ACCESOASIGNACION
+
+            INSERTARR.Rule = insert + into + id + values + E 
+                           | insert + into + id + aparentesis + LISTAID + cparentesis + values + E ;           
+
+            CREATEUSER.Rule = create + user + id + with + password + E;
+
+            GRANT.Rule = grant + id + on + id;
+
+            REVOKEE.Rule = revoke + id + on + id;
+
+            COMMITT.Rule = commit;
+
+            ROLLBACKK.Rule = rollback;
+
+            ALTERTABLE.Rule = alter + table + id + add + ITEMCREATETYPE
+                            | alter + table + id + drop + ITEMCREATETYPE;
+
+            DROPTABLE.Rule = drop + table + iff + exists + id
+                           | drop + table + id;
+
+            TRUNCATEE.Rule = truncate + table + id;
+
+            CREARTABLA.Rule = create + table + iff + not + exists + id + aparentesis + DEFINICIONCOLUMNAS + cparentesis
+                            | create + table + id + aparentesis + DEFINICIONCOLUMNAS + cparentesis;
+
+            DEFINICIONCOLUMNAS.Rule = DEFINICIONCOLUMNAS + coma + COLUMNAS
+                                    | COLUMNAS;
+
+            COLUMNAS.Rule = id + TIPOS + primary + key
+                          | id + TIPOS
+                          | primary + key + aparentesis + LISTAID + cparentesis;
+
+            CREARDATABASE.Rule = create + database + iff + notpalabra + exists + id
+                               | create + database + id;
+
+            USEE.Rule = use + id;
+
+            DROPDATABASE.Rule = drop + database + id;
+
+            ELIMINARUSERTYPE.Rule = delete + type + id;
+
+            ALTERTYPE.Rule = alter + type + id + add + aparentesis + ITEMCREATETYPE + cparentesis
+                           | alter + type + id + delete + aparentesis + LISTAID + cparentesis;
+
+            LISTAID.Rule = MakePlusRule(LISTAID, coma, id);
+
+            ITEMCREATETYPE.Rule = ITEMCREATETYPE + coma + OPCIONESITEMCREATETYPES
+                                | OPCIONESITEMCREATETYPES;
+
+
+            OPCIONESITEMCREATETYPES.Rule = id + TIPOS
+                                         | TIPOS + id;
+
+
+            DECLARATODO.Rule = TIPOS + LISTAVARIABLES;
+
+            DECLAASGINACION.Rule =  TIPOS + LISTAVARIABLES + igual + E;
+
+            LISTAVARIABLES.Rule = MakePlusRule(LISTAVARIABLES, coma, ARROBAID);
+
+            ARROBAID.Rule = arroba + id;
+
+
+
+            CREATETYPE.Rule = create + type + id + iff + not + exists + id + aparentesis + ITEMCREATETYPE  + cparentesis
+                            | create + type + id + aparentesis + ITEMCREATETYPE + cparentesis;
+
+            ITEMCREATETYPE.Rule = MakePlusRule(ITEMCREATETYPE , coma , OPCIONESITEMCREATETYPES);
+
+            OPCIONESITEMCREATETYPES.Rule = id + TIPOS
+                                         | TIPOS + id;
+
+            TIPOS.Rule = TIPOSPRIMITIVOS
+                    | counter
+                    | map + menorq + LISTATIPOS + mayorq //para columnas de tablas
+                    | map //para tipo normal variable
+                    | set + menorq + LISTATIPOS + mayorq //para columnas de tablas
+                    | list + menorq + TIPOS + mayorq //para columnas de tablas
+                    | list
+                    | id;
+
+            TIPOSPRIMITIVOS.Rule = intt
+                    | stringg
+                    | boolean
+                    | doublee
+                    | date
+                    | time;
+
+            LISTATIPOS.Rule = MakePlusRule(LISTATIPOS, coma, TIPOS);
+
+
+            E.Rule = menos + E
+                | E + interrogacion + E
                 | E + or + E
                 | E + and + E
                 | E + igualigual + E
@@ -759,49 +785,63 @@ namespace Server.Analizador
                 | E + mas + E
                 | E + menos + E
                 | E + por + E
-                | E + division + E                
-                | not + E
-                | menosUnario + E
-                | masUnario + E
-                | E + coma + E
-                | E + puntoycoma + E
+                | E + division + E
+                | E + modulo + E
+                | E + potencia + E
+                | E + masigual + E
+                | E + menosigual + E
+                | E + porigual + E
+                | E + dividirigual + E
                 | E + incremento
                 | E + decremento
-                | aparentesis + E + cparentesis
-                | acorchete + E + acorchete
-                | allave + E + cllave
-                | ACCESOOBJETO
-                | FUNCIONESCOLLECTIONS
-                | FUNCIONESNATIVASCADENAS
-                | FUNCIONESNATIVASABSTRACCION
-                | LLAMADASFUNCIONES
-                | id
+                | E + coma + E
+                | E + punto + E
+                | E + dospuntos + E
+                | E + inn + E
+                | not + E
                 | arroba + id
+                | id
                 | numero
                 | tstring
                 | tdatetime
                 | falso
-                | verdadero;
-            #endregion
+                | verdadero
+                | neww + TIPOS
+                | aparentesis + TIPOCASTEO + cparentesis + E
+                | aparentesis + E + cparentesis
+                | allave + E + cllave
+                | acorchete + E + ccorchete
+                | FUNCIONESCOLLECTIONS
+                | FUNCIONESNATIVASCADENAS
+                | FUNCIONESNATIVASABSTRACCION;
 
 
-            #region PRECEDENCIA
-            RegisterOperators(1, Associativity.Right, interrogacion, dospuntos);            
-            RegisterOperators(2, Associativity.Left, or);                 //OR
-            RegisterOperators(3, Associativity.Left, and);                 //AND
-            RegisterOperators(4, Associativity.Left, xor);
-            RegisterOperators(5, Associativity.Left, igualigual, diferente);           //IGUAL, DIFERENTE
-            RegisterOperators(6, Associativity.Left, mayorq, menorq, menorqigual, mayorqigual); //MAYORQUES, MENORQUES
-            RegisterOperators(7, Associativity.Left, mas, menos);             //MAS, MENOS
-            RegisterOperators(8, Associativity.Left, por, division, modulo);             //POR, DIVIDIR
-            RegisterOperators(9, Associativity.Left, masigual, menosigual);
-            RegisterOperators(10, Associativity.Left, porigual, dividirigual);
-            RegisterOperators(11, Associativity.Right, not);                 //NOT
-            RegisterOperators(12, Associativity.Right, menosUnario);
-            RegisterOperators(13, Associativity.Right, masUnario);
+            TIPOCASTEO.Rule = date
+                            | time
+                            | stringg;
+
+            //RegisterOperators(1, Associativity.Left, aparentesis, cparentesis, allave, cllave, acorchete, ccorchete);
+            RegisterOperators(1, Associativity.Left, arroba);
+            RegisterOperators(2, Associativity.Left, coma);
+            RegisterOperators(3, Associativity.Right, interrogacion, dospuntos);
+            RegisterOperators(4, Associativity.Left, or);                 //OR
+            RegisterOperators(5, Associativity.Left, and);                 //AND
+            RegisterOperators(6, Associativity.Left, xor);
+            RegisterOperators(7, Associativity.Left, igualigual, diferente);           //IGUAL, DIFERENTE
+            RegisterOperators(8, Associativity.Left, mayorq, menorq, menorqigual, mayorqigual); //MAYORQUES, MENORQUES
+            RegisterOperators(9, Associativity.Left, mas, menos);             //MAS, MENOS
+            RegisterOperators(10, Associativity.Left, por, division);             //POR, DIVIDIR
+            RegisterOperators(11, Associativity.Left, modulo, potencia);
+            RegisterOperators(11, Associativity.Left, masigual, menosigual);
+            RegisterOperators(12, Associativity.Left, porigual, dividirigual);
+            RegisterOperators(13, Associativity.Right, not);                 //NOT            
             RegisterOperators(14, Associativity.Left, incremento, decremento);
-            
+            RegisterOperators(15, Associativity.Left, dospuntos);
+            RegisterOperators(16, Associativity.Left, punto);
+            RegisterOperators(16, Associativity.Left, id, numero, tstring, tdatetime, falso, verdadero);
+           
             #endregion
+
         }
     }
 }

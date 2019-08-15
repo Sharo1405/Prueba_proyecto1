@@ -26,7 +26,28 @@ namespace Server
             Gramatica gram = new Gramatica();
             Parser parser = new Parser(gram);
 
-            parser.Parse(this.textBox1.Text);
+            parser.Parse(this.richTextBox1.Text);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Gramatica gramatica = new Gramatica();
+            Parser parser = new Parser(gramatica);
+
+            ParseTree arbol = parser.Parse(richTextBox1.Text);
+            ParseTreeNode raiz = arbol.Root;
+
+            if (raiz == null || arbol.ParserMessages.Count > 0 || arbol.HasErrors())
+            {
+                //---------------------> Hay Errores  
+                MessageBox.Show("Hay Errores" + arbol.ParserMessages.ToString());
+
+                return;
+            }
+            //---------------------> Todo Bien
+            GraficadorTree g = new GraficadorTree();
+            g.graficar(arbol);
+            g.abrirArbol(g.desktop + "\\Files\\Arbol\\arbol.png");
         }
     }
 }
