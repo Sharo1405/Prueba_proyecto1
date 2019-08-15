@@ -51,12 +51,20 @@
   <ItemGroup>
     <Compile Include="Analizador\GraficadorTree.cs" />
     <Compile Include="Analizador\Gramatica.cs" />
+    <Compile Include="AST\Entorno.cs" />
+    <Compile Include="AST\ErrorImpresion.cs" />
+    <Compile Include="AST\Expresion\Expresion.cs" />
+    <Compile Include="AST\Instruccion\Instruccion.cs" />
+    <Compile Include="AST\NodoAST.cs" />
+    <Compile Include="AST\NodoError.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GenerarAST\Iniciar.cs" />
+    <Compile Include="GenerarAST\RecorridoCuerpo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -87,5 +95,6 @@
   <ItemGroup>
     <Content Include="lib\Irony.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

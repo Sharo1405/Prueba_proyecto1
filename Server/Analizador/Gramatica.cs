@@ -426,9 +426,9 @@ namespace Server.Analizador
             #endregion
 
             #region GRAMATICA
-            this.Root = INICIO;
+            this.Root = CUERPO;
 
-            INICIO.Rule = CUERPO;
+            //INICIO.Rule = CUERPO;
 
             CUERPO.Rule = MakeStarRule(CUERPO, SENTENCIA);
 
@@ -801,6 +801,7 @@ namespace Server.Analizador
                 | not + E
                 | arroba + id
                 | id
+                | id + acorchete + E + ccorchete //tallas[0]
                 | numero
                 | tstring
                 | tdatetime
