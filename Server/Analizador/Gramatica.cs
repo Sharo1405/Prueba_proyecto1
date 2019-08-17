@@ -27,7 +27,7 @@ namespace Server.Analizador
             MarkReservedWords("int");
             MarkReservedWords("double");
             MarkReservedWords("boolean");
-            MarkReservedWords("string");
+            //MarkReservedWords("string");
             MarkReservedWords("date");
             MarkReservedWords("time");
             MarkReservedWords("true");
@@ -101,7 +101,7 @@ namespace Server.Analizador
             MarkReservedWords("toLowerCase");
             MarkReservedWords("startsWith");
             MarkReservedWords("endsWith");
-            MarkReservedWords("subString");
+            //MarkReservedWords("subString");
             MarkReservedWords("getYear");
             MarkReservedWords("getMonth");
             MarkReservedWords("getDay");
@@ -144,6 +144,7 @@ namespace Server.Analizador
             MarkReservedWords("default");
             MarkReservedWords("not");
             MarkReservedWords("@");
+            
             #endregion
 
             #region VARIABLES_PRESERVADAS
@@ -268,10 +269,11 @@ namespace Server.Analizador
 
             var defaultt = ToTerm("default");
             var notpalabra = ToTerm("not");
-            
+
             #endregion
 
             #region SIGNOS
+            
             var allave = ToTerm("{");
             var cllave = ToTerm("}");
             var acorchete = ToTerm("[");
@@ -421,8 +423,8 @@ namespace Server.Analizador
             IdentifierTerminal id = TerminalFactory.CreateCSharpIdentifier("id");
             var tstring = new StringLiteral("tstring", "\"", StringOptions.AllowsAllEscapes);
             //BOOLEANO -----> verdadero, falso -----> YA ESTA
-            //DATE TIME
-            var tdatetime = new StringLiteral("tdatetime", "'", StringOptions.AllowsDoubledQuote);            
+            //DATE TIME            
+            var tdatetime = new StringLiteral("tdatetime", "'", StringOptions.AllowsAllEscapes);
             #endregion
 
             #region GRAMATICA
@@ -430,7 +432,11 @@ namespace Server.Analizador
 
             //INICIO.Rule = CUERPO;
 
-            CUERPO.Rule = MakeStarRule(CUERPO, SENTENCIA);
+            //CUERPO.Rule = MakeStarRule(CUERPO, SENTENCIA);
+
+            CUERPO.Rule = CUERPO + SENTENCIA
+                        | SENTENCIA
+                        | Empty;
 
             SENTENCIA.Rule = ACCESOASIGNACION + puntoycoma
                            | CREATETYPE + puntoycoma
@@ -776,24 +782,25 @@ namespace Server.Analizador
                 | E + interrogacion + E
                 | E + or + E
                 | E + and + E
+                | E + xor + E
                 | E + igualigual + E
                 | E + diferente + E
                 | E + mayorq + E
                 | E + menorq + E
                 | E + mayorqigual + E
                 | E + menorqigual + E
-                | E + mas + E
-                | E + menos + E
-                | E + por + E
-                | E + division + E
-                | E + modulo + E
-                | E + potencia + E
-                | E + masigual + E
-                | E + menosigual + E
-                | E + porigual + E
-                | E + dividirigual + E
-                | E + incremento
-                | E + decremento
+                | E + mas + E//
+                | E + menos + E//
+                | E + por + E//
+                | E + division + E //
+                | E + modulo + E    //
+                | E + potencia + E//
+                | E + masigual + E//
+                | E + menosigual + E//
+                | E + porigual + E//
+                | E + dividirigual + E //
+                | E + incremento//
+                | E + decremento//
                 | E + coma + E
                 | E + punto + E
                 | E + dospuntos + E
@@ -807,6 +814,7 @@ namespace Server.Analizador
                 | tdatetime
                 | falso
                 | verdadero
+                | nulo
                 | neww + TIPOS
                 | aparentesis + TIPOCASTEO + cparentesis + E
                 | aparentesis + E + cparentesis
@@ -839,7 +847,7 @@ namespace Server.Analizador
             RegisterOperators(14, Associativity.Left, incremento, decremento);
             RegisterOperators(15, Associativity.Left, dospuntos);
             RegisterOperators(16, Associativity.Left, punto);
-            RegisterOperators(16, Associativity.Left, id, numero, tstring, tdatetime, falso, verdadero);
+            RegisterOperators(16, Associativity.Left, id, numero, tstring, tdatetime, falso, verdadero, nulo);
            
             #endregion
 

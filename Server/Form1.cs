@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using Irony.Ast;
 using Irony.Parsing;
 using Server.Analizador;
+using Server.AST;
+using Server.GenerarAST;
 
 namespace Server
 {
@@ -23,10 +25,13 @@ namespace Server
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Gramatica gram = new Gramatica();
-            Parser parser = new Parser(gram);
+            Iniciar iniciar = new Iniciar();
+            ErrorImpresion listas =  iniciar.analizar(this.richTextBox1.Text);
 
-            parser.Parse(this.richTextBox1.Text);
+            foreach (string log in listas.impresiones)
+            {
+                richTextBox2.Text += log + "\n";
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

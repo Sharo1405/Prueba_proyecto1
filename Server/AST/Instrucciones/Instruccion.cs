@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.AST.Instruccion
+namespace Server.AST.Instrucciones
 {
     interface Instruccion: NodoAST
     {

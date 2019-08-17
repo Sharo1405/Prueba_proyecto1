@@ -1,6 +1,8 @@
 ﻿using Irony.Parsing;
 using Server.Analizador;
 using Server.AST;
+using Server.AST.Expresiones;
+using Server.AST.Instrucciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ namespace Server.GenerarAST
     {
 
         //metodo que inicia el analisis del texto
-        public void analizar(String texto)
+        public ErrorImpresion analizar(String texto)
         {
             //LENGUAJE -------------->CQL
             Gramatica gram = new Gramatica();
@@ -35,10 +37,24 @@ namespace Server.GenerarAST
                 //todo cool para analizar
 
                 RecorridoCuerpo recorrido = new RecorridoCuerpo();
-                LinkedList<NodoAST> ASTClases = recorrido.Rcuerpo(raiz.ChildNodes.ElementAt(0));
+                LinkedList<NodoAST> ASTClases = recorrido.Inicio(raiz);
 
+                Entorno entorno = new Entorno();
+                ErrorImpresion listas = new ErrorImpresion();
 
+                foreach (var item in ASTClases)
+                {
+                    if (item is Instruccion)
+                    {
+                        Instruccion ins = (Instruccion)item;
+                        ins.ejecutar(entorno, listas);
+                    }
+                }
+                //paraaaaaaaaaaaaaaaaaaaaaaa
+
+                return listas;
             }
+            return null;
         }
     }
 }

@@ -8,5 +8,9 @@ namespace Server.AST
 {
     class Entorno
     {
+        public Entorno()
+        {
+        }
+
     }
 }

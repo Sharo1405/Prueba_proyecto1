@@ -10,5 +10,10 @@ namespace Server.AST
     {
         public LinkedList<String> impresiones = new LinkedList<string>();
         public LinkedList<NodoError> errores = new LinkedList<NodoError>();
+
+        public ErrorImpresion()
+        {
+
+        }
     }
 }
