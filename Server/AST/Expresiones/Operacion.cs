@@ -47,7 +47,11 @@ namespace Server.AST.Expresiones
         //solo para aritmeticas
         public tipoDato tipoResultante(tipoDato izquierda, tipoDato derecha, Entorno lista, ErrorImpresion impresion)
         {
-            if (izquierda == tipoDato.cadena || derecha == tipoDato.cadena)
+            if (izquierda == tipoDato.nulo || derecha == tipoDato.nulo)
+            {
+                return tipoDato.errorSemantico;
+            }
+            else if (izquierda == tipoDato.cadena || derecha == tipoDato.cadena)
             {
                 return tipoDato.cadena;
 
@@ -70,7 +74,11 @@ namespace Server.AST.Expresiones
         //para relacionales 
         public tipoDato tipoResultanteRELACIONALES(tipoDato izquierda, tipoDato derecha, Entorno lista, ErrorImpresion impresion)
         {
-            if ((izquierda == tipoDato.decimall && derecha == tipoDato.entero) || (izquierda == tipoDato.entero && derecha == tipoDato.decimall)
+            if (izquierda == tipoDato.nulo || derecha == tipoDato.nulo)
+            {
+                return tipoDato.nulo;
+            }
+            else if ((izquierda == tipoDato.decimall && derecha == tipoDato.entero) || (izquierda == tipoDato.entero && derecha == tipoDato.decimall)
                 || (izquierda == tipoDato.decimall && derecha == tipoDato.decimall) || (izquierda == tipoDato.entero && derecha == tipoDato.entero))
             {
                 return tipoDato.decimall;

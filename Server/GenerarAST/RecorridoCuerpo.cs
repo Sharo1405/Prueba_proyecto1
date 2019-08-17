@@ -232,6 +232,10 @@ namespace Server.GenerarAST
                         return new Potencia(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
                             expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)));
 
+
+
+
+
                     case "+=":
                         return new MasIgual(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
                             expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)));
@@ -316,6 +320,8 @@ namespace Server.GenerarAST
                     operador = nodo.ChildNodes.ElementAt(1).Term.Name.ToString();
                     switch (operador)
                     {
+
+                        //-----------------------------------------------------------------------------------------------------------
                         case "--":
                             return new Decremento(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column, 
                                 expresiones(nodo.ChildNodes.ElementAt(0)));
@@ -323,6 +329,8 @@ namespace Server.GenerarAST
                         case "++":
                             return new Incremento(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column, 
                                 expresiones(nodo.ChildNodes.ElementAt(0)));
+                        //-----------------------------------------------------------------------------------------------------------
+
                     }
                 }
 

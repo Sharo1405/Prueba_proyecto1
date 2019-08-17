@@ -30,6 +30,11 @@ namespace Server.AST.Expresiones.Relacionales
             else if (nuevo == tipoDato.cadena)
             {
                 return tipoDato.booleano;
+
+            }
+            else if (nuevo == tipoDato.nulo)
+            {
+                return tipoDato.booleano;
             }
             else
             {
@@ -40,14 +45,53 @@ namespace Server.AST.Expresiones.Relacionales
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
             tipoDato nuevo = tipoResultanteRELACIONALES((tipoDato)expresion1.getType(entorno, listas), (tipoDato)expresion2.getType(entorno, listas), entorno, listas);
+            if (nuevo == tipoDato.nulo)
+            {
+                tipoDato izq = (tipoDato)expresion1.getType(entorno, listas);
+                tipoDato der = (tipoDato)expresion2.getType(entorno, listas);
+
+                if (izq == tipoDato.nulo)
+                {
+                    if (der == tipoDato.decimall || der == tipoDato.date || der == tipoDato.time || der == tipoDato.cadena
+                        || der == tipoDato.booleano)
+                    {
+                        return false;
+                    }
+                    else if (der == tipoDato.nulo)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return tipoDato.errorSemantico;
+                    }
+
+                }
+                else if (der == tipoDato.nulo)
+                {
+                    if (izq == tipoDato.decimall || izq == tipoDato.date || izq == tipoDato.time || izq == tipoDato.cadena
+                        || izq == tipoDato.booleano)
+                    {
+                        return false;
+                    }
+                    else if (der == tipoDato.nulo)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return tipoDato.errorSemantico;
+                    }
+                }
+            }
             if (nuevo == tipoDato.decimall)
             {
                 return Convert.ToDouble(expresion1.getValue(entorno, listas)) != Convert.ToDouble(expresion2.getValue(entorno, listas));
             }
             else if (nuevo == tipoDato.date)
             {
-                return Convert.ToDateTime(expresion1.getValue(entorno, listas)).Date !=
-                       Convert.ToDateTime(expresion2.getValue(entorno, listas)).Date;
+                return Convert.ToDateTime(expresion1.getValue(entorno, listas)) !=
+                       Convert.ToDateTime(expresion2.getValue(entorno, listas));
             }
             else if (nuevo == tipoDato.time)
             {
@@ -65,6 +109,7 @@ namespace Server.AST.Expresiones.Relacionales
                     Convert.ToString(expresion1.getType(entorno, listas)) + " y " + Convert.ToString(expresion2.getType(entorno, listas)) + " y se esperaba Int o Double, Strings, dates, times"));
                 return tipoDato.errorSemantico;
             }
+            return tipoDato.errorSemantico;
         }
     }
 }

@@ -42,8 +42,8 @@ namespace Server.AST.Expresiones.Relacionales
             }
             else if (nuevo == tipoDato.date)
             {
-                return Convert.ToDateTime(expresion1.getValue(entorno, listas)).Date >=
-                       Convert.ToDateTime(expresion2.getValue(entorno, listas)).Date;
+                return Convert.ToDateTime(expresion1.getValue(entorno, listas)) >=
+                       Convert.ToDateTime(expresion2.getValue(entorno, listas));
             }
             else if (nuevo == tipoDato.time)
             {
