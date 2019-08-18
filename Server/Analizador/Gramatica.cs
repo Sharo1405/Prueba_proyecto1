@@ -468,7 +468,7 @@ namespace Server.Analizador
                            | MAPCOLLECTIONS + puntoycoma
                            | LISTCOLLECTIONS + puntoycoma
                            | SETCOLLECTIONS + puntoycoma
-                           | FUNCIONESMETODOS + puntoycoma
+                           | FUNCIONESMETODOS
                            | PROCEDIMIENTOS
                            | SENTENCIATRANSFERENCIA + puntoycoma
                            | CURSORES + puntoycoma

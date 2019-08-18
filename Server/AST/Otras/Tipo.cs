@@ -15,6 +15,7 @@ namespace Server.AST.Otras
         public int linea { get; set; }
         public int columna { get; set; }
 
+
         public Tipo(tipoDato tipo, int linea, int columna)
         {
             this.tipo = tipo;

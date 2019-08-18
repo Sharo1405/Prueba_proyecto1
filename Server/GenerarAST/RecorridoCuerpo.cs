@@ -82,11 +82,13 @@ namespace Server.GenerarAST
                         break;
 
                     case "DECLARATODO":
-                    return new Declarcion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)) , 
+                        return new Declarcion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)) , 
                         ListaVariables(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)));
 
                     case "DECLAASGINACION":
-                        break;
+                    return new DeclaracionAsignacion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)), 
+                        ListaVariables(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)), 
+                        expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(3)));
 
                     case "ALTERTYPE":
                         break;
@@ -167,7 +169,7 @@ namespace Server.GenerarAST
                         break;
 
                     case "FUNCIONESMETODOS":
-                        break;
+                    return FuncionesMetodos(nodo.ChildNodes.ElementAt(0));
 
                     case "PROCEDIMIENTOS":
                         break;
@@ -193,6 +195,57 @@ namespace Server.GenerarAST
             return null;
         }
 
+
+        public Funciones FuncionesMetodos(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 6)
+            {
+                return new Funciones(Tipos(nodo.ChildNodes.ElementAt(0)),
+                    nodo.ChildNodes.ElementAt(1).Token.Text,
+                    Parametros(nodo.ChildNodes.ElementAt(3)),
+                    bloque(nodo.ChildNodes.ElementAt(5)));
+            }
+            else if (nodo.ChildNodes.Count == 5)
+            {
+                return new Funciones(Tipos(nodo.ChildNodes.ElementAt(0)),
+                    nodo.ChildNodes.ElementAt(1).Token.Text,
+                    new LinkedList<Parametros>(),
+                    bloque(nodo.ChildNodes.ElementAt(4)));
+            }
+            else if (nodo.ChildNodes.Count == 4) //llamada con parametros
+            {
+
+            }
+            else if (nodo.ChildNodes.Count == 3) //llamada sin parametros
+            {
+
+            }
+            return null;
+        }
+
+        public LinkedList<Parametros> Parametros(ParseTreeNode nodo)
+        {
+            if(nodo.ChildNodes.Count == 5)
+            {
+
+                LinkedList<Parametros> nodoAST = Parametros(nodo.ChildNodes.ElementAt(0));
+                nodoAST.AddLast(new Parametros(Tipos(nodo.ChildNodes.ElementAt(2)),
+                    nodo.ChildNodes.ElementAt(4).Token.Text,
+                    nodo.ChildNodes.ElementAt(4).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(4).Token.Location.Column));
+                return nodoAST;
+
+            }
+            else
+            {
+                LinkedList<Parametros> nodoAST = new LinkedList<Parametros>();
+                nodoAST.AddLast(new Parametros(Tipos(nodo.ChildNodes.ElementAt(0)), 
+                    nodo.ChildNodes.ElementAt(2).Token.Text,
+                    nodo.ChildNodes.ElementAt(2).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(2).Token.Location.Column));
+                return nodoAST;
+            }
+        }
 
         public LinkedList<String> ListaVariables(ParseTreeNode nodo)
         {

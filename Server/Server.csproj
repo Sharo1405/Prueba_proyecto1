@@ -54,9 +54,11 @@
     <Compile Include="AST\Entornos\Simbolo.cs" />
     <Compile Include="AST\Expresiones\Aritmeticas\Negatico.cs" />
     <Compile Include="AST\Expresiones\ArrobaId.cs" />
+    <Compile Include="AST\Expresiones\Funciones.cs" />
     <Compile Include="AST\Expresiones\ListaErrorPrinter.cs" />
     <Compile Include="AST\Expresiones\Logicas\Nott.cs" />
     <Compile Include="AST\Expresiones\Logicas\Or.cs" />
+    <Compile Include="AST\Otras\Parametros.cs" />
     <Compile Include="AST\Expresiones\TipoDato\Identificador.cs" />
     <Compile Include="AST\Instrucciones\Ciclos\WhileCiclo.cs" />
     <Compile Include="AST\Entornos\Entorno.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="AST\Expresiones\TipoDato\Nulo.cs" />
     <Compile Include="AST\Expresiones\TipoDato\Numero.cs" />
     <Compile Include="AST\Expresiones\TipoDato\Time.cs" />
+    <Compile Include="AST\Instrucciones\DeclaracionAsignacion.cs" />
     <Compile Include="AST\Instrucciones\Declarcion.cs" />
     <Compile Include="AST\Instrucciones\Imprimir.cs" />
     <Compile Include="AST\Instrucciones\Instruccion.cs" />

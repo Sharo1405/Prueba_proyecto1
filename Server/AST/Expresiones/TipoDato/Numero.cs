@@ -49,7 +49,15 @@ namespace Server.AST.Expresiones.TipoDato
 
         public tipoDato EnteroDecimal(Object valor)
         {
-            double nuevo = Math.Floor(Double.Parse(Convert.ToString(valor)));
+            String contienePunto = Convert.ToString(valor);
+            if (contienePunto.Contains(".")) {
+                return tipoDato.decimall;
+            }
+            else
+            {
+                return tipoDato.entero;
+            }
+            /*double nuevo = Math.Floor(Double.Parse(Convert.ToString(valor)));
             if ((Double.Parse(Convert.ToString(valor)) - Double.Parse(Convert.ToString(nuevo))) == 0.0)
             {
                 return tipoDato.entero;
@@ -57,7 +65,7 @@ namespace Server.AST.Expresiones.TipoDato
             else
             {
                 return tipoDato.decimall;
-            }
+            }*/
         }
     }
 }
