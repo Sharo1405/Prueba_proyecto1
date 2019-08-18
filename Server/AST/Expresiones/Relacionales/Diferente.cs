@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Server.AST.Entornos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -109,7 +110,7 @@ namespace Server.AST.Expresiones.Relacionales
                     Convert.ToString(expresion1.getType(entorno, listas)) + " y " + Convert.ToString(expresion2.getType(entorno, listas)) + " y se esperaba Int o Double, Strings, dates, times"));
                 return tipoDato.errorSemantico;
             }
-            return tipoDato.errorSemantico;
+            
         }
     }
 }

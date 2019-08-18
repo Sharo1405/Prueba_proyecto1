@@ -7,11 +7,13 @@ using Server.AST.Expresiones.Logicas;
 using Server.AST.Expresiones.Relacionales;
 using Server.AST.Expresiones.TipoDato;
 using Server.AST.Instrucciones;
+using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Server.AST.Expresiones.Operacion;
 
 namespace Server.GenerarAST
 {
@@ -41,20 +43,22 @@ namespace Server.GenerarAST
             {
                 return new LinkedList<NodoAST>();
             }
-            return null;
+
         }
 
-        public LinkedList<NodoAST> bloque(ParseTreeNode nodo)
+        public StatementBlock bloque(ParseTreeNode nodo)
         {
+            //aqui debo meter el bloque { listasentencias } para que
+            // se ejecute en la clase bloque
             LinkedList<NodoAST> nodoAST = new LinkedList<NodoAST>();
             nodoAST = Inicio(nodo.ChildNodes.ElementAt(1));
             if (nodoAST == null)
             {
-                return new LinkedList<NodoAST>();
+                return new StatementBlock( new LinkedList<NodoAST>());
             }
             else
             {
-                return nodoAST;
+                return new StatementBlock(nodoAST);
             }            
         }
 
@@ -78,7 +82,8 @@ namespace Server.GenerarAST
                         break;
 
                     case "DECLARATODO":
-                        break;
+                    return new Declarcion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)) , 
+                        ListaVariables(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)));
 
                     case "DECLAASGINACION":
                         break;
@@ -187,6 +192,111 @@ namespace Server.GenerarAST
                 }
             return null;
         }
+
+
+        public LinkedList<String> ListaVariables(ParseTreeNode nodo)
+        {
+            LinkedList<String> variables = new LinkedList<string>();
+            foreach (ParseTreeNode item in nodo.ChildNodes)
+            {
+                variables.AddLast(variable(item));
+            }
+            return variables;
+        }
+
+        public String variable(ParseTreeNode nodo)
+        {
+            return "@" + nodo.ChildNodes.ElementAt(1).Token.Text;
+        }
+
+        public Tipo Tipos(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 1) {
+                String t = nodo.ChildNodes.ElementAt(0).ToString().Replace("Keyboard", "").Trim();
+
+                switch (t)
+                {
+                    case "TIPOSPRIMITIVOS":
+                        return Primitivos(nodo.ChildNodes.ElementAt(0));
+
+                    case "counter":
+                        return new Tipo(tipoDato.counter, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                    case "map":
+                        return new Tipo(tipoDato.map, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                    case "set":
+                        return new Tipo(tipoDato.set, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                    case "list":
+                        return new Tipo(tipoDato.list, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                    case "id":
+                        return new Tipo(nodo.ChildNodes.ElementAt(0).Token.ToString(), tipoDato.id, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line, nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                }
+            }
+            else
+            {
+                switch (nodo.ChildNodes.ElementAt(0).Token.Text)
+                {
+                    case "map":
+
+                    case "set":
+                        break;
+
+                    case "list":
+                        break;                       
+                }
+            }
+            return new Tipo(tipoDato.errorSemantico, -1, -1);
+        } 
+
+
+        public LinkedList<Tipo> ListaTipos(ParseTreeNode nodo)
+        {
+            return new LinkedList<Tipo>();
+        }
+
+
+        public Tipo Primitivos(ParseTreeNode nodo)
+        {
+            String t = nodo.ChildNodes.ElementAt(0).Token.Text;
+            switch (t)
+            {
+                case "int":
+                    return new Tipo(tipoDato.entero, nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                case "string":
+                    return new Tipo(tipoDato.cadena, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                case "boolean":
+                    return new Tipo(tipoDato.booleano, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                case "double":
+                    return new Tipo(tipoDato.decimall, nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                case "date":
+                    return new Tipo(tipoDato.date, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                case "time":
+                    return new Tipo(tipoDato.time, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+
+            return new Tipo(tipoDato.errorSemantico, -1, -1);
+        }
+
 
         public Instruccion Log(ParseTreeNode nodo)
         {
@@ -302,7 +412,7 @@ namespace Server.GenerarAST
             else if (nodo.ChildNodes.Count == 2)
             {
                 string operador = nodo.ChildNodes.ElementAt(0).Term.Name.ToString();
-                if (!operador.Equals("EXP"))
+                if (!operador.Equals("E"))
                 {
                     switch (operador)
                     {
@@ -313,6 +423,10 @@ namespace Server.GenerarAST
                         case "!":
                             return new Nott(nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column,
                                 expresiones(nodo.ChildNodes.ElementAt(1)));
+
+                        case "@":
+                            return new ArrobaId("@" + nodo.ChildNodes.ElementAt(1).Token.Text, nodo.ChildNodes[0].Token.Location.Line,
+                                nodo.ChildNodes[0].Token.Location.Column);
                     }
                 }
                 else
@@ -341,7 +455,9 @@ namespace Server.GenerarAST
                 switch (operador)
                 {
                     case "id":
-                        break;
+                        return new Identificador(nodo.ChildNodes.ElementAt(0).Token.Text, nodo.ChildNodes[0].Token.Location.Line,
+                            nodo.ChildNodes[0].Token.Location.Column);
+
 
                     //fecha y hora
                     case "tdatetime":

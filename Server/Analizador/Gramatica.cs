@@ -764,6 +764,7 @@ namespace Server.Analizador
                     | map + menorq + LISTATIPOS + mayorq //para columnas de tablas
                     | map //para tipo normal variable
                     | set + menorq + LISTATIPOS + mayorq //para columnas de tablas
+                    | set
                     | list + menorq + TIPOS + mayorq //para columnas de tablas
                     | list
                     | id;

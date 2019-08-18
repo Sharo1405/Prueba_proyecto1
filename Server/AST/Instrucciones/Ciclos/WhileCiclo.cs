@@ -1,4 +1,5 @@
-﻿using Server.AST.Expresiones;
+﻿using Server.AST.Entornos;
+using Server.AST.Expresiones;
 using Server.AST.Instrucciones;
 using System;
 using System.Collections.Generic;
@@ -12,14 +13,14 @@ namespace Server.AST.Ciclos
     {
 
         public Expresion condicion { get; set; }
-        public LinkedList<NodoAST> sentencias { get; set; }
+        public StatementBlock sentencias { get; set; }
 
         public WhileCiclo()
         {
 
         }
 
-        public WhileCiclo(Expresion cond, LinkedList<NodoAST> sentencias)
+        public WhileCiclo(Expresion cond, StatementBlock sentencias)
         {
             this.condicion = cond;
             this.sentencias = sentencias;
@@ -29,14 +30,14 @@ namespace Server.AST.Ciclos
         {
             Object valor = condicion.getValue(entorno, listas);
             Object tipo = condicion.getType(entorno, listas);
-            foreach (var item in sentencias)
+            /*foreach (var item in sentencias)
             {
                 if (item is Instruccion)
                 {
                     Instruccion ins = (Instruccion)item;
                     ins.ejecutar(entorno, listas);
                 }
-            }
+            }*/
             return valor;
         }
     }

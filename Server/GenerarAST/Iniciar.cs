@@ -1,6 +1,7 @@
 ﻿using Irony.Parsing;
 using Server.Analizador;
 using Server.AST;
+using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Instrucciones;
 using System;

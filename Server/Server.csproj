@@ -51,12 +51,15 @@
   <ItemGroup>
     <Compile Include="Analizador\GraficadorTree.cs" />
     <Compile Include="Analizador\Gramatica.cs" />
+    <Compile Include="AST\Entornos\Simbolo.cs" />
     <Compile Include="AST\Expresiones\Aritmeticas\Negatico.cs" />
+    <Compile Include="AST\Expresiones\ArrobaId.cs" />
     <Compile Include="AST\Expresiones\ListaErrorPrinter.cs" />
     <Compile Include="AST\Expresiones\Logicas\Nott.cs" />
     <Compile Include="AST\Expresiones\Logicas\Or.cs" />
-    <Compile Include="AST\Ciclos\WhileCiclo.cs" />
-    <Compile Include="AST\Entorno.cs" />
+    <Compile Include="AST\Expresiones\TipoDato\Identificador.cs" />
+    <Compile Include="AST\Instrucciones\Ciclos\WhileCiclo.cs" />
+    <Compile Include="AST\Entornos\Entorno.cs" />
     <Compile Include="AST\ErrorImpresion.cs" />
     <Compile Include="AST\Expresiones\Aritmeticas\Decremento.cs" />
     <Compile Include="AST\Expresiones\Aritmeticas\DividirIgual.cs" />
@@ -87,10 +90,13 @@
     <Compile Include="AST\Expresiones\TipoDato\Nulo.cs" />
     <Compile Include="AST\Expresiones\TipoDato\Numero.cs" />
     <Compile Include="AST\Expresiones\TipoDato\Time.cs" />
+    <Compile Include="AST\Instrucciones\Declarcion.cs" />
     <Compile Include="AST\Instrucciones\Imprimir.cs" />
     <Compile Include="AST\Instrucciones\Instruccion.cs" />
+    <Compile Include="AST\Instrucciones\StatementBlock.cs" />
     <Compile Include="AST\NodoAST.cs" />
     <Compile Include="AST\NodoError.cs" />
+    <Compile Include="AST\Otras\Tipo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
