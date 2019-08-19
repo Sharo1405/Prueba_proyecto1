@@ -44,11 +44,13 @@ namespace Server.AST.Expresiones
             if (buscado == null)
             {
                 
-                entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna, this.getType(entorno, listas), Simbolo.Rol.FUNCION, parametros));
+                entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna, 
+                    this.getType(entorno, listas), Simbolo.Rol.FUNCION, parametros));
             }
             else
             {
-                listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico, "Funcion ya esta declara. El nombre es: " + idFuncion ));
+                listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
+                    "Funcion ya esta declara. El nombre es: " + idFuncion ));
             }
 
                 return "ok";
@@ -62,7 +64,7 @@ namespace Server.AST.Expresiones
             foreach (Parametros p in parametros)
             {
                 Tipo tparametro = p.tipo;
-                firma += "_"+Convert.ToString(tparametro);
+                firma += "_"+Convert.ToString(tparametro.tipo);
             }
             return firma; ;
         }

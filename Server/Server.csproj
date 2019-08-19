@@ -61,6 +61,7 @@
     <Compile Include="AST\Expresiones\Logicas\Nott.cs" />
     <Compile Include="AST\Expresiones\Logicas\Or.cs" />
     <Compile Include="AST\Expresiones\LlamadaFuncion.cs" />
+    <Compile Include="AST\Instrucciones\Asignacion.cs" />
     <Compile Include="AST\Instrucciones\Breakk.cs" />
     <Compile Include="AST\Instrucciones\Continuee.cs" />
     <Compile Include="AST\Instrucciones\Retorno.cs" />

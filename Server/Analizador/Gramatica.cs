@@ -825,6 +825,7 @@ namespace Server.Analizador
                 | aparentesis + E + cparentesis
                 | allave + E + cllave
                 | acorchete + E + ccorchete
+                | LLAMADASFUNCIONES
                 | FUNCIONESCOLLECTIONS
                 | FUNCIONESNATIVASCADENAS
                 | FUNCIONESNATIVASABSTRACCION;

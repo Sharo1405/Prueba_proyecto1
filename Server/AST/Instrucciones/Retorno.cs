@@ -30,10 +30,10 @@ namespace Server.AST.Instrucciones
         {
             if (retorno != null)
             {
-                return Operacion.tipoDato.errorSemantico;
-            }
-            else {
                 return retorno.getType(entorno, listas);
+            }
+            else {                
+                return Operacion.tipoDato.errorSemantico;
             }
         }
 
@@ -41,11 +41,11 @@ namespace Server.AST.Instrucciones
         {
             if (retorno != null)
             {
-                return Operacion.tipoDato.errorSemantico;
+                return retorno.getValue(entorno, listas);
             }
             else
             {
-                return retorno.getValue(entorno, listas);
+                return Operacion.tipoDato.errorSemantico;
             }            
         }
     }

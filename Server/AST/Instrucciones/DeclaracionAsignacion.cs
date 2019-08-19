@@ -67,7 +67,7 @@ namespace Server.AST.Instrucciones
                     listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico, "Variable ya declara en el entorno actual. El nombre es: " + id));
                 }
             }
-            return "ok";
+            return tipoDato.ok;
         }
     }
 }

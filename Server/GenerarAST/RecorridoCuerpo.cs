@@ -68,7 +68,7 @@ namespace Server.GenerarAST
                 switch (nodo.ChildNodes.ElementAt(0).ToString())
                 {
                     case "ACCESOASIGNACION":
-                        break;
+                        return accesoAsignacion(nodo.ChildNodes.ElementAt(0));
 
                     case "CREATETYPE":
                         break;
@@ -194,6 +194,51 @@ namespace Server.GenerarAST
         }
 
 
+        public NodoAST accesoAsignacion(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 3)
+            {
+                String s = nodo.ChildNodes.ElementAt(2).ToString();
+                switch (s)
+                {
+                    case "E":
+                        return new Asignacion(variable(nodo.ChildNodes.ElementAt(0)),
+                            expresiones(nodo.ChildNodes.ElementAt(2)),
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+
+                    case "FUNCIONESCOLLECTIONS":
+                        break;
+
+                    case "FUNCIONESNATIVASCADENAS":
+                        break;
+
+                    case "FUNCIONESNATIVASABSTRACCION":
+                        break;
+                }
+            }
+            else if (nodo.ChildNodes.Count == 4)
+            {
+                String s = nodo.ChildNodes.ElementAt(3).ToString();
+                switch (s)
+                {
+                    case "E":
+                        break;
+
+                    case "FUNCIONESCOLLECTIONS":
+                        break;
+
+                    case "FUNCIONESNATIVASCADENAS":
+                        break;
+
+                    case "FUNCIONESNATIVASABSTRACCION":
+                        break;
+                }
+            }
+            return null;
+        }
+
+
         public NodoAST sentenciaTranferencia(ParseTreeNode nodo)
         {
             if (nodo.ChildNodes.Count == 2)
@@ -252,7 +297,7 @@ namespace Server.GenerarAST
 
                 LinkedList<Parametros> nodoAST = Parametros(nodo.ChildNodes.ElementAt(0));
                 nodoAST.AddLast(new Parametros(Tipos(nodo.ChildNodes.ElementAt(2)),
-                    nodo.ChildNodes.ElementAt(4).Token.Text,
+                    "@" + nodo.ChildNodes.ElementAt(4).Token.Text,
                     nodo.ChildNodes.ElementAt(4).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(4).Token.Location.Column));
                 return nodoAST;
@@ -262,7 +307,7 @@ namespace Server.GenerarAST
             {
                 LinkedList<Parametros> nodoAST = new LinkedList<Parametros>();
                 nodoAST.AddLast(new Parametros(Tipos(nodo.ChildNodes.ElementAt(0)), 
-                    nodo.ChildNodes.ElementAt(2).Token.Text,
+                    "@" + nodo.ChildNodes.ElementAt(2).Token.Text,
                     nodo.ChildNodes.ElementAt(2).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(2).Token.Location.Column));
                 return nodoAST;
@@ -386,8 +431,16 @@ namespace Server.GenerarAST
 
         public Expresion expresiones(ParseTreeNode nodo)
         {
-            
-            if (nodo.ChildNodes.Count == 3)
+            if (nodo.ChildNodes.Count == 4)
+            {
+                string operador = nodo.ChildNodes.ElementAt(0).ToString();
+                switch (operador)
+                {                    
+                    case "aparentesis": //CASTEOS
+                        break;
+                }
+            }
+            else if (nodo.ChildNodes.Count == 3)
             {
                 string operador = nodo.ChildNodes.ElementAt(1).Term.Name.ToString();
                 switch (operador)
@@ -576,6 +629,13 @@ namespace Server.GenerarAST
                     case "null":
                         return new Nulo(nodo.ChildNodes.ElementAt(0).Token.Text, Operacion.tipoDato.booleano,
                             nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column);
+
+                    case "LLAMADASFUNCIONES":
+                        return new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text,
+                        expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);
+
                 }
             }
             return null;
