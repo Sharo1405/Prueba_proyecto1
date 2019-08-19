@@ -25,18 +25,35 @@ namespace Server.AST.Instrucciones
         {
             foreach (NodoAST sentencia in listaIns)
             {
-                Instruccion eject = (Instruccion)sentencia;
-                if (eject is Retorno)
+               
+                if (sentencia is Instruccion)
                 {
-                    return eject.ejecutar(entorno, listas);
+                    Instruccion ins = (Instruccion)sentencia;                   
+                    if (ins is Breakk)
+                    {
+                        return ins;
+                    }
+                    else if (ins is Continuee)
+                    {
+                        return ins;
+                    }
+                    else
+                    {
+                        ins.ejecutar(entorno, listas);
+                    }
                 }
-                else if (eject is Breakk)
-                {
-                    return eject.ejecutar(entorno, listas);
-                }                
                 else
-                {
-                    eject.ejecutar(entorno, listas);
+                {//funciones 
+                    Expresion exp = (Expresion)sentencia;                   
+                    if (exp is Retorno)
+                    {
+                        //return exp.getValue(entorno, listas);
+                        return exp;
+                    }
+                    else
+                    {
+                        exp.getValue(entorno, listas);
+                    }                    
                 }
             }
             return Operacion.tipoDato.ok;

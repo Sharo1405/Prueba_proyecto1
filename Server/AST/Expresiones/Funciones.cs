@@ -22,7 +22,7 @@ namespace Server.AST.Expresiones
             int linea, int columna)
         {
             this.tipo = tipo;
-            this.idFuncion = idFuncion;
+            this.idFuncion = idFuncion.ToLower();
             this.parametros = parametros;
             this.sentencias = sentencias;
             this.linea = linea;
@@ -40,7 +40,7 @@ namespace Server.AST.Expresiones
 
             //guardar la funcion en TS
             String firmaFuncion = crearFirma();
-            Simbolo buscado = entorno.get(firmaFuncion, entorno);
+            Simbolo buscado = entorno.get(firmaFuncion, entorno, Simbolo.Rol.FUNCION);
             if (buscado == null)
             {
                 

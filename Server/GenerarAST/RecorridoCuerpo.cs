@@ -7,6 +7,7 @@ using Server.AST.Expresiones.Logicas;
 using Server.AST.Expresiones.Relacionales;
 using Server.AST.Expresiones.TipoDato;
 using Server.AST.Instrucciones;
+using Server.AST.Instrucciones.Ciclos;
 using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
@@ -134,7 +135,7 @@ namespace Server.GenerarAST
                         break;
 
                     case "IFSTATEMENT":
-                        break;
+                        return ifStatement(nodo.ChildNodes.ElementAt(0));
 
                     case "SWITCHSTATEMENT":
                         break;
@@ -194,6 +195,45 @@ namespace Server.GenerarAST
         }
 
 
+        public NodoAST ifStatement(ParseTreeNode nodo)
+        {/*IF_LISTA + elsee + STATEMENTBLOCK
+                             | IF_LISTA*/
+            if (nodo.ChildNodes.Count == 3)
+            {
+                return new Iff(bloque(nodo.ChildNodes.ElementAt(2)),
+                    listaifs(nodo.ChildNodes.ElementAt(0)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }
+            else
+            {
+                return new Iff(null,
+                    listaifs(nodo.ChildNodes.ElementAt(0)), -1, -1);
+            }
+        }
+
+        public LinkedList<IfLista> listaifs(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 7)
+            {
+                LinkedList<IfLista> nodoAST = listaifs(nodo.ChildNodes.ElementAt(0));
+                nodoAST.AddLast(new IfLista(expresiones(nodo.ChildNodes.ElementAt(4)),
+                    bloque(nodo.ChildNodes.ElementAt(6)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column));
+                return nodoAST;
+            }
+            else
+            {
+                LinkedList<IfLista> nodoAST = new LinkedList<IfLista>();
+                nodoAST.AddLast(new IfLista(expresiones(nodo.ChildNodes.ElementAt(2)),
+                    bloque(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column));
+                return nodoAST;
+            }
+        }
+
         public NodoAST accesoAsignacion(ParseTreeNode nodo)
         {
             if (nodo.ChildNodes.Count == 3)
@@ -249,17 +289,20 @@ namespace Server.GenerarAST
             }
             else
             {
-                String nombre = nodo.ChildNodes.ElementAt(0).ToString();
+                String nombre = nodo.ChildNodes.ElementAt(0).Token.Text;
                 switch (nombre)
                 {
                     case "continue":
-                        break;
+                        return new Continuee(nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "break":
-                        break;
+                        return new Breakk(nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "return":
-                        return new Retorno();
+                        return new Retorno(nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
                 }
             }
 
@@ -272,7 +315,7 @@ namespace Server.GenerarAST
             if (nodo.ChildNodes.Count == 6)
             {
                 return new Funciones(Tipos(nodo.ChildNodes.ElementAt(0)),
-                    nodo.ChildNodes.ElementAt(1).Token.Text,
+                    nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
                     Parametros(nodo.ChildNodes.ElementAt(3)),
                     bloque(nodo.ChildNodes.ElementAt(5)),
                     nodo.ChildNodes.ElementAt(1).Token.Location.Line,
@@ -281,7 +324,7 @@ namespace Server.GenerarAST
             else if (nodo.ChildNodes.Count == 5)
             {
                 return new Funciones(Tipos(nodo.ChildNodes.ElementAt(0)),
-                    nodo.ChildNodes.ElementAt(1).Token.Text,
+                    nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
                     new LinkedList<Parametros>(),
                     bloque(nodo.ChildNodes.ElementAt(4)),
                     nodo.ChildNodes.ElementAt(1).Token.Location.Line,
@@ -297,7 +340,7 @@ namespace Server.GenerarAST
 
                 LinkedList<Parametros> nodoAST = Parametros(nodo.ChildNodes.ElementAt(0));
                 nodoAST.AddLast(new Parametros(Tipos(nodo.ChildNodes.ElementAt(2)),
-                    "@" + nodo.ChildNodes.ElementAt(4).Token.Text,
+                    "@" + nodo.ChildNodes.ElementAt(4).Token.Text.ToLower(),
                     nodo.ChildNodes.ElementAt(4).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(4).Token.Location.Column));
                 return nodoAST;
@@ -307,7 +350,7 @@ namespace Server.GenerarAST
             {
                 LinkedList<Parametros> nodoAST = new LinkedList<Parametros>();
                 nodoAST.AddLast(new Parametros(Tipos(nodo.ChildNodes.ElementAt(0)), 
-                    "@" + nodo.ChildNodes.ElementAt(2).Token.Text,
+                    "@" + nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
                     nodo.ChildNodes.ElementAt(2).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(2).Token.Location.Column));
                 return nodoAST;
@@ -326,7 +369,7 @@ namespace Server.GenerarAST
 
         public String variable(ParseTreeNode nodo)
         {
-            return "@" + nodo.ChildNodes.ElementAt(1).Token.Text;
+            return "@" + nodo.ChildNodes.ElementAt(1).Token.Text.ToLower();
         }
 
         public Tipo Tipos(ParseTreeNode nodo)
@@ -356,7 +399,7 @@ namespace Server.GenerarAST
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "id":
-                        return new Tipo(nodo.ChildNodes.ElementAt(0).Token.ToString(), tipoDato.id, 
+                        return new Tipo(nodo.ChildNodes.ElementAt(0).Token.ToString().ToLower(), tipoDato.id, 
                             nodo.ChildNodes.ElementAt(0).Token.Location.Line, nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                 }
@@ -426,7 +469,10 @@ namespace Server.GenerarAST
 
         public Instruccion whilee(ParseTreeNode nodo)
         {
-            return new WhileCiclo(expresiones(nodo.ChildNodes.ElementAt(2)), bloque(nodo.ChildNodes.ElementAt(4)));
+            return new WhileCiclo(expresiones(nodo.ChildNodes.ElementAt(2)), 
+                bloque(nodo.ChildNodes.ElementAt(4)),
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
         }
 
         public Expresion expresiones(ParseTreeNode nodo)
@@ -559,7 +605,7 @@ namespace Server.GenerarAST
                                 expresiones(nodo.ChildNodes.ElementAt(1)));
 
                         case "@":
-                            return new ArrobaId("@" + nodo.ChildNodes.ElementAt(1).Token.Text, nodo.ChildNodes[0].Token.Location.Line,
+                            return new ArrobaId("@" + nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(), nodo.ChildNodes[0].Token.Location.Line,
                                 nodo.ChildNodes[0].Token.Location.Column);
                     }
                 }
@@ -589,7 +635,7 @@ namespace Server.GenerarAST
                 switch (operador)
                 {
                     case "id":
-                        return new Identificador(nodo.ChildNodes.ElementAt(0).Token.Text, nodo.ChildNodes[0].Token.Location.Line,
+                        return new Identificador(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(), nodo.ChildNodes[0].Token.Location.Line,
                             nodo.ChildNodes[0].Token.Location.Column);
 
 

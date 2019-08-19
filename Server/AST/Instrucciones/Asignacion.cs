@@ -28,7 +28,7 @@ namespace Server.AST.Instrucciones
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            Simbolo variable = entorno.get(id, entorno);
+            Simbolo variable = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
             if (variable != null)
             {
                 tipoDato tipoValor = valor.getType(entorno, listas);

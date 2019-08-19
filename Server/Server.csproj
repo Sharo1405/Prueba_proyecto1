@@ -63,6 +63,8 @@
     <Compile Include="AST\Expresiones\LlamadaFuncion.cs" />
     <Compile Include="AST\Instrucciones\Asignacion.cs" />
     <Compile Include="AST\Instrucciones\Breakk.cs" />
+    <Compile Include="AST\Instrucciones\Ciclos\Iff.cs" />
+    <Compile Include="AST\Instrucciones\Ciclos\IfLista.cs" />
     <Compile Include="AST\Instrucciones\Continuee.cs" />
     <Compile Include="AST\Instrucciones\Retorno.cs" />
     <Compile Include="AST\Otras\Parametros.cs" />

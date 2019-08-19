@@ -24,7 +24,7 @@ namespace Server.AST.Expresiones
 
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
-            Simbolo encontrado = get(id, entorno);
+            Simbolo encontrado = get(id, entorno, Simbolo.Rol.VARIABLE);
             if (encontrado != null)
             {
                 return encontrado.tipo;
@@ -37,7 +37,7 @@ namespace Server.AST.Expresiones
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
-            Simbolo encontrado = get(id, entorno);
+            Simbolo encontrado = get(id, entorno, Simbolo.Rol.VARIABLE);
             if (encontrado != null)
             {
                 tipoDato ti = encontrado.tipo;

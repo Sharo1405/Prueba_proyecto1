@@ -18,7 +18,7 @@ namespace Server.AST.Expresiones.TipoDato
 
         public Identificador(String id, tipoDato tipo, int linea, int columna)
         {
-            this.id = id;
+            this.id = id.ToLower();
             this.tipo = tipo;
             this.linea = linea;
             this.columna = columna;
@@ -34,7 +34,7 @@ namespace Server.AST.Expresiones.TipoDato
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
 
-            Simbolo encontrado = get(id, entorno);
+            Simbolo encontrado = get(id, entorno, Simbolo.Rol.VARIABLE);
             if (encontrado != null)
             {
                 return encontrado.tipo;
@@ -47,7 +47,7 @@ namespace Server.AST.Expresiones.TipoDato
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
-            Simbolo encontrado = get(id, entorno);
+            Simbolo encontrado = get(id, entorno, Simbolo.Rol.VARIABLE);
             if (encontrado != null)
             {
                 tipoDato ti = encontrado.tipo;

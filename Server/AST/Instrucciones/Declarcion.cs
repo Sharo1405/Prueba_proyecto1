@@ -29,26 +29,26 @@ namespace Server.AST.Instrucciones
         {
 
             foreach (String id in ids) {
-                Simbolo buscado = entorno.getEnActual(id);
+                Simbolo buscado = entorno.getEnActual(id, Simbolo.Rol.VARIABLE);
                 if(buscado == null) {
                     if (tipo.tipo == tipoDato.entero)
                     {
-                        entorno.setSimbolo(id, new Simbolo(id, 0, tipo.linea, tipo.columna,
+                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), 0, tipo.linea, tipo.columna,
                             tipo.tipo, Simbolo.Rol.VARIABLE));
                     }
                     else if (tipo.tipo == tipoDato.decimall)
                     {
-                        entorno.setSimbolo(id, new Simbolo(id, 0.0, tipo.linea, tipo.columna, 
+                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), 0.0, tipo.linea, tipo.columna, 
                             tipo.tipo, Simbolo.Rol.VARIABLE));
                     }
                     else if (tipo.tipo == tipoDato.booleano)
                     {
-                        entorno.setSimbolo(id, new Simbolo(id, false, tipo.linea, tipo.columna, 
+                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), false, tipo.linea, tipo.columna, 
                             tipo.tipo, Simbolo.Rol.VARIABLE));
                     }
                     else
                     {
-                        entorno.setSimbolo(id, new Simbolo(id, null, tipo.linea, tipo.columna, 
+                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), null, tipo.linea, tipo.columna, 
                             tipo.tipo, Simbolo.Rol.VARIABLE));
                     }
                 }

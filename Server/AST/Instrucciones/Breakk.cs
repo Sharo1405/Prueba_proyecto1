@@ -9,10 +9,18 @@ namespace Server.AST.Instrucciones
 {
     class Breakk : Instruccion
     {
+        public int linea { get; set; }
+        public int columna { get; set; }
+
+        public Breakk(int linea, int columna)
+        {
+            this.linea = linea;
+            this.columna = columna;
+        }
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            throw new NotImplementedException();
+            return this;
         }
     }
 }

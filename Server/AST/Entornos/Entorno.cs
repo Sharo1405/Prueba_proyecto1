@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Entornos
 {
@@ -27,14 +28,16 @@ namespace Server.AST.Entornos
 
 
 
-        public Simbolo getEnActual(String id)
+        public Simbolo getEnActual(String id, Simbolo.Rol rol)
         {
             try
             {
                 Simbolo encontrado = new Simbolo();                
                 if (tablaS.TryGetValue(id, out encontrado))
                 {
-                    return encontrado;
+                    if (rol == encontrado.rol) {
+                        return encontrado;
+                    }                    
                 }
             }
             catch (Exception e)
@@ -49,7 +52,7 @@ namespace Server.AST.Entornos
 
 
 
-        public Simbolo get(String id, Entorno actual)
+        public Simbolo get(String id, Entorno actual, Simbolo.Rol rol)
         {
             try
             {
@@ -59,7 +62,10 @@ namespace Server.AST.Entornos
                     Simbolo encontrado = new Simbolo();
                     if (e.tablaS.TryGetValue(id, out encontrado))                        
                     {
-                        return encontrado;
+                        if (rol == encontrado.rol)
+                        {
+                            return encontrado;
+                        }
                     }
                 }
             }
@@ -97,23 +103,28 @@ namespace Server.AST.Entornos
 
 
 
-        public void setValorSimbolo(String id, Object valorNuevo, Entorno lista)
+        public tipoDato setValorSimbolo(String id, Object valorNuevo, Entorno lista, Simbolo.Rol rol)
         {
             try
             {
                 for (Entorno e = lista; e != null; e = e.padreANTERIOR)
                 {
                     Simbolo encontrado = new Simbolo();                    
-                    if (e.tablaS.TryGetValue(id, out encontrado))
+                    if (e.tablaS.TryGetValue(id.ToLower(), out encontrado))
                     {
-                        encontrado.valor = valorNuevo;
-                        break;
+                        if (rol == encontrado.rol)
+                        {
+                            encontrado.valor = valorNuevo;
+                            return tipoDato.ok;
+                        }                        
                     }
                 }
             }
             catch (Exception e)
             {
+                return tipoDato.errorSemantico;
             }
+            return tipoDato.errorSemantico;
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Ciclos
 {
@@ -14,13 +15,16 @@ namespace Server.AST.Ciclos
 
         public Expresion condicion { get; set; }
         public StatementBlock sentencias { get; set; }
+        public int linea { get; set; }
+        public int columna { get; set; }
 
         public WhileCiclo()
         {
 
         }
 
-        public WhileCiclo(Expresion cond, StatementBlock sentencias)
+        public WhileCiclo(Expresion cond, StatementBlock sentencias,
+            int linea, int columna)
         {
             this.condicion = cond;
             this.sentencias = sentencias;
@@ -29,15 +33,28 @@ namespace Server.AST.Ciclos
         public Object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
             Object valor = condicion.getValue(entorno, listas);
-            Object tipo = condicion.getType(entorno, listas);
-            /*foreach (var item in sentencias)
+            tipoDato tipo = condicion.getType(entorno, listas);
+            if (tipoDato.booleano == tipo)
             {
-                if (item is Instruccion)
+                while ((Boolean) condicion.getValue(entorno, listas))
                 {
-                    Instruccion ins = (Instruccion)item;
-                    ins.ejecutar(entorno, listas);
+                    Object retorno = sentencias.ejecutar(entorno, listas);
+
+                    if (retorno is Breakk) {
+                        break;
+                    } else if (retorno is Continuee){
+                        continue;
+                    } else if (retorno is Retorno) {
+                        return retorno;
+                    }
                 }
-            }*/
+            }
+            else
+            {
+                listas.errores.AddLast(new NodoError(this.linea, this.columna,
+                    NodoError.tipoError.Semantico, "No se puede imprimir ese Argumento"));
+                return tipoDato.errorSemantico;
+            }
             return valor;
         }
     }

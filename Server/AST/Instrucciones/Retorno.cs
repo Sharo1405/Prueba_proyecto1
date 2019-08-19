@@ -15,8 +15,10 @@ namespace Server.AST.Instrucciones
         public int linea { get; set; }
         public int col { get; set; }
 
-        public Retorno()
+        public Retorno(int linea, int col)
         {
+            this.linea = linea;
+            this.col = col;
         }
 
         public Retorno(Expresion retorno, int linea, int col)

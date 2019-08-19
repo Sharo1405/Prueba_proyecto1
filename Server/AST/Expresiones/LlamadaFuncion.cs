@@ -20,7 +20,7 @@ namespace Server.AST.Expresiones
         public LlamadaFuncion(String idFuncion, Expresion parametros, 
             int linea, int columna)
         {
-            this.idFuncion = idFuncion;
+            this.idFuncion = idFuncion.ToLower();
             this.parametros = parametros;
             this.linea = linea;
             this.columna = columna;
@@ -29,7 +29,8 @@ namespace Server.AST.Expresiones
 
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
-            Simbolo buscado = entorno.get(idFuncion, entorno);
+            String firmaFun = crearFirmaParas(entorno, listas);
+            Simbolo buscado = entorno.get(firmaFun, entorno, Simbolo.Rol.FUNCION);
             if (buscado != null)
             {
                 return buscado.tipo;
@@ -45,22 +46,21 @@ namespace Server.AST.Expresiones
             try
             {
                 String firmaFun = crearFirmaParas(entorno, listas);
-                Simbolo buscado = entorno.get(firmaFun, entorno);
+                Simbolo buscado = entorno.get(firmaFun, entorno, Simbolo.Rol.FUNCION);
                 if (buscado != null && buscado.rol == Simbolo.Rol.FUNCION)
                 {
                     StatementBlock sentenciasEject = (StatementBlock)buscado.valor;
-                    Retorno retorno = new Retorno();
                     Boolean retexiste = false;
-                    foreach (var item in sentenciasEject.listaIns)
+                    /*foreach (var item in sentenciasEject.listaIns)
                     {
                         if(item is Retorno)
                         {
                             retexiste = true;
                             break;
                         }
-                    }                    
+                    } */                   
 
-                    if (retexiste == true) {
+                    //if (retexiste == true) {
 
                         Entorno actual = new Entorno(entorno);
                         if (parametros != null)
@@ -88,7 +88,23 @@ namespace Server.AST.Expresiones
                             if (sentencia is Instruccion)
                             {
                                 Instruccion ins = (Instruccion)sentencia;
-                                ins.ejecutar(actual, listas);
+                                Object reto = ins.ejecutar(actual, listas);
+                                if (ins is Breakk)
+                                {
+                                    return ins;
+                                }
+                                else if (ins is Continuee)
+                                {
+                                    return ins;
+                                }
+                                else if (reto is Retorno)
+                                {
+                                    Expresion r = (Expresion)reto;
+                                    if (buscado.tipo == r.getType(actual, listas))
+                                    {
+                                        return r.getValue(actual, listas);
+                                    }                                
+                                }
                             }
                             else
                             {//funciones 
@@ -96,10 +112,11 @@ namespace Server.AST.Expresiones
                                 exp.getValue(actual, listas);
                                 if (exp is Retorno)
                                 {
+                                    retexiste = true;
                                     //exp.getValue(actual, listas);
                                     if (buscado.tipo == exp.getType(actual, listas))
                                     {
-                                        return exp.getValue(actual, listas);
+                                        return exp.getValue(actual, listas);                                        
                                     }
                                     else
                                     {
@@ -115,14 +132,21 @@ namespace Server.AST.Expresiones
                                     exp.getValue(actual, listas);
                                 }
                             }                            
-                        }                        
+                        }
+
+                    if (retexiste == false)
+                    {
+                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                            "Retorno de funcion no EXISTE, funcion: " + firmaFun));
+                        return tipoDato.errorSemantico;
                     }
+                    /*}
                     else
                     {
                         listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, 
                             "No existe el retorno en la funcion: " + firmaFun));
                         return tipoDato.errorSemantico;
-                    }
+                    }*/
                 }
                 else
                 {
