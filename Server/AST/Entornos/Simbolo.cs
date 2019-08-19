@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Server.AST.Expresiones;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,8 @@ namespace Server.AST.Entornos
         public int fila { get; set; }
         public int columna { get; set; }
         public tipoDato tipo { get; set; }  
-        public Rol rol;
+        public Rol rol { get; set; }
+        public LinkedList<Parametros> parametros = new LinkedList<Parametros>();
 
         public enum Rol
         {
@@ -35,6 +37,17 @@ namespace Server.AST.Entornos
             this.columna = columna;
             this.tipo = tipo;
             this.rol = rol;
+        }
+
+        public Simbolo(String id, Object valor, int fila, int columna, tipoDato tipo, Rol rol, LinkedList<Parametros> parametros)
+        {
+            this.id = id;
+            this.valor = valor;
+            this.fila = fila;
+            this.columna = columna;
+            this.tipo = tipo;
+            this.rol = rol;
+            this.parametros = parametros;
         }
     }
 }

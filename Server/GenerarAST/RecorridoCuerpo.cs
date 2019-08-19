@@ -67,14 +67,6 @@ namespace Server.GenerarAST
         {
                 switch (nodo.ChildNodes.ElementAt(0).ToString())
                 {
-                    /*case "SENTENCIA":
-                        NodoAST nodoast = Sentencia(nodo.ChildNodes.ElementAt(0));
-                        return nodoast;
-
-                    case "STATEMENTBLOCK":
-                        NodoAST nnn = Sentencia(nodo.ChildNodes.ElementAt(1));
-                        return nnn;*/
-
                     case "ACCESOASIGNACION":
                         break;
 
@@ -169,13 +161,19 @@ namespace Server.GenerarAST
                         break;
 
                     case "FUNCIONESMETODOS":
-                    return FuncionesMetodos(nodo.ChildNodes.ElementAt(0));
+                        return FuncionesMetodos(nodo.ChildNodes.ElementAt(0));
+
+                    case "LLAMADASFUNCIONES":
+                    return new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text,
+                        expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);          
 
                     case "PROCEDIMIENTOS":
                         break;
 
                     case "SENTENCIATRANSFERENCIA":
-                        break;
+                        return sentenciaTranferencia(nodo.ChildNodes.ElementAt(0));
 
                     case "CURSORES":
                         break;
@@ -196,6 +194,34 @@ namespace Server.GenerarAST
         }
 
 
+        public NodoAST sentenciaTranferencia(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 2)
+            {
+                return new Retorno(expresiones(nodo.ChildNodes.ElementAt(1)), 
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else
+            {
+                String nombre = nodo.ChildNodes.ElementAt(0).ToString();
+                switch (nombre)
+                {
+                    case "continue":
+                        break;
+
+                    case "break":
+                        break;
+
+                    case "return":
+                        return new Retorno();
+                }
+            }
+
+            return null;
+        }
+
+
         public Funciones FuncionesMetodos(ParseTreeNode nodo)
         {
             if (nodo.ChildNodes.Count == 6)
@@ -203,23 +229,19 @@ namespace Server.GenerarAST
                 return new Funciones(Tipos(nodo.ChildNodes.ElementAt(0)),
                     nodo.ChildNodes.ElementAt(1).Token.Text,
                     Parametros(nodo.ChildNodes.ElementAt(3)),
-                    bloque(nodo.ChildNodes.ElementAt(5)));
+                    bloque(nodo.ChildNodes.ElementAt(5)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
             }
             else if (nodo.ChildNodes.Count == 5)
             {
                 return new Funciones(Tipos(nodo.ChildNodes.ElementAt(0)),
                     nodo.ChildNodes.ElementAt(1).Token.Text,
                     new LinkedList<Parametros>(),
-                    bloque(nodo.ChildNodes.ElementAt(4)));
-            }
-            else if (nodo.ChildNodes.Count == 4) //llamada con parametros
-            {
-
-            }
-            else if (nodo.ChildNodes.Count == 3) //llamada sin parametros
-            {
-
-            }
+                    bloque(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }            
             return null;
         }
 
@@ -458,6 +480,12 @@ namespace Server.GenerarAST
 
                     default:
                         return expresiones(nodo.ChildNodes.ElementAt(1));
+
+
+                    //E coma E
+                    case ",":
+                        return new ListaExpresiones(expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)),
+                            nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column);
 
                 }
 

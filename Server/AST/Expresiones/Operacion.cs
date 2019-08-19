@@ -30,7 +30,8 @@ namespace Server.AST.Expresiones
             set,
             list,
             counter,
-            id
+            id,
+            ok //solo para validar que todo esa cool
         }
 
         public Operacion(int linea, int columna, Expresion expresion1, Expresion expresion2)

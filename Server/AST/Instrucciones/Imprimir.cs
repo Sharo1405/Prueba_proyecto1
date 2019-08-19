@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Instrucciones
 {
@@ -24,9 +25,17 @@ namespace Server.AST.Instrucciones
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            string valor = Convert.ToString(expImpre.getValue(entorno, listas));
-            listas.impresiones.AddLast(valor);
-            return null;
+            try
+            {
+                string valor = Convert.ToString(expImpre.getValue(entorno, listas));
+                listas.impresiones.AddLast(valor);
+            }
+            catch (Exception e)
+            {
+                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico, "No se puede imprimir ese Argumento"));
+                return tipoDato.errorSemantico;
+            }
+            return tipoDato.ok;
         }
     }
 }

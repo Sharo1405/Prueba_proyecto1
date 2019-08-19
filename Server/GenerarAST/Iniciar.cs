@@ -50,6 +50,11 @@ namespace Server.GenerarAST
                         Instruccion ins = (Instruccion)item;
                         ins.ejecutar(entorno, listas);
                     }
+                    else
+                    {//funciones 
+                        Expresion exp = (Expresion)item;
+                        exp.getValue(entorno, listas);
+                    }
                 }
                 //paraaaaaaaaaaaaaaaaaaaaaaa
 

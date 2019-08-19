@@ -1,4 +1,5 @@
 ﻿using Server.AST.Entornos;
+using Server.AST.Expresiones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,23 @@ namespace Server.AST.Instrucciones
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            throw new NotImplementedException();
+            foreach (NodoAST sentencia in listaIns)
+            {
+                Instruccion eject = (Instruccion)sentencia;
+                if (eject is Retorno)
+                {
+                    return eject.ejecutar(entorno, listas);
+                }
+                else if (eject is Breakk)
+                {
+                    return eject.ejecutar(entorno, listas);
+                }                
+                else
+                {
+                    eject.ejecutar(entorno, listas);
+                }
+            }
+            return Operacion.tipoDato.ok;
         }
     }
 }

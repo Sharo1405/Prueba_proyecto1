@@ -416,6 +416,7 @@ namespace Server.Analizador
             var PUNTOIDS2 = new NonTerminal("PUNTOIDS2");
             var AUMENTOSSOLOS = new NonTerminal("AUMENTOSSOLOS");
             var TIPOCASTEO = new NonTerminal("TIPOCASTEO");
+            var LLAMADASFUNCIONES = new NonTerminal("LLAMADASFUNCIONES");
             #endregion
 
             #region TERMINALES
@@ -469,6 +470,7 @@ namespace Server.Analizador
                            | LISTCOLLECTIONS + puntoycoma
                            | SETCOLLECTIONS + puntoycoma
                            | FUNCIONESMETODOS
+                           | LLAMADASFUNCIONES + puntoycoma
                            | PROCEDIMIENTOS
                            | SENTENCIATRANSFERENCIA + puntoycoma
                            | CURSORES + puntoycoma
@@ -542,10 +544,12 @@ namespace Server.Analizador
                                 | call + id + aparentesis + cparentesis;
 
 
-            FUNCIONESMETODOS.Rule = id + aparentesis + E + cparentesis //llamadas funciones SOLO PUEDE SER ID EN TIPOS
-                                  | id + aparentesis + cparentesis                                  
-                                  | TIPOS + id + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
+            FUNCIONESMETODOS.Rule = TIPOS + id + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
                                   | TIPOS + id + aparentesis + cparentesis + STATEMENTBLOCK;
+
+
+            LLAMADASFUNCIONES.Rule = id + aparentesis + E + cparentesis //llamadas funciones SOLO PUEDE SER ID EN TIPOS
+                                  | id + aparentesis + cparentesis;
 
             PARAMETROS.Rule = PARAMETROS + coma + TIPOS + arroba + id
                            | TIPOS + arroba + id;
