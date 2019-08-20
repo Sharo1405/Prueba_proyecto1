@@ -109,7 +109,7 @@ namespace Server.AST.Expresiones
                             else
                             {//funciones 
                                 Expresion exp = (Expresion)sentencia;
-                                exp.getValue(actual, listas);
+                                //exp.getValue(actual, listas);
                                 if (exp is Retorno)
                                 {
                                     retexiste = true;

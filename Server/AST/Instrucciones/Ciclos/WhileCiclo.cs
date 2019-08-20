@@ -32,30 +32,45 @@ namespace Server.AST.Ciclos
 
         public Object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            Object valor = condicion.getValue(entorno, listas);
-            tipoDato tipo = condicion.getType(entorno, listas);
-            if (tipoDato.booleano == tipo)
+            try
             {
-                while ((Boolean) condicion.getValue(entorno, listas))
+                Object valor = condicion.getValue(entorno, listas);
+                tipoDato tipo = condicion.getType(entorno, listas);
+                if (tipoDato.booleano == tipo)
                 {
-                    Object retorno = sentencias.ejecutar(entorno, listas);
+                    while ((Boolean)condicion.getValue(entorno, listas))
+                    {
+                        Object retorno = sentencias.ejecutar(entorno, listas);
 
-                    if (retorno is Breakk) {
-                        break;
-                    } else if (retorno is Continuee){
-                        continue;
-                    } else if (retorno is Retorno) {
-                        return retorno;
+                        if (retorno is Breakk)
+                        {
+                            break;
+                        }
+                        else if (retorno is Continuee)
+                        {
+                            continue;
+                        }
+                        else if (retorno is Retorno)
+                        {
+                            return retorno;
+                        }
                     }
                 }
+                else
+                {
+                    listas.errores.AddLast(new NodoError(this.linea, this.columna,
+                        NodoError.tipoError.Semantico, "Condicion no valida para el While"));
+                    return tipoDato.errorSemantico;
+                }
+                return valor;
             }
-            else
+            catch (Exception e)
             {
-                listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                    NodoError.tipoError.Semantico, "No se puede imprimir ese Argumento"));
-                return tipoDato.errorSemantico;
+
             }
-            return valor;
+            listas.errores.AddLast(new NodoError(this.linea, this.columna,
+                        NodoError.tipoError.Semantico, "Condicion no valida para el while"));
+            return tipoDato.errorSemantico;
         }
     }
 }

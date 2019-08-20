@@ -61,8 +61,11 @@
     <Compile Include="AST\Expresiones\Logicas\Nott.cs" />
     <Compile Include="AST\Expresiones\Logicas\Or.cs" />
     <Compile Include="AST\Expresiones\LlamadaFuncion.cs" />
+    <Compile Include="AST\Expresiones\Puntos.cs" />
     <Compile Include="AST\Instrucciones\Asignacion.cs" />
     <Compile Include="AST\Instrucciones\Breakk.cs" />
+    <Compile Include="AST\Instrucciones\Ciclos\DoWhile.cs" />
+    <Compile Include="AST\Instrucciones\Ciclos\Forr.cs" />
     <Compile Include="AST\Instrucciones\Ciclos\Iff.cs" />
     <Compile Include="AST\Instrucciones\Ciclos\IfLista.cs" />
     <Compile Include="AST\Instrucciones\Continuee.cs" />

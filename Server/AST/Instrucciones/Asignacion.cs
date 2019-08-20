@@ -28,40 +28,49 @@ namespace Server.AST.Instrucciones
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            Simbolo variable = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
-            if (variable != null)
+            try
             {
-                tipoDato tipoValor = valor.getType(entorno, listas);
-                object value = valor.getValue(entorno, listas);
-                if (variable.tipo == tipoValor)
+                Simbolo variable = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
+                if (variable != null)
                 {
-                    variable.valor = value;
-                }
-                else
-                {
-                    if (variable.tipo == tipoDato.entero && tipoValor == tipoDato.decimall)
+                    tipoDato tipoValor = valor.getType(entorno, listas);
+                    object value = valor.getValue(entorno, listas);
+                    if (variable.tipo == tipoValor)
                     {
-                        //se redondea el valor
-                        double nuevo = Math.Floor(Double.Parse(Convert.ToString(value)));
-                        Int32 ainsertar = Int32.Parse(Convert.ToString(nuevo));                        
-                        variable.valor = ainsertar;
-                    }
-                    else if (variable.tipo == tipoDato.decimall && tipoValor == tipoDato.entero)
-                    {                        
-                        variable.valor = Double.Parse(Convert.ToString(value));
+                        variable.valor = value;
                     }
                     else
                     {
-                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico, 
-                            "Los tipos no coinciden para la variable. Tipos en cuestion: " + Convert.ToString(variable.tipo) + Convert.ToString(tipoValor)));
+                        if (variable.tipo == tipoDato.entero && tipoValor == tipoDato.decimall)
+                        {
+                            //se redondea el valor
+                            double nuevo = Math.Floor(Double.Parse(Convert.ToString(value)));
+                            Int32 ainsertar = Int32.Parse(Convert.ToString(nuevo));
+                            variable.valor = ainsertar;
+                        }
+                        else if (variable.tipo == tipoDato.decimall && tipoValor == tipoDato.entero)
+                        {
+                            variable.valor = Double.Parse(Convert.ToString(value));
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                "Los tipos no coinciden para la variable. Tipos en cuestion: " + Convert.ToString(variable.tipo) + Convert.ToString(tipoValor)));
+                        }
                     }
                 }
+                else
+                {
+                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "La variable no existe para asignar valor: " + id));
+                    return tipoDato.errorSemantico;
+                }
             }
-            else
+            catch (Exception e)
             {
-                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "La variable no existe para asignar valor: " + id));
-                return tipoDato.errorSemantico;
+
             }
+            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, 
+                "La asignacion no es valida: " + id));
             return tipoDato.errorSemantico;
         }
     }

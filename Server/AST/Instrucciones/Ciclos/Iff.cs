@@ -28,73 +28,90 @@ namespace Server.AST.Instrucciones.Ciclos
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            entro = false;
-            foreach (IfLista ifLista in ejecutarIFS)
+            try
             {
-                tipoDato tipo = ifLista.condicion.getType(entorno, listas);
-                if (tipo == tipoDato.booleano)
+                entro = false;
+                foreach (IfLista ifLista in ejecutarIFS)
                 {
-                    Boolean prueba = (Boolean)ifLista.condicion.getValue(entorno, listas);
-                    if (prueba)
+                    tipoDato tipo = ifLista.condicion.getType(entorno, listas);
+                    if (tipo == tipoDato.booleano)
                     {
-                        entro = true;
-                        foreach (NodoAST nodo in ((LinkedList<NodoAST>)ifLista.listaParaEjecutar.listaIns))
+                        Boolean prueba = (Boolean)ifLista.condicion.getValue(entorno, listas);
+                        if (prueba)
                         {
-                            if (nodo is Instruccion)
+                            entro = true;
+                            foreach (NodoAST nodo in ((LinkedList<NodoAST>)ifLista.listaParaEjecutar.listaIns))
                             {
-                                Instruccion ins = (Instruccion)nodo;
-                                if (ins is Breakk)
+                                if (nodo is Instruccion)
                                 {
-                                    return ins;
-                                }
-                                else if (ins is Continuee)
-                                {
-                                    return ins;
+                                    Instruccion ins = (Instruccion)nodo;
+                                    if (ins is Breakk)
+                                    {
+                                        return ins;
+                                    }
+                                    else if (ins is Continuee)
+                                    {
+                                        return ins;
+                                    }
+                                    else if (ins is Retorno)
+                                    {
+                                        return ins;
+                                    }
+                                    else
+                                    {
+                                        ins.ejecutar(entorno, listas);
+                                    }
                                 }
                                 else
-                                {
-                                    ins.ejecutar(entorno, listas);
+                                {//funciones 
+                                    Expresion exp = (Expresion)nodo;
+                                    if (exp is Retorno)
+                                    {
+                                        return exp;//.getValue(entorno, listas);
+                                    }
+                                    else
+                                    {
+                                        exp.getValue(entorno, listas);
+                                    }
                                 }
                             }
-                            else
-                            {//funciones 
-                                Expresion exp = (Expresion)nodo;
-                                if (exp is Retorno)
-                                {
-                                    return exp;//.getValue(entorno, listas);
-                                }
-                                else
-                                {
-                                    exp.getValue(entorno, listas);
-                                }
-                            }
+                            break;
                         }
-                        break;
+
                     }
-                                   
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(linea, col, NodoError.tipoError.Semantico,
+                        "Condicion de if no es tipo Boolean, NO ES VALIDA"));
+                    }
+                    //break;
                 }
-                else
-                {
-                    listas.errores.AddLast(new NodoError(linea, col, NodoError.tipoError.Semantico,
-                    "Condicion de if no es tipo Boolean, NO ES VALIDA"));
-                }
-                //break;
-            }
 
-            if (entro == false && ejecutarELSE != null) {
+                if (entro == false && ejecutarELSE != null)
+                {
 
-                Object reto = ejecutarELSE.ejecutar(entorno, listas);
-                
-                if (reto is Breakk)
-                {
-                    return reto;
+                    Object reto = ejecutarELSE.ejecutar(entorno, listas);
+
+                    if (reto is Breakk)
+                    {
+                        return reto;
+                    }
+                    else if (reto is Continuee)
+                    {
+                        return reto;
+                    }
+                    else if (reto is Retorno)
+                    {
+                        return reto;
+                    }
                 }
-                else if (reto is Continuee)
-                {
-                    return reto;
-                }                                  
+                return tipoDato.ok;
             }
-            return tipoDato.ok;
+            catch (Exception e)
+            {
+
+            }
+            return tipoDato.errorSemantico;
         }
     }
 }

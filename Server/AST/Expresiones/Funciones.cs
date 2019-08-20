@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
 using Server.AST.Otras;
+using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Expresiones
 {
@@ -53,7 +54,7 @@ namespace Server.AST.Expresiones
                     "Funcion ya esta declara. El nombre es: " + idFuncion ));
             }
 
-                return "ok";
+                return tipoDato.ok;
         }
 
 

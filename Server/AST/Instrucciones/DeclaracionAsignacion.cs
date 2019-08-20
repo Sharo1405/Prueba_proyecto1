@@ -28,47 +28,58 @@ namespace Server.AST.Instrucciones
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            foreach (String id in ids)
-            {
-                Simbolo buscado = entorno.getEnActual(id.ToLower(), Simbolo.Rol.VARIABLE);
-                if (buscado == null)
+            try {
+                foreach (String id in ids)
                 {
-                    tipoDato tipoValor = valor.getType(entorno, listas);
-                    object value = valor.getValue(entorno, listas);
-                    if (tipo.tipo == tipoValor)
+                    Simbolo buscado = entorno.getEnActual(id.ToLower(), Simbolo.Rol.VARIABLE);
+                    if (buscado == null)
                     {
-                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), value, tipo.linea, tipo.columna,
-                            tipo.tipo, Simbolo.Rol.VARIABLE));
-                    }
-                    else
-                    {
-                        if (tipo.tipo == tipoDato.entero && tipoValor == tipoDato.decimall)
+                        tipoDato tipoValor = valor.getType(entorno, listas);
+                        object value = valor.getValue(entorno, listas);
+                        if (tipo.tipo == tipoValor)
                         {
-                            //se redondea el valor
-                            double nuevo = Math.Floor(Double.Parse(Convert.ToString(value)));
-                            Int32 ainsertar = Int32.Parse(Convert.ToString(nuevo));
-                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), ainsertar, tipo.linea, tipo.columna,
-                            tipo.tipo, Simbolo.Rol.VARIABLE));
-                        }
-                        else if(tipo.tipo == tipoDato.decimall && tipoValor == tipoDato.entero)
-                        {
-                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), Double.Parse(Convert.ToString(value)), tipo.linea, tipo.columna,
-                            tipo.tipo, Simbolo.Rol.VARIABLE));
+                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), value, tipo.linea, tipo.columna,
+                                tipo.tipo, Simbolo.Rol.VARIABLE));
                         }
                         else
                         {
-                            listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
-                                "Los tipos no coinciden para la variable. Tipos en cuestion: " + Convert.ToString(tipo.tipo) + Convert.ToString(tipoValor)));
+                            if (tipo.tipo == tipoDato.entero && tipoValor == tipoDato.decimall)
+                            {
+                                //se redondea el valor
+                                double nuevo = Math.Floor(Double.Parse(Convert.ToString(value)));
+                                Int32 ainsertar = Int32.Parse(Convert.ToString(nuevo));
+                                entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), ainsertar, tipo.linea, tipo.columna,
+                                tipo.tipo, Simbolo.Rol.VARIABLE));
+                            }
+                            else if (tipo.tipo == tipoDato.decimall && tipoValor == tipoDato.entero)
+                            {
+                                entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), Double.Parse(Convert.ToString(value)), tipo.linea, tipo.columna,
+                                tipo.tipo, Simbolo.Rol.VARIABLE));
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
+                                    "Los tipos no coinciden para la variable. Tipos en cuestion: " + Convert.ToString(tipo.tipo) + 
+                                    Convert.ToString(tipoValor)));
+                                return tipoDato.errorSemantico;
+                            }
                         }
+
                     }
-                    
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
+                            "Variable ya declara en el entorno actual. El nombre es: " + id));
+                        return tipoDato.errorSemantico;
+                    }
                 }
-                else
-                {
-                    listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico, "Variable ya declara en el entorno actual. El nombre es: " + id));
-                }
+                return tipoDato.ok;
+            } catch (Exception e) {
+
             }
-            return tipoDato.ok;
+            listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico, 
+                "Asignacion no valida"));
+            return tipoDato.errorSemantico;
         }
     }
 }

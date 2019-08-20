@@ -21,11 +21,12 @@ namespace Server.AST.Expresiones
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
             tipoDato nuevo = tipoResultante((tipoDato)expresion1.getType(entorno, listas), (tipoDato)expresion2.getType(entorno, listas), entorno, listas);
-            if (nuevo == tipoDato.entero)
+            /*if (nuevo == tipoDato.entero)
             {
                 return Convert.ToInt32(expresion1.getValue(entorno, listas)) % Convert.ToInt32(expresion2.getValue(entorno, listas));
             }
-            else if (nuevo == tipoDato.decimall)
+            else*/
+            if (nuevo == tipoDato.decimall || nuevo == tipoDato.entero)
             {
                 return Convert.ToDouble(expresion1.getValue(entorno, listas)) % Convert.ToDouble(expresion2.getValue(entorno, listas));
             }

@@ -23,40 +23,48 @@ namespace Server.AST.Instrucciones
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
-            foreach (NodoAST sentencia in listaIns)
+            try
             {
-               
-                if (sentencia is Instruccion)
+                foreach (NodoAST sentencia in listaIns)
                 {
-                    Instruccion ins = (Instruccion)sentencia;                   
-                    if (ins is Breakk)
+
+                    if (sentencia is Instruccion)
                     {
-                        return ins;
-                    }
-                    else if (ins is Continuee)
-                    {
-                        return ins;
-                    }
-                    else
-                    {
-                        ins.ejecutar(entorno, listas);
-                    }
-                }
-                else
-                {//funciones 
-                    Expresion exp = (Expresion)sentencia;                   
-                    if (exp is Retorno)
-                    {
-                        //return exp.getValue(entorno, listas);
-                        return exp;
+                        Instruccion ins = (Instruccion)sentencia;
+                        if (ins is Breakk)
+                        {
+                            return ins;
+                        }
+                        else if (ins is Continuee)
+                        {
+                            return ins;
+                        }
+                        else
+                        {
+                            ins.ejecutar(entorno, listas);
+                        }
                     }
                     else
-                    {
-                        exp.getValue(entorno, listas);
-                    }                    
+                    {//funciones 
+                        Expresion exp = (Expresion)sentencia;
+                        if (exp is Retorno)
+                        {
+                            //return exp.getValue(entorno, listas);
+                            return exp;
+                        }
+                        else
+                        {
+                            exp.getValue(entorno, listas);
+                        }
+                    }
                 }
+                return Operacion.tipoDato.ok;
             }
-            return Operacion.tipoDato.ok;
+            catch (Exception e)
+            {
+
+            }            
+            return Operacion.tipoDato.errorSemantico;
         }
     }
 }

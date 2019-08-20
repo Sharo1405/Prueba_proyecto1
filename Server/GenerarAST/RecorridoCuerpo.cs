@@ -144,13 +144,16 @@ namespace Server.GenerarAST
                         return whilee(nodo.ChildNodes.ElementAt(0));
 
                     case "DOWHILE":
-                        break;
+                        return new DoWhile(bloque(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)),
+                            expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(4)),
+                            nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "AUMENTOSSOLOS":
-                        break;
+                        return AumentosSolos(nodo.ChildNodes.ElementAt(0));
 
                     case "FORR":
-                        break;
+                        return forstatement(nodo.ChildNodes.ElementAt(0));
 
                     case "MAPCOLLECTIONS":
                         break;
@@ -191,6 +194,83 @@ namespace Server.GenerarAST
                     case "TRYCATCHH":
                         break;
                 }
+            return null;
+        }
+
+        public Expresion AumentosSolos(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 4)
+            {
+                ///-----------------------------------------------------------------------------FALTA
+            }
+            else if (nodo.ChildNodes.Count == 3)
+            {
+                String s = nodo.ChildNodes.ElementAt(1).Token.Text;
+                switch (s)
+                {
+                    case "+=":
+                        return new MasIgual(nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column,
+                            expresiones(nodo.ChildNodes.ElementAt(2)), 
+                            variable(nodo.ChildNodes.ElementAt(0)));
+
+                    case "-=":
+                        return new MenosIgual(nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column,
+                            expresiones(nodo.ChildNodes.ElementAt(2)),
+                            variable(nodo.ChildNodes.ElementAt(0)));
+
+                    case "LISTAID":
+                        break;
+                }
+            }
+            else if (nodo.ChildNodes.Count == 2)
+            {
+                String s = nodo.ChildNodes.ElementAt(1).Token.Text;
+                switch (s)
+                {
+                    case "++":
+                        return new Incremento(variable(nodo.ChildNodes.ElementAt(0)),
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+
+                    case "--":
+                        return new Decremento(variable(nodo.ChildNodes.ElementAt(0)),
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+                }
+            }
+            return null;
+        }
+
+
+        public NodoAST forstatement(ParseTreeNode nodo)
+        {
+            return new Forr(Inicializacion(nodo.ChildNodes.ElementAt(2)),
+                expresiones(nodo.ChildNodes.ElementAt(4)),
+                Actualizacion(nodo.ChildNodes.ElementAt(6)),
+                bloque(nodo.ChildNodes.ElementAt(8)),
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
+
+        public NodoAST Inicializacion(ParseTreeNode nodo)
+        {
+            return Sentencia(nodo);
+        }
+
+
+        public Expresion Actualizacion(ParseTreeNode nodo)
+        {
+            switch (nodo.ChildNodes.ElementAt(0).ToString())
+            {
+                case "AUMENTOSSOLOS":
+                    return AumentosSolos(nodo.ChildNodes.ElementAt(0));
+
+                case "E":
+                    break;
+            }
+
             return null;
         }
 
@@ -617,12 +697,14 @@ namespace Server.GenerarAST
 
                         //-----------------------------------------------------------------------------------------------------------
                         case "--":
-                            return new Decremento(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column, 
-                                expresiones(nodo.ChildNodes.ElementAt(0)));
+                            return new Decremento(expresiones(nodo.ChildNodes.ElementAt(0)),
+                                nodo.ChildNodes[1].Token.Location.Line, 
+                                nodo.ChildNodes[1].Token.Location.Column);
 
                         case "++":
-                            return new Incremento(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column, 
-                                expresiones(nodo.ChildNodes.ElementAt(0)));
+                            return new Incremento(expresiones(nodo.ChildNodes.ElementAt(0)),
+                                nodo.ChildNodes[1].Token.Location.Line,
+                                nodo.ChildNodes[1].Token.Location.Column);
                         //-----------------------------------------------------------------------------------------------------------
 
                     }
