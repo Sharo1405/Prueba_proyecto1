@@ -15,9 +15,7 @@ namespace Server.AST.Instrucciones
 
         public StatementBlock(LinkedList<NodoAST> lista)
         {
-
             this.listaIns = lista;
-
         }
 
 
@@ -39,6 +37,9 @@ namespace Server.AST.Instrucciones
                         {
                             return ins;
                         }
+                        /*else if(ins is ){  //es para evitar que vengan user types, funciones 
+
+                        }*/
                         else
                         {
                             ins.ejecutar(entorno, listas);

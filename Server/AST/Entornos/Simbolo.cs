@@ -14,7 +14,9 @@ namespace Server.AST.Entornos
         public Object valor { get; set; }
         public int fila { get; set; }
         public int columna { get; set; }
-        public tipoDato tipo { get; set; }  
+        public tipoDato tipo { get; set; } 
+        public tipoDato tipoClave { get; set; }
+        public tipoDato tipoValor { get; set; }
         public Rol rol { get; set; }
         public LinkedList<Parametros> parametros = new LinkedList<Parametros>();
 
@@ -28,6 +30,30 @@ namespace Server.AST.Entornos
 
         public Simbolo() { }
 
+        public Simbolo(String id, Object valor, int fila, int columna,
+            tipoDato tipo, tipoDato tipoValor, Rol rol)
+        {
+            this.id = id;
+            this.valor = valor;
+            this.fila = fila;
+            this.columna = columna;
+            this.tipo = tipo;
+            this.tipoValor = tipoValor;
+            this.rol = rol;
+        }
+
+        public Simbolo(String id, Object valor, int fila, int columna,
+            tipoDato tipo, tipoDato tipoClave, tipoDato tipoValor, Rol rol)
+        {
+            this.id = id;
+            this.valor = valor;
+            this.fila = fila;
+            this.columna = columna;
+            this.tipo = tipo;
+            this.tipoClave = tipoClave;
+            this.tipoValor = tipoValor;
+            this.rol = rol;
+        }
 
         public Simbolo(String id, Object valor, int fila, int columna, tipoDato tipo, Rol rol)
         {

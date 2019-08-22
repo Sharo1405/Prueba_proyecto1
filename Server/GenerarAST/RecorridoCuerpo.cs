@@ -72,7 +72,7 @@ namespace Server.GenerarAST
                         return accesoAsignacion(nodo.ChildNodes.ElementAt(0));
 
                     case "CREATETYPE":
-                        break;
+                        return CrearType(nodo.ChildNodes.ElementAt(0));
 
                     case "DECLARATODO":
                         return new Declarcion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)) , 
@@ -138,7 +138,7 @@ namespace Server.GenerarAST
                         return ifStatement(nodo.ChildNodes.ElementAt(0));
 
                     case "SWITCHSTATEMENT":
-                        break;
+                        return SwitchSatement(nodo.ChildNodes.ElementAt(0));
 
                     case "WHILEE":
                         return whilee(nodo.ChildNodes.ElementAt(0));
@@ -156,13 +156,13 @@ namespace Server.GenerarAST
                         return forstatement(nodo.ChildNodes.ElementAt(0));
 
                     case "MAPCOLLECTIONS":
-                        break;
+                        return MapCollectios(nodo.ChildNodes.ElementAt(0));
 
                     case "LISTCOLLECTIONS":
-                        break;
+                        return ListCollectios(nodo.ChildNodes.ElementAt(0));
 
                     case "SETCOLLECTIONS":
-                        break;
+                        return SetCollections(nodo.ChildNodes.ElementAt(0));
 
                     case "FUNCIONESMETODOS":
                         return FuncionesMetodos(nodo.ChildNodes.ElementAt(0));
@@ -194,6 +194,225 @@ namespace Server.GenerarAST
                     case "TRYCATCHH":
                         break;
                 }
+            return null;
+        }
+
+
+        public NodoAST CrearType(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 9)
+            {
+                return new CreateType(nodo.ChildNodes.ElementAt(5).Token.Text.ToLower(),
+                    itemTypes(nodo.ChildNodes.ElementAt(7)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column,
+                    true);
+            }
+            else
+            {
+                return new CreateType(nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                    itemTypes(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }
+        }
+
+        public LinkedList<itemType> itemTypes(ParseTreeNode nodo)
+        {
+            LinkedList<itemType> lista = new LinkedList<itemType>();
+            foreach (ParseTreeNode ite in nodo.ChildNodes)
+            {
+                itemType i = item(ite);
+                lista.AddLast(i);
+            }
+            return lista;
+        }
+
+        public itemType item(ParseTreeNode nodo)
+        {
+            String i = nodo.ChildNodes.ElementAt(0).ToString();
+            if (i == "TIPOS")
+            {
+                return new itemType(Tipos(nodo.ChildNodes.ElementAt(0)).tipo,
+                    nodo.ChildNodes.ElementAt(1).Token.Text);
+            }
+            else
+            {
+                return new itemType(nodo.ChildNodes.ElementAt(0).Token.Text,
+                    Tipos(nodo.ChildNodes.ElementAt(1)).tipo);
+            }
+        }
+
+        public NodoAST SwitchSatement(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 8)
+            {
+                return new SwitchBlock(expresiones(nodo.ChildNodes.ElementAt(2)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column,
+                    sbsgroups(nodo.ChildNodes.ElementAt(5)),
+                    lslabel(nodo.ChildNodes.ElementAt(6)));
+            }
+            else if (nodo.ChildNodes.Count == 7)
+            {
+                string s = nodo.ChildNodes.ElementAt(5).ToString();
+                switch (s)
+                {
+                    case "SWITCHBLOCKSTATEMENTGROUPS":
+                            return new SwitchBlock(expresiones(nodo.ChildNodes.ElementAt(2)),
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column,
+                        sbsgroups(nodo.ChildNodes.ElementAt(5)),
+                        new LinkedList<NodoAST>());
+                
+
+                    case "SWITCHLABELS":
+                            return new SwitchBlock(expresiones(nodo.ChildNodes.ElementAt(2)),
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column,
+                        new LinkedList<NodoAST>(),
+                        lslabel(nodo.ChildNodes.ElementAt(5)));
+                    }
+            }
+            else if(nodo.ChildNodes.Count == 6)
+            {
+                return new SwitchBlock(expresiones(nodo.ChildNodes.ElementAt(2)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column, 
+                    new LinkedList<NodoAST>(), new LinkedList<NodoAST>());
+            }
+            return null;
+        }
+
+        public LinkedList<NodoAST> sbsgroups(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 2)
+            {
+                LinkedList<NodoAST> nodoAST = sbsgroups(nodo.ChildNodes.ElementAt(0));
+                nodoAST.AddLast(lodelGroup(nodo.ChildNodes.ElementAt(1)));
+                return nodoAST;
+            }
+            else
+            {
+                LinkedList<NodoAST> nodoAST = new LinkedList<NodoAST>();
+                nodoAST.AddLast(lodelGroup(nodo.ChildNodes.ElementAt(0)));
+                return nodoAST;
+            }
+        }
+
+        public NodoAST lodelGroup(ParseTreeNode nodo)
+        {
+            LinkedList<NodoAST> nodoAST = new LinkedList<NodoAST>();
+            nodoAST = Inicio(nodo.ChildNodes.ElementAt(1));
+            if (nodoAST == null)
+            {
+                return new SwitchBlockStatement_Group(lslabel(nodo.ChildNodes.ElementAt(0)), new StatementBlock(new LinkedList<NodoAST>()));
+            }
+            else
+            {
+                return new SwitchBlockStatement_Group(lslabel(nodo.ChildNodes.ElementAt(0)),
+                new StatementBlock(nodoAST));
+            }
+            
+        }
+
+        public LinkedList<NodoAST> lslabel(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 2)
+            {
+                LinkedList<NodoAST> nodoAST = lslabel(nodo.ChildNodes.ElementAt(0));
+                nodoAST.AddLast(label(nodo.ChildNodes.ElementAt(1)));
+                return nodoAST;
+            }
+            else
+            {
+                LinkedList<NodoAST> nodoAST = new LinkedList<NodoAST>();
+                nodoAST.AddLast(label(nodo.ChildNodes.ElementAt(0)));
+                return nodoAST;
+            }
+        }
+
+
+        public NodoAST label(ParseTreeNode nodo)
+        {
+            String s = nodo.ChildNodes.ElementAt(0).Token.Text;
+            switch (s)
+            {
+                case "case":
+                    return new Casee(expresiones(nodo.ChildNodes.ElementAt(1)),
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                case "default":
+                    return new Defaultt(nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+            }
+            return null;
+        }
+
+
+
+
+
+
+        public NodoAST SetCollections(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 8)
+            {
+                return new DeclaracionSetNew(ListaVariables(nodo.ChildNodes.ElementAt(1)),
+                    Tipos(nodo.ChildNodes.ElementAt(6)).tipo,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else
+            {
+                return new DeclaracionSetValores(ListaVariables(nodo.ChildNodes.ElementAt(1)),
+                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            return null;
+        }
+
+        public NodoAST ListCollectios(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 8)
+            {
+                return new DeclaraListNew(ListaVariables(nodo.ChildNodes.ElementAt(1)),
+                    Tipos(nodo.ChildNodes.ElementAt(6)).tipo,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else
+            {
+                return new DeclaraListValores(ListaVariables(nodo.ChildNodes.ElementAt(1)),
+                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            return null;
+        }
+
+
+        public NodoAST MapCollectios(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 10)
+            {
+                return new DeclaracionMapNew(ListaVariables(nodo.ChildNodes.ElementAt(1)),
+                        Primitivos(nodo.ChildNodes.ElementAt(6)).tipo,
+                        Tipos(nodo.ChildNodes.ElementAt(8)).tipo,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+            }
+            else
+            {
+                return new DeclaracionMapValores(ListaVariables(nodo.ChildNodes.ElementAt(1)),
+                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
             return null;
         }
 
@@ -463,24 +682,29 @@ namespace Server.GenerarAST
                         return Primitivos(nodo.ChildNodes.ElementAt(0));
 
                     case "counter":
-                        return new Tipo(tipoDato.counter, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                        return new Tipo(tipoDato.counter, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "map":
-                        return new Tipo(tipoDato.map, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                        return new Tipo(tipoDato.map, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "set":
-                        return new Tipo(tipoDato.set, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                        return new Tipo(tipoDato.set, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "list":
-                        return new Tipo(tipoDato.list, nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                        return new Tipo(tipoDato.list, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "id":
                         return new Tipo(nodo.ChildNodes.ElementAt(0).Token.ToString().ToLower(), tipoDato.id, 
-                            nodo.ChildNodes.ElementAt(0).Token.Location.Line, nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                 }
             }
@@ -489,12 +713,23 @@ namespace Server.GenerarAST
                 switch (nodo.ChildNodes.ElementAt(0).Token.Text)
                 {
                     case "map":
+                        return new Tipo(tipoDato.map,
+                            ListaTipos(nodo.ChildNodes.ElementAt(2)),
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "set":
-                        break;
+                        return new Tipo(tipoDato.set,
+                            Tipos(nodo.ChildNodes.ElementAt(2)).tipo,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "list":
-                        break;                       
+                        return new Tipo(tipoDato.list,
+                            Tipos(nodo.ChildNodes.ElementAt(2)).tipo,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
                 }
             }
             return new Tipo(tipoDato.errorSemantico, -1, -1);
@@ -503,6 +738,7 @@ namespace Server.GenerarAST
 
         public LinkedList<Tipo> ListaTipos(ParseTreeNode nodo)
         {
+            String s = nodo.ChildNodes.ElementAt(0).ToString();
             return new LinkedList<Tipo>();
         }
 
@@ -666,6 +902,14 @@ namespace Server.GenerarAST
                         return new ListaExpresiones(expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)),
                             nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column);
 
+                    //E dospuntos E
+                    case ":":
+                        ClaveValor claVa = new ClaveValor(expresiones(nodo.ChildNodes.ElementAt(0)), 
+                            expresiones(nodo.ChildNodes.ElementAt(2)));
+                        return new DosPuntos(claVa,
+                            nodo.ChildNodes[1].Token.Location.Line, 
+                            nodo.ChildNodes[1].Token.Location.Column);
+
                 }
 
             }
@@ -687,6 +931,11 @@ namespace Server.GenerarAST
                         case "@":
                             return new ArrobaId("@" + nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(), nodo.ChildNodes[0].Token.Location.Line,
                                 nodo.ChildNodes[0].Token.Location.Column);
+
+                        case "new":
+                            return new Neww(Tipos(nodo.ChildNodes.ElementAt(1)),
+                                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
                     }
                 }
                 else

@@ -563,14 +563,14 @@ namespace Server.Analizador
                                       | clear + aparentesis + cparentesis
                                       | contains + aparentesis + E + cparentesis;
 
-            MAPCOLLECTIONS.Rule = map + ARROBAID + igual + neww + map + menorq + TIPOSPRIMITIVOS + coma + TIPOS + mayorq
-                                | map + ARROBAID + igual + acorchete + E + ccorchete;
+            MAPCOLLECTIONS.Rule = map + LISTAVARIABLES + igual + neww + map + menorq + TIPOSPRIMITIVOS + coma + TIPOS + mayorq
+                                | map + LISTAVARIABLES + igual + acorchete + E + ccorchete;
 
-            LISTCOLLECTIONS.Rule = list + arroba + id + igual + neww + list + menorq + TIPOS + mayorq
-                                 | list + arroba + id + igual + acorchete + E + ccorchete;
+            LISTCOLLECTIONS.Rule = list + LISTAVARIABLES + igual + neww + list + menorq + TIPOS + mayorq
+                                 | list + LISTAVARIABLES + igual + acorchete + E + ccorchete;
 
-            SETCOLLECTIONS.Rule = set + arroba + id + igual + neww + set + menorq + TIPOS + mayorq
-                                | set + arroba + id + igual + acorchete + E + ccorchete;
+            SETCOLLECTIONS.Rule = set + LISTAVARIABLES + igual + neww + set + menorq + TIPOS + mayorq
+                                | set + LISTAVARIABLES + igual + acorchete + E + ccorchete;
 
             FORR.Rule = forr + aparentesis + INICIALIZACION + puntoycoma + E + puntoycoma + ACTUALIZACION + cparentesis + STATEMENTBLOCK;
 
@@ -594,11 +594,14 @@ namespace Server.Analizador
 
             DOWHILE.Rule = doo + STATEMENTBLOCK + whilee + aparentesis + E + cparentesis;
 
-            SWITCHSTATEMENT.Rule = switchh + aparentesis + E + cparentesis + SWITCHBLOCK;
+            SWITCHSTATEMENT.Rule = switchh + aparentesis + E + cparentesis + allave + SWITCHBLOCKSTATEMENTGROUPS + SWITCHLABELS + cllave
+                                 | switchh + aparentesis + E + cparentesis + allave + SWITCHBLOCKSTATEMENTGROUPS + cllave
+                                 | switchh + aparentesis + E + cparentesis + allave + SWITCHLABELS + cllave
+                                 | switchh + aparentesis + E + cparentesis + allave + cllave;
 
-            SWITCHBLOCK.Rule = allave + SWITCHBLOCKSTATEMENTGROUPS + SWITCHLABELS + cllave
+            /*SWITCHBLOCK.Rule = allave + SWITCHBLOCKSTATEMENTGROUPS + SWITCHLABELS + cllave
                              | allave + SWITCHBLOCKSTATEMENTGROUPS + cllave
-                             | allave + SWITCHLABELS + cllave;
+                             | allave + SWITCHLABELS + cllave;*/
 
             SWITCHBLOCKSTATEMENTGROUPS.Rule = SWITCHBLOCKSTATEMENTGRO
                                             | SWITCHBLOCKSTATEMENTGROUPS + SWITCHBLOCKSTATEMENTGRO;
@@ -755,7 +758,7 @@ namespace Server.Analizador
 
 
 
-            CREATETYPE.Rule = create + type + id + iff + not + exists + id + aparentesis + ITEMCREATETYPE  + cparentesis
+            CREATETYPE.Rule = create + type +  iff + not + exists + id + aparentesis + ITEMCREATETYPE  + cparentesis
                             | create + type + id + aparentesis + ITEMCREATETYPE + cparentesis;
 
             ITEMCREATETYPE.Rule = MakePlusRule(ITEMCREATETYPE , coma , OPCIONESITEMCREATETYPES);
@@ -767,7 +770,7 @@ namespace Server.Analizador
                     | counter
                     | map + menorq + LISTATIPOS + mayorq //para columnas de tablas
                     | map //para tipo normal variable
-                    | set + menorq + LISTATIPOS + mayorq //para columnas de tablas
+                    | set + menorq + TIPOS + mayorq //para columnas de tablas
                     | set
                     | list + menorq + TIPOS + mayorq //para columnas de tablas
                     | list
