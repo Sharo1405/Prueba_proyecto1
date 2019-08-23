@@ -83,10 +83,10 @@ namespace Server.GenerarAST
                         ListaVariables(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)), 
                         expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(3)));
 
-                    case "ALTERTYPE":
+                    case "ALTERTYPE": //no aplica
                         break;
 
-                    case "ELIMINARUSERTYPE":
+                    case "ELIMINARUSERTYPE": //no aplica
                         break;
 
                     case "CREARDATABASE":
@@ -233,13 +233,13 @@ namespace Server.GenerarAST
             String i = nodo.ChildNodes.ElementAt(0).ToString();
             if (i == "TIPOS")
             {
-                return new itemType(Tipos(nodo.ChildNodes.ElementAt(0)).tipo,
+                return new itemType(Tipos(nodo.ChildNodes.ElementAt(0)),
                     nodo.ChildNodes.ElementAt(1).Token.Text);
             }
             else
             {
                 return new itemType(nodo.ChildNodes.ElementAt(0).Token.Text,
-                    Tipos(nodo.ChildNodes.ElementAt(1)).tipo);
+                    Tipos(nodo.ChildNodes.ElementAt(1)));
             }
         }
 
@@ -674,8 +674,7 @@ namespace Server.GenerarAST
         public Tipo Tipos(ParseTreeNode nodo)
         {
             if (nodo.ChildNodes.Count == 1) {
-                String t = nodo.ChildNodes.ElementAt(0).ToString().Replace("Keyboard", "").Trim();
-
+                String t = nodo.ChildNodes.ElementAt(0).Term.Name;//.ToLower() ;//ToString().Replace("Keyboard", "").Trim();
                 switch (t)
                 {
                     case "TIPOSPRIMITIVOS":
@@ -702,7 +701,7 @@ namespace Server.GenerarAST
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "id":
-                        return new Tipo(nodo.ChildNodes.ElementAt(0).Token.ToString().ToLower(), tipoDato.id, 
+                        return new Tipo(nodo.ChildNodes.ElementAt(0).Token.Text.ToString().ToLower(), tipoDato.id, 
                             nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
@@ -710,7 +709,8 @@ namespace Server.GenerarAST
             }
             else
             {
-                switch (nodo.ChildNodes.ElementAt(0).Token.Text)
+                String s = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
+                switch (s)
                 {
                     case "map":
                         return new Tipo(tipoDato.map,
@@ -737,15 +737,20 @@ namespace Server.GenerarAST
 
 
         public LinkedList<Tipo> ListaTipos(ParseTreeNode nodo)
-        {
-            String s = nodo.ChildNodes.ElementAt(0).ToString();
-            return new LinkedList<Tipo>();
+        {           
+            LinkedList<Tipo> listatipos = new LinkedList<Tipo>();
+            foreach (ParseTreeNode ItemTipo in nodo.ChildNodes)
+            {
+                Tipo tipoMap = Tipos(ItemTipo);
+                listatipos.AddLast(tipoMap);
+            }
+            return listatipos;
         }
 
 
         public Tipo Primitivos(ParseTreeNode nodo)
         {
-            String t = nodo.ChildNodes.ElementAt(0).Token.Text;
+            String t = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
             switch (t)
             {
                 case "int":
@@ -909,6 +914,25 @@ namespace Server.GenerarAST
                         return new DosPuntos(claVa,
                             nodo.ChildNodes[1].Token.Location.Line, 
                             nodo.ChildNodes[1].Token.Location.Column);
+
+                    case "E":
+                        String sss = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
+                        switch (sss)
+                        {
+                            case "(":
+                                return expresiones(nodo.ChildNodes.ElementAt(1));
+
+                            case "[":
+                                return new Corchetes(expresiones(nodo.ChildNodes.ElementAt(1)),
+                                    nodo.ChildNodes[0].Token.Location.Line,
+                                    nodo.ChildNodes[0].Token.Location.Column);
+
+                            case "{":
+                                break;
+
+                        }
+                        break;
+                        
 
                 }
 

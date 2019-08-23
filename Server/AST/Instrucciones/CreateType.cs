@@ -8,11 +8,11 @@ using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Instrucciones
 {
-    class CreateType : Instruccion
+    class CreateType : Instruccion, ICloneable
     {
         public String idType { get; set; }
         public Boolean ifnotexists { get; set; }
-        public LinkedList<itemType> itemType = new LinkedList<itemType>();
+        public LinkedList<itemType> itemTypee = new LinkedList<itemType>();
         public int linea { get; set; }
         public int columna { get; set; }
 
@@ -20,7 +20,7 @@ namespace Server.AST.Instrucciones
             int linea, int columna)
         {
             this.idType = idType;
-            this.itemType = itemType;
+            this.itemTypee = itemType;
             this.linea = linea;
             this.columna = columna;
         }
@@ -29,7 +29,7 @@ namespace Server.AST.Instrucciones
             int linea, int columna, Boolean ifnotexists)
         {
             this.idType = idType;
-            this.itemType = itemType;
+            this.itemTypee = itemType;
             this.linea = linea;
             this.columna = columna;
             this.ifnotexists = ifnotexists;
@@ -42,8 +42,42 @@ namespace Server.AST.Instrucciones
                 Simbolo buscado = entorno.getEnActual(idType.ToLower(), Simbolo.Rol.VARIABLE);
                 if (buscado == null)
                 {
-                    entorno.setSimbolo(idType.ToLower(), new Simbolo(idType.ToLower(), this, linea, columna,
-                            tipoDato.set, tipoDato.id, Simbolo.Rol.VARIABLE));
+                    foreach (itemType ty in itemTypee)
+                    {
+                        if (ty.tipo.tipo == tipoDato.id)
+                        {
+                            Simbolo buscado2 = entorno.getEnActual(ty.tipo.id.ToLower(), Simbolo.Rol.VARIABLE);
+                            if (buscado2 != null)
+                            {
+                                CreateType typeComoTipo =(CreateType) buscado2.valor;
+                                ty.valor = typeComoTipo.Clone();
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "El tipo de esa variable del Type User no existe: Tipo:" + ty.tipo.id.ToLower()));
+                                return tipoDato.errorSemantico;
+                            }
+                        }
+                        else if (ty.tipo.tipo == tipoDato.entero)
+                        {                            
+                            ty.valor = 0;
+                        }
+                        else if (ty.tipo.tipo == tipoDato.decimall)
+                        {                            
+                            ty.valor = 0.0;
+                        }
+                        else if (ty.tipo.tipo == tipoDato.booleano)
+                        {
+                            ty.valor = false;
+                        }
+                        else
+                        {
+                            ty.valor = null;
+                        }
+                    }
+
+                    entorno.setSimbolo(idType.ToLower(), new Simbolo(idType.ToLower(), this, linea, columna, tipoDato.id, Simbolo.Rol.VARIABLE));
                 }
                 else
                 {
@@ -58,6 +92,11 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

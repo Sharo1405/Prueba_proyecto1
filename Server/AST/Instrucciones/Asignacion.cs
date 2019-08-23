@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
+using Server.AST.Otras;
 using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Instrucciones
@@ -35,7 +36,96 @@ namespace Server.AST.Instrucciones
                 {
                     tipoDato tipoValor = valor.getType(entorno, listas);
                     object value = valor.getValue(entorno, listas);
-                    if (variable.tipo == tipoValor)
+                    if (valor is Corchetes)
+                    {
+                        if (variable.tipo == tipoDato.list || variable.tipo == tipoDato.set)
+                        {                            
+                            List<Object> lista = (List<Object>)variable.valor;
+                            lista.Clear();
+                            if (tipoValor == variable.tipoValor)
+                            {                                
+                                lista.Add(value);
+                            }
+                            else
+                            {
+                                LinkedList<Comas> listaComas = (LinkedList <Comas>) value;
+                                foreach (Comas cv in listaComas)
+                                {
+                                    Comas cv2 = (Comas)cv;
+                                    Object objeto = cv2.getValue(entorno, listas);
+                                    if (objeto is LinkedList<Comas>)
+                                    {
+                                        LinkedList<Comas> listComas = (LinkedList<Comas>)objeto;
+                                        tipoDato dato = paraComas(listComas, entorno, listas, variable.tipoValor, lista);
+                                        if (dato == tipoDato.errorSemantico)
+                                        {
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                    else
+                                    {                                        
+                                         if (cv2.getType(entorno, listas) == variable.tipoValor)
+                                         {
+                                             lista.Add(objeto);
+                                         }
+                                         else
+                                         {
+                                             listas.errores.AddLast(new NodoError(this.linea, this.columna,
+                                                                NodoError.tipoError.Semantico, "Los valores del List no son del mismo tipo."));
+                                             return tipoDato.errorSemantico;
+                                         }
+                                        
+                                    }
+                                }
+                            }
+                        }
+                        else if (variable.tipo == tipoDato.set)
+                        {
+
+                        }
+                    }
+                    else if (valor is Neww)
+                    {
+                        Neww clase = (Neww)valor;
+                        Tipo tipo = clase.tipoNew;
+                        if (tipo.tipo == tipoDato.map && tipoDato.map == variable.tipo)
+                        {
+                            variable.valor = new HashSet<ClaveValor>();
+                            if (tipo.listaTipos.Count == 2)
+                            {
+                                int contador = 0;
+                                foreach (Tipo tipoclavevalor in tipo.listaTipos)
+                                {
+                                    contador++;
+                                    if (contador == 1)
+                                    {
+                                        variable.tipoClave = tipoclavevalor.tipo;
+                                    }
+                                    else
+                                    {
+                                        variable.tipoValor = tipoclavevalor.tipo;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "La cantidad de tipos no es valida para el map"));
+                            }
+                        }
+                        else if (tipo.tipo == variable.tipo)
+                        {
+                            variable.tipoValor = tipo.tipoValor;
+                            variable.valor = new List<Object>();
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                "Los tipos no coinciden para la variable, No se puede hacer la instancia. Tipos en cuestion: " + 
+                                Convert.ToString(variable.tipo) + Convert.ToString(tipo.tipo)));
+                        }
+                    }
+                    else if (variable.tipo == tipoValor)
                     {
                         variable.valor = value;
                     }
@@ -67,11 +157,61 @@ namespace Server.AST.Instrucciones
             }
             catch (Exception e)
             {
-
-            }
-            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, 
+                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
                 "La asignacion no es valida: " + id));
-            return tipoDato.errorSemantico;
+                return tipoDato.errorSemantico;
+            }
+            return tipoDato.ok;
+        }
+
+
+        public tipoDato paraComas(LinkedList<Comas> listComas, Entorno entorno, ErrorImpresion listas, tipoDato tipoValorLista, List<Object> list)
+        {
+            foreach (Comas cv in listComas)
+            {
+                Comas cv2 = (Comas)cv;
+                Object valor = cv2.getValue(entorno, listas);
+                if (valor is Comas)
+                {
+                    LinkedList<Comas> listaaComas = (LinkedList<Comas>)valor;
+                    paraComas(listaaComas, entorno, listas, tipoValorLista, list);
+                }
+                else
+                {
+                    tipoDato tipoValor = cv2.getType(entorno, listas);
+                    if (tipoValor == tipoDato.booleano ||
+                            tipoValor == tipoDato.cadena ||
+                            tipoValor == tipoDato.date ||
+                            tipoValor == tipoDato.decimall ||
+                            tipoValor == tipoDato.entero ||
+                            tipoValor == tipoDato.id ||
+                            tipoValor == tipoDato.list ||
+                            tipoValor == tipoDato.map ||
+                            tipoValor == tipoDato.set ||
+                            tipoValor == tipoDato.time)
+                    {
+                        
+                            if (tipoValor == tipoValorLista)
+                            {
+                                list.Add(valor);
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(this.linea, this.columna,
+                                                NodoError.tipoError.Semantico, "Los valores del List no son del mismo tipo."));
+                                return tipoDato.errorSemantico;
+                            }
+                       
+                    }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(this.linea, this.columna,
+                                        NodoError.tipoError.Semantico, "Valor del List no es valido"));
+                        return tipoDato.errorSemantico;
+                    }
+                }
+            }
+            return tipoDato.ok;
         }
     }
 }

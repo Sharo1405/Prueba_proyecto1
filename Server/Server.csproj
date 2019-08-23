@@ -55,6 +55,7 @@
     <Compile Include="AST\Expresiones\Aritmeticas\Negatico.cs" />
     <Compile Include="AST\Expresiones\ArrobaId.cs" />
     <Compile Include="AST\Expresiones\Comas.cs" />
+    <Compile Include="AST\Expresiones\Corchetes.cs" />
     <Compile Include="AST\Expresiones\DosPuntos.cs" />
     <Compile Include="AST\Expresiones\Funciones.cs" />
     <Compile Include="AST\Expresiones\ListaErrorPrinter.cs" />

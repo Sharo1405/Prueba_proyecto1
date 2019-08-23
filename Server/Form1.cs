@@ -32,6 +32,11 @@ namespace Server
             {
                 richTextBox2.Text += log + "\n";
             }
+
+            foreach (NodoError log in listas.errores)
+            {
+                richTextBox2.Text += log.descripcion + " " + Convert.ToString(log.fila) + ", " + Convert.ToString(log.columna) + "\n";
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

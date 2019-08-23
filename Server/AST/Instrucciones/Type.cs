@@ -1,5 +1,6 @@
 ﻿using Server.AST.Entornos;
 using Server.AST.Expresiones;
+using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +13,17 @@ namespace Server.AST.Instrucciones
     class itemType: Expresion
     {
         public String id { get; set; }
-        public tipoDato tipo { get; set; }
+        //public tipoDato tipo { get; set; }
+        public Tipo tipo { get; set; }
         public Object valor { get; set; }
 
-        public itemType(String id, tipoDato tipo)
+        public itemType(String id, Tipo tipo)
         {
             this.id = id;
             this.tipo = tipo;
         }
 
-        public itemType(tipoDato tipo, String id)
+        public itemType(Tipo tipo, String id)
         {
             this.tipo = tipo;
             this.id = id;            
@@ -34,7 +36,7 @@ namespace Server.AST.Instrucciones
 
         public tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
-            return tipo;
+            return tipo.tipo;
         }
     }
 }
