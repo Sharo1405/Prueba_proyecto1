@@ -49,8 +49,9 @@ namespace Server.AST.Instrucciones
                             Simbolo buscado2 = entorno.getEnActual(ty.tipo.id.ToLower(), Simbolo.Rol.VARIABLE);
                             if (buscado2 != null)
                             {
-                                CreateType typeComoTipo =(CreateType) buscado2.valor;
-                                ty.valor = typeComoTipo.Clone();
+                                //arreglar solo declarar sin el clonar
+                                //CreateType typeComoTipo =(CreateType) buscado2.valor;
+                                ty.valor = null;//typeComoTipo.Clone();
                             }
                             else
                             {

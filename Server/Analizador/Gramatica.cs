@@ -763,8 +763,8 @@ namespace Server.Analizador
 
             ITEMCREATETYPE.Rule = MakePlusRule(ITEMCREATETYPE , coma , OPCIONESITEMCREATETYPES);
 
-            OPCIONESITEMCREATETYPES.Rule = id + TIPOS
-                                         | TIPOS + id;
+            OPCIONESITEMCREATETYPES.Rule = id + TIPOS;
+                                         //| TIPOS + id;
 
             TIPOS.Rule = TIPOSPRIMITIVOS
                     | counter

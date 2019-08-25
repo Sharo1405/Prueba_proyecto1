@@ -56,6 +56,24 @@ namespace Server.AST.Instrucciones
                                 entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), Double.Parse(Convert.ToString(value)), tipo.linea, tipo.columna,
                                 tipo.tipo, Simbolo.Rol.VARIABLE));
                             }
+                            else if (tipo.tipo == tipoDato.id && valor is Neww)
+                            {
+                                Simbolo sim = entorno.get(tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                                if (sim != null) {
+                                    if (sim.valor is CreateType)
+                                    {
+                                        CreateType s = (CreateType)sim.valor;
+                                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), s.Clone(), tipo.linea, tipo.columna,
+                                            tipo.tipo, Simbolo.Rol.VARIABLE));
+                                    }
+                                }
+                                else
+                                {
+                                    listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
+                                    "El tipo de la variable del User type NO EXISTE. Tipos en cuestion: " + Convert.ToString(tipo.id)));
+                                    return tipoDato.errorSemantico;
+                                }
+                            }
                             else
                             {
                                 listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
@@ -75,11 +93,11 @@ namespace Server.AST.Instrucciones
                 }
                 return tipoDato.ok;
             } catch (Exception e) {
-
-            }
-            listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico, 
+                listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
                 "Asignacion no valida"));
-            return tipoDato.errorSemantico;
+                return tipoDato.errorSemantico;
+            }
+            return tipoDato.id;
         }
     }
 }

@@ -8,7 +8,7 @@ using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Entornos
 {
-    class Simbolo
+    class Simbolo: ICloneable
     {
         public String id { get; set; }
         public Object valor { get; set; }
@@ -74,6 +74,11 @@ namespace Server.AST.Entornos
             this.tipo = tipo;
             this.rol = rol;
             this.parametros = parametros;
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

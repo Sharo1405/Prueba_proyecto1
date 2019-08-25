@@ -41,7 +41,7 @@ namespace Server.AST.Expresiones
             if (encontrado != null)
             {
                 tipoDato ti = encontrado.tipo;
-                return encontrado.valor;
+                return encontrado;
             }
             else
             {

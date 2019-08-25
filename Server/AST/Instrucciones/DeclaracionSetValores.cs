@@ -57,13 +57,53 @@ namespace Server.AST.Instrucciones
                             if (contador == 1)
                             {
                                 tipoValorAnterior = tipoValor;
-                                listaList.Add(objeto);
+                                if (tipoValor == tipoDato.id)
+                                {
+                                    Object sim = cv2.getValue(entorno, listas);
+                                    /*CreateType si = (CreateType)sim;
+                                    listaList.Add(si.Clone());*/
+                                    if (sim is CreateType)
+                                    {
+                                        listaList.Add(null);
+                                    }
+
+                                }
+                                else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
+                                {
+                                    Object sim = cv2.getValue(entorno, listas);
+                                    Simbolo s = (Simbolo)sim;
+                                    listaList.Add(s.Clone());
+                                }
+                                else
+                                {
+                                    listaList.Add(objeto);
+                                }
                             }
                             else
                             {
                                 if (tipoValor == tipoValorAnterior)
                                 {
-                                    listaList.Add(objeto);
+                                    if (tipoValor == tipoDato.id)
+                                    {
+                                        Object sim = cv2.getValue(entorno, listas);
+                                        /*CreateType si = (CreateType)sim;
+                                        listaList.Add(si.Clone());*/
+                                        if (sim is CreateType)
+                                        {
+                                            listaList.Add(null);
+                                        }
+
+                                    }
+                                    else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
+                                    {
+                                        Object sim = cv2.getValue(entorno, listas);
+                                        Simbolo s = (Simbolo)sim;
+                                        listaList.Add(s.Clone());
+                                    }
+                                    else
+                                    {
+                                        listaList.Add(objeto);
+                                    }
                                 }
                                 else
                                 {
@@ -85,6 +125,7 @@ namespace Server.AST.Instrucciones
                 {
                     //Expresion exp = (Expresion)dev;
                     tipoValor = valor.getType(entorno, listas);
+                    
                     if (tipoValor == tipoDato.booleano ||
                         tipoValor == tipoDato.cadena ||
                         tipoValor == tipoDato.date ||
@@ -96,12 +137,33 @@ namespace Server.AST.Instrucciones
                         tipoValor == tipoDato.set ||
                         tipoValor == tipoDato.time)
                     {
-                        listaList.Add(dev);
+                        if (tipoValor == tipoDato.id)
+                        {
+                            Object sim = valor.getValue(entorno,listas);
+                            /*CreateType si = (CreateType)sim;
+                            listaList.Add(si.Clone());*/
+                            if (sim is CreateType)
+                            {
+                                listaList.Add(null);
+                            }
+
+                        }
+                        else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
+                        {
+                            Object sim = valor.getValue(entorno, listas);
+                            Simbolo s = (Simbolo)sim;
+                            listaList.Add(s.Clone());
+                        }
+                        else
+                        {
+                            listaList.Add(dev);
+                        }
+
                         foreach (String id in idSet)
                         {
                             entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), listaList, linea, columna,
-                                        tipoDato.set, tipoValor, Simbolo.Rol.VARIABLE));
-                        }
+                                          tipoDato.set, tipoValor, Simbolo.Rol.VARIABLE));
+                        }                        
                     }
                     else
                     {
@@ -150,13 +212,52 @@ namespace Server.AST.Instrucciones
                         if (contador == 1)
                         {
                             tipoValorAnterior = tipoValor;
-                            listaList.Add(valor);
+                            if (tipoValor == tipoDato.id)
+                            {
+                                Object sim = cv2.getValue(entorno, listas);
+                                /*CreateType si = (CreateType)sim;
+                                listaList.Add(si.Clone());*/
+                                if (sim is CreateType)
+                                {
+                                    listaList.Add(null);
+                                }
+
+                            }
+                            else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
+                            {
+                                Object sim = cv2.getValue(entorno, listas);
+                                Simbolo s = (Simbolo)sim;
+                                listaList.Add(s.Clone());
+                            }
+                            else
+                            {
+                                listaList.Add(valor);
+                            }
                         }
                         else
                         {
                             if (tipoValor == tipoValorAnterior)
                             {
-                                listaList.Add(valor);
+                                if (tipoValor == tipoDato.id)
+                                {
+                                    Object sim = cv2.getValue(entorno, listas);
+                                    /*CreateType si = (CreateType)sim;
+                                    listaList.Add(si.Clone());*/
+                                    if (sim is CreateType)
+                                    {
+                                        listaList.Add(null);
+                                    }
+                                }
+                                else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
+                                {
+                                    Object sim = cv2.getValue(entorno, listas);
+                                    Simbolo s = (Simbolo)sim;
+                                    listaList.Add(s.Clone());
+                                }
+                                else
+                                {
+                                    listaList.Add(valor);
+                                }
                             }
                             else
                             {

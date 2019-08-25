@@ -40,7 +40,7 @@ namespace Server.GenerarAST
                 RecorridoCuerpo recorrido = new RecorridoCuerpo();
                 LinkedList<NodoAST> ASTClases = recorrido.Inicio(raiz);
 
-                Entorno entorno = new Entorno();
+                Entorno global = new Entorno();
                 ErrorImpresion listas = new ErrorImpresion();
 
                 foreach (var item in ASTClases)
@@ -48,12 +48,49 @@ namespace Server.GenerarAST
                     if (item is Instruccion)
                     {
                         Instruccion ins = (Instruccion)item;
-                        ins.ejecutar(entorno, listas);
+                        if (ins is CreateType) {
+                            ins.ejecutar(global, listas);
+                        }else if (ins is DeclaracionAsignacion || ins is Declarcion ||
+                                 ins is DeclaraListNew || ins is DeclaraListValores ||
+                                 ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
+                                 ins is DeclaracionMapNew || ins is DeclaracionMapValores)
+                        {
+                            ins.ejecutar(global, listas);
+                        }
                     }
                     else
                     {//funciones 
                         Expresion exp = (Expresion)item;
-                        exp.getValue(entorno, listas);
+                        if (exp is Funciones) {
+                            exp.getValue(global, listas);
+                        }
+                        //aqui faltan los procedimientos
+                    }
+                }
+
+
+
+                Entorno next = new Entorno(global);
+
+                foreach (var item in ASTClases)
+                {
+                    if (item is Instruccion)
+                    {
+                        Instruccion ins = (Instruccion)item;
+                        if (!(ins is CreateType) && !(ins is DeclaracionAsignacion || ins is Declarcion ||
+                                 ins is DeclaraListNew || ins is DeclaraListValores ||
+                                 ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
+                                 ins is DeclaracionMapNew || ins is DeclaracionMapValores)) {
+                            ins.ejecutar(next, listas);
+                        }
+                    }
+                    else
+                    {//funciones 
+                        Expresion exp = (Expresion)item;
+                        if (!(exp is Funciones))
+                        {
+                            exp.getValue(next, listas);
+                        }
                     }
                 }
                 //paraaaaaaaaaaaaaaaaaaaaaaa
@@ -62,5 +99,8 @@ namespace Server.GenerarAST
             }
             return null;
         }
+
+
+        
     }
 }

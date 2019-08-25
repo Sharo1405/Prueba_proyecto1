@@ -231,16 +231,16 @@ namespace Server.GenerarAST
         public itemType item(ParseTreeNode nodo)
         {
             String i = nodo.ChildNodes.ElementAt(0).ToString();
-            if (i == "TIPOS")
+            /*if (i == "TIPOS")
             {
                 return new itemType(Tipos(nodo.ChildNodes.ElementAt(0)),
                     nodo.ChildNodes.ElementAt(1).Token.Text);
             }
             else
-            {
+            {*/
                 return new itemType(nodo.ChildNodes.ElementAt(0).Token.Text,
                     Tipos(nodo.ChildNodes.ElementAt(1)));
-            }
+            //}
         }
 
         public NodoAST SwitchSatement(ParseTreeNode nodo)
@@ -361,7 +361,7 @@ namespace Server.GenerarAST
             if (nodo.ChildNodes.Count == 8)
             {
                 return new DeclaracionSetNew(ListaVariables(nodo.ChildNodes.ElementAt(1)),
-                    Tipos(nodo.ChildNodes.ElementAt(6)).tipo,
+                    Tipos(nodo.ChildNodes.ElementAt(6)),
                     nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
@@ -380,7 +380,7 @@ namespace Server.GenerarAST
             if (nodo.ChildNodes.Count == 8)
             {
                 return new DeclaraListNew(ListaVariables(nodo.ChildNodes.ElementAt(1)),
-                    Tipos(nodo.ChildNodes.ElementAt(6)).tipo,
+                    Tipos(nodo.ChildNodes.ElementAt(6)),
                     nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
@@ -562,7 +562,12 @@ namespace Server.GenerarAST
                 switch (s)
                 {
                     case "E":
-                        break;
+                        return new AccesoIdsConASignacion(
+                            variable(nodo.ChildNodes.ElementAt(0)),
+                            puntosIdsAccesos(nodo.ChildNodes.ElementAt(1)),
+                            expresiones(nodo.ChildNodes.ElementAt(3)),
+                            nodo.ChildNodes.ElementAt(2).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(2).Token.Location.Column);
 
                     case "FUNCIONESCOLLECTIONS":
                         break;
@@ -577,6 +582,22 @@ namespace Server.GenerarAST
             return null;
         }
 
+
+        public LinkedList<String> puntosIdsAccesos(ParseTreeNode nodo)
+        {
+            LinkedList<String> lista = new LinkedList<String>();
+            foreach (ParseTreeNode ite in nodo.ChildNodes)
+            {
+                String i = acceso(ite);
+                lista.AddLast(i);
+            }
+            return lista;
+        }
+
+        public String acceso(ParseTreeNode nodo)
+        {
+            return nodo.ChildNodes.ElementAt(1).Token.Text;
+        }
 
         public NodoAST sentenciaTranferencia(ParseTreeNode nodo)
         {
