@@ -46,15 +46,21 @@ namespace Server.AST.Instrucciones
                             {
                                 if (itType.tipo.tipo == tipoDato.id)
                                 {
-                                    if (valor is Neww)
+                                    if ((valor is Neww) && (contador == (accesos.Count -1)))
                                     {
                                         Simbolo sim2 = entorno.get(itType.tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
                                         if (sim2 != null)
                                         {
                                             if (sim2.valor is CreateType)
-                                            {
-                                                CreateType s = (CreateType)sim2.valor;
-                                                itType.valor = s.Clone();
+                                            {                                                
+                                                CreateType ss = (CreateType)sim2.valor;
+                                                LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
+                                                foreach (itemType zz in ss.itemTypee)
+                                                {
+                                                    itemTy2.AddLast((itemType)zz.Clone());
+                                                }
+                                                CreateType lista2 = (CreateType)ss.Clone(itemTy2);
+                                                itType.valor = lista2;
                                             }
                                         }
                                         else
@@ -152,16 +158,21 @@ namespace Server.AST.Instrucciones
                 {
                     if (itType.tipo.tipo == tipoDato.id)
                     {
-                        if (valor is Neww)
+                        if ((valor is Neww) && (contador == (accesos.Count - 1)))
                         {
                             Simbolo sim2 = entorno.get(itType.tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
                             if (sim2 != null)
                             {
                                 if (sim2.valor is CreateType)
                                 {
-                                    CreateType s = (CreateType)sim2.valor;
-                                    entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), s.Clone(), linea, columna,
-                                        itType.tipo.tipo, Simbolo.Rol.VARIABLE));
+                                    CreateType ss = (CreateType)sim2.valor;
+                                    LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
+                                    foreach (itemType zz in ss.itemTypee)
+                                    {
+                                        itemTy2.AddLast((itemType)zz.Clone());
+                                    }
+                                    CreateType lista2 = (CreateType)ss.Clone(itemTy2);
+                                    itType.valor = lista2;
                                 }
                             }
                             else

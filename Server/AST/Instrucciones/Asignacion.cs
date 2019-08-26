@@ -17,6 +17,7 @@ namespace Server.AST.Instrucciones
         public int linea { get; set; }
         public int columna { get; set; }
 
+        int contador = 0;
 
         public Asignacion(String id, Expresion valor,
             int linea, int columna)
@@ -39,16 +40,16 @@ namespace Server.AST.Instrucciones
                     if (valor is Corchetes)
                     {
                         if (variable.tipo == tipoDato.list || variable.tipo == tipoDato.set)
-                        {                            
+                        {
                             List<Object> lista = (List<Object>)variable.valor;
                             lista.Clear();
                             if (tipoValor == variable.tipoValor)
-                            {                                
+                            {
                                 lista.Add(value);
                             }
                             else
                             {
-                                LinkedList<Comas> listaComas = (LinkedList <Comas>) value;
+                                LinkedList<Comas> listaComas = (LinkedList<Comas>)value;
                                 foreach (Comas cv in listaComas)
                                 {
                                     Comas cv2 = (Comas)cv;
@@ -63,25 +64,33 @@ namespace Server.AST.Instrucciones
                                         }
                                     }
                                     else
-                                    {                                        
-                                         if (cv2.getType(entorno, listas) == variable.tipoValor)
-                                         {
-                                             lista.Add(objeto);
-                                         }
-                                         else
-                                         {
-                                             listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                                                                NodoError.tipoError.Semantico, "Los valores del List no son del mismo tipo."));
-                                             return tipoDato.errorSemantico;
-                                         }
-                                        
+                                    {
+                                        if (cv2.getType(entorno, listas) == variable.tipoValor)
+                                        {
+                                            lista.Add(objeto);
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna,
+                                                               NodoError.tipoError.Semantico, "Los valores del List no son del mismo tipo."));
+                                            return tipoDato.errorSemantico;
+                                        }
+
                                     }
                                 }
                             }
                         }
-                        else if (variable.tipo == tipoDato.set)
+                    }
+                    else if (valor is Llaves) //set
+                    {
+                        
+                    }
+                    else if (valor is LLaveAsTypeUser) //user types
+                    {
+                        CreateType ty = (CreateType)value;
+                        if (variable.idTipo == ty.idType)
                         {
-
+                            variable.valor = ty;
                         }
                     }
                     else if (valor is Neww)
@@ -115,13 +124,13 @@ namespace Server.AST.Instrucciones
                         }
                         else if (tipo.tipo == variable.tipo)
                         {
-                            variable.tipoValor = tipo.tipoValor;
+                            variable.tipoValor = tipo.tipoValor.tipo;
                             variable.valor = new List<Object>();
                         }
                         else
                         {
                             listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                "Los tipos no coinciden para la variable, No se puede hacer la instancia. Tipos en cuestion: " + 
+                                "Los tipos no coinciden para la variable, No se puede hacer la instancia. Tipos en cuestion: " +
                                 Convert.ToString(variable.tipo) + Convert.ToString(tipo.tipo)));
                         }
                     }
@@ -162,7 +171,7 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
-        }
+        }       
 
 
         public tipoDato paraComas(LinkedList<Comas> listComas, Entorno entorno, ErrorImpresion listas, tipoDato tipoValorLista, List<Object> list)

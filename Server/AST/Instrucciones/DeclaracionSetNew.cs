@@ -25,6 +25,8 @@ namespace Server.AST.Instrucciones
             this.columna = columna;
         }
 
+        LinkedList<Tipo> tiposSet = new LinkedList<Tipo>();
+
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
             try
@@ -34,31 +36,17 @@ namespace Server.AST.Instrucciones
                     Simbolo buscado = entorno.getEnActual(id.ToLower(), Simbolo.Rol.VARIABLE);
                     if (buscado == null)
                     {
-                        if (tipoValor.tipo == tipoDato.id)
-                        {
-                            Simbolo sim = entorno.get(tipoValor.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
-                            if (sim == null)
-                            {
-                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                        "El tipo de la variable del set no existe. El nombre es: " + tipoValor.id));
-                                return tipoDato.errorSemantico;
-                            }
-                            else if (sim.valor is CreateType) {
-                                CreateType simvalor = (CreateType)sim.valor;
-                                entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), simvalor.Clone(), linea, columna,
-                                       tipoDato.set, tipoValor.tipo, Simbolo.Rol.VARIABLE));
-                            }
-                            else
-                            {
-                                //sim es simbol osea lista o set
-                                entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), sim.Clone(), linea, columna,
-                                       tipoDato.set, sim.tipoValor, Simbolo.Rol.VARIABLE));
-                            }
-                        }                       
+                        tipoDato tt = comprobandoTipos(entorno, listas, tipoValor);
+                        if (tt == tipoDato.ok) {
+                            Tipo aux = new Tipo(tipoDato.ok, tiposSet, linea, columna);
+                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), new List<Object>(), linea, columna,
+                                        tipoDato.set,aux.tipo, aux, Simbolo.Rol.VARIABLE));
+                        }
                         else
                         {
-                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), new List<Object>(), linea, columna,
-                                    tipoDato.set, tipoValor.tipo, Simbolo.Rol.VARIABLE));
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                "Tipos no valido en el valor del set: " + id));
+                            return tipoDato.errorSemantico;
                         }
                     }
                     else
@@ -74,6 +62,43 @@ namespace Server.AST.Instrucciones
                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "No se puede declarar el Set"));
                 return tipoDato.errorSemantico;
             }
+            return tipoDato.ok;
+        }
+
+        public tipoDato comprobandoTipos(Entorno entorno, ErrorImpresion listas, Tipo tipoVal)
+        {
+            if (tipoVal.tipoValor is Tipo)
+            {
+                tiposSet.AddLast(new Tipo(tipoVal.tipo, linea, columna));
+                tipoDato t = comprobandoTipos(entorno, listas, tipoVal.tipoValor);
+                if (t == tipoDato.errorSemantico)
+                {
+                    return tipoDato.errorSemantico;
+                }
+            }
+            else
+            {
+                if (tipoVal.tipo == tipoDato.id)
+                {
+                    Simbolo sim = entorno.get(tipoVal.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                    if (sim == null)
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                "El tipo de la variable del set no existe. El nombre es: " + tipoVal.id));
+                        return tipoDato.errorSemantico;
+                    }                    
+                }
+                else if(tipoVal.tipo == tipoDato.booleano ||
+                        tipoVal.tipo == tipoDato.cadena ||
+                        tipoVal.tipo == tipoDato.date ||
+                        tipoVal.tipo == tipoDato.decimall ||
+                        tipoVal.tipo == tipoDato.entero ||
+                        tipoVal.tipo == tipoDato.time)
+                {                    
+                    return tipoDato.ok;
+                }
+            }
+
             return tipoDato.ok;
         }
     }

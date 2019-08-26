@@ -60,9 +60,16 @@ namespace Server.AST.Instrucciones
                                 tipoValorAnterior = tipoValor;
                                 if (tipoValor == tipoDato.id)
                                 {
-                                    Object sim = cv2.getValue(entorno, listas);
-                                    CreateType si = (CreateType)sim;
-                                    listaList.Add(si.Clone());
+
+                                    Object sim = valor.getValue(entorno, listas);
+                                    CreateType ss = (CreateType)sim;
+                                    LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
+                                    foreach (itemType zz in ss.itemTypee)
+                                    {
+                                        itemTy2.AddLast((itemType)zz.Clone());
+                                    }
+                                    CreateType lista2 = (CreateType)ss.Clone(itemTy2);
+                                    listaList.Add(lista2);
 
                                 }
                                 else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
@@ -83,8 +90,14 @@ namespace Server.AST.Instrucciones
                                     if (tipoValor == tipoDato.id)
                                     {
                                         Object sim = cv2.getValue(entorno, listas);
-                                        CreateType si = (CreateType)sim;
-                                        listaList.Add(si.Clone());
+                                        CreateType ss = (CreateType)sim;
+                                        LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
+                                        foreach (itemType zz in ss.itemTypee)
+                                        {
+                                            itemTy2.AddLast((itemType)zz.Clone());
+                                        }
+                                        CreateType lista2 = (CreateType)ss.Clone(itemTy2);
+                                        listaList.Add(lista2);
 
                                     }
                                     else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
@@ -132,8 +145,14 @@ namespace Server.AST.Instrucciones
                         if (tipoValor == tipoDato.id)
                         {
                             Object sim = valor.getValue(entorno, listas);
-                            CreateType si = (CreateType)sim;
-                            listaList.Add(si.Clone());
+                            CreateType ss = (CreateType)sim;
+                            LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
+                            foreach (itemType zz in ss.itemTypee)
+                            {
+                                itemTy2.AddLast((itemType)zz.Clone());
+                            }
+                            CreateType lista2 = (CreateType)ss.Clone(itemTy2);
+                            listaList.Add(lista2);
 
                         }
                         else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
@@ -204,8 +223,14 @@ namespace Server.AST.Instrucciones
                             if (tipoValor == tipoDato.id)
                             {
                                 Object sim = cv2.getValue(entorno, listas);
-                                CreateType si = (CreateType)sim;
-                                listaList.Add(si.Clone());
+                                CreateType ss = (CreateType)sim;
+                                LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
+                                foreach (itemType zz in ss.itemTypee)
+                                {
+                                    itemTy2.AddLast((itemType)zz.Clone());
+                                }
+                                CreateType lista2 = (CreateType)ss.Clone(itemTy2);
+                                listaList.Add(lista2);
 
                             }
                             else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
@@ -225,9 +250,15 @@ namespace Server.AST.Instrucciones
                             {
                                 if (tipoValor == tipoDato.id)
                                 {
-                                    Object sim = cv2.getValue(entorno, listas);
-                                    CreateType si = (CreateType)sim;
-                                    listaList.Add(si.Clone());
+                                    Object sim = cv2.getValue(entorno, listas);                                  
+                                    CreateType ss = (CreateType)sim;
+                                    LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
+                                    foreach (itemType zz in ss.itemTypee)
+                                    {
+                                        itemTy2.AddLast((itemType)zz.Clone());
+                                    }
+                                    CreateType lista2 = (CreateType)ss.Clone(itemTy2);
+                                    listaList.Add(lista2);
 
                                 }
                                 else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)

@@ -12,18 +12,14 @@ namespace Server.AST.Instrucciones
 {
     class Declarcion : Instruccion
     {
-
         public Tipo tipo { get; set; }
         public LinkedList<String> ids { get; set; }        
-
 
         public Declarcion(Tipo type, LinkedList<String> id)
         {
             this.tipo = type;
             this.ids = id;          
         }
-
-
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
@@ -48,8 +44,15 @@ namespace Server.AST.Instrucciones
                     }
                     else
                     {
-                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), null, tipo.linea, tipo.columna, 
-                            tipo.tipo, Simbolo.Rol.VARIABLE));
+                        if (tipo.tipo == tipoDato.id)
+                        {
+                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), null, tipo.linea, tipo.columna,
+                                tipo.tipo, tipo.id,Simbolo.Rol.VARIABLE));
+                        }
+                        else {
+                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), null, tipo.linea, tipo.columna,
+                                tipo.tipo, Simbolo.Rol.VARIABLE));
+                        }
                     }
                 }
                 else

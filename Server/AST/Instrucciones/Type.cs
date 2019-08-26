@@ -17,6 +17,11 @@ namespace Server.AST.Instrucciones
         public Tipo tipo { get; set; }
         public Object valor { get; set; }
 
+        public itemType()
+        {
+
+        }
+
         public itemType(String id, Tipo tipo)
         {
             this.id = id;
@@ -37,6 +42,11 @@ namespace Server.AST.Instrucciones
         public tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
             return tipo.tipo;
+        }       
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

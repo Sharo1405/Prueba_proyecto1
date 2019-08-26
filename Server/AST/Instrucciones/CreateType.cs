@@ -8,13 +8,18 @@ using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Instrucciones
 {
-    class CreateType : Instruccion, ICloneable
+    class CreateType : Instruccion
     {
         public String idType { get; set; }
         public Boolean ifnotexists { get; set; }
         public LinkedList<itemType> itemTypee = new LinkedList<itemType>();
         public int linea { get; set; }
         public int columna { get; set; }
+        
+        public CreateType()
+        {
+
+        }
 
         public CreateType(String idType, LinkedList<itemType> itemType,
             int linea, int columna)
@@ -41,42 +46,7 @@ namespace Server.AST.Instrucciones
             {
                 Simbolo buscado = entorno.getEnActual(idType.ToLower(), Simbolo.Rol.VARIABLE);
                 if (buscado == null)
-                {
-                    foreach (itemType ty in itemTypee)
-                    {
-                        if (ty.tipo.tipo == tipoDato.id)
-                        {
-                            Simbolo buscado2 = entorno.getEnActual(ty.tipo.id.ToLower(), Simbolo.Rol.VARIABLE);
-                            if (buscado2 != null)
-                            {
-                                //arreglar solo declarar sin el clonar
-                                //CreateType typeComoTipo =(CreateType) buscado2.valor;
-                                ty.valor = null;//typeComoTipo.Clone();
-                            }
-                            else
-                            {
-                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                    "El tipo de esa variable del Type User no existe: Tipo:" + ty.tipo.id.ToLower()));
-                                return tipoDato.errorSemantico;
-                            }
-                        }
-                        else if (ty.tipo.tipo == tipoDato.entero)
-                        {                            
-                            ty.valor = 0;
-                        }
-                        else if (ty.tipo.tipo == tipoDato.decimall)
-                        {                            
-                            ty.valor = 0.0;
-                        }
-                        else if (ty.tipo.tipo == tipoDato.booleano)
-                        {
-                            ty.valor = false;
-                        }
-                        else
-                        {
-                            ty.valor = null;
-                        }
-                    }
+                {                    
 
                     entorno.setSimbolo(idType.ToLower(), new Simbolo(idType.ToLower(), this, linea, columna, tipoDato.id, Simbolo.Rol.VARIABLE));
                 }
@@ -95,9 +65,11 @@ namespace Server.AST.Instrucciones
             return tipoDato.ok;
         }
 
-        public object Clone()
+        public object Clone(LinkedList<itemType> itemType)
         {
-            return MemberwiseClone();
+            this.itemTypee = new LinkedList<itemType>();
+            this.itemTypee = itemType;
+            return this.MemberwiseClone();
         }
     }
 }

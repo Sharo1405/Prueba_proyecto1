@@ -60,6 +60,7 @@
     <Compile Include="AST\Expresiones\Funciones.cs" />
     <Compile Include="AST\Expresiones\ListaErrorPrinter.cs" />
     <Compile Include="AST\Expresiones\ListaExpresiones.cs" />
+    <Compile Include="AST\Expresiones\LLaveAsTypeUser.cs" />
     <Compile Include="AST\Expresiones\Logicas\Nott.cs" />
     <Compile Include="AST\Expresiones\Logicas\Or.cs" />
     <Compile Include="AST\Expresiones\LlamadaFuncion.cs" />
@@ -86,6 +87,8 @@
     <Compile Include="AST\Instrucciones\SwitchBlock.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlockStatement_Group.cs" />
     <Compile Include="AST\Instrucciones\Type.cs" />
+    <Compile Include="AST\Llaves.cs" />
+    <Compile Include="AST\Otras\Auxiliar.cs" />
     <Compile Include="AST\Otras\ClaveValor.cs" />
     <Compile Include="AST\Otras\Parametros.cs" />
     <Compile Include="AST\Expresiones\TipoDato\Identificador.cs" />

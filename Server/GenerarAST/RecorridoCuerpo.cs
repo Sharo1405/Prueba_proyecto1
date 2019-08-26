@@ -168,7 +168,7 @@ namespace Server.GenerarAST
                         return FuncionesMetodos(nodo.ChildNodes.ElementAt(0));
 
                     case "LLAMADASFUNCIONES":
-                    return new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text,
+                    return new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text.ToLower(),
                         expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
                         nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
                         nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);          
@@ -238,7 +238,7 @@ namespace Server.GenerarAST
             }
             else
             {*/
-                return new itemType(nodo.ChildNodes.ElementAt(0).Token.Text,
+                return new itemType(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
                     Tipos(nodo.ChildNodes.ElementAt(1)));
             //}
         }
@@ -335,7 +335,7 @@ namespace Server.GenerarAST
 
         public NodoAST label(ParseTreeNode nodo)
         {
-            String s = nodo.ChildNodes.ElementAt(0).Token.Text;
+            String s = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
             switch (s)
             {
                 case "case":
@@ -368,7 +368,7 @@ namespace Server.GenerarAST
             else
             {
                 return new DeclaracionSetValores(ListaVariables(nodo.ChildNodes.ElementAt(1)),
-                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    expresiones(nodo.ChildNodes.ElementAt(3)),
                     nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
@@ -387,7 +387,7 @@ namespace Server.GenerarAST
             else
             {
                 return new DeclaraListValores(ListaVariables(nodo.ChildNodes.ElementAt(1)),
-                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    expresiones(nodo.ChildNodes.ElementAt(3)),
                     nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
@@ -596,7 +596,7 @@ namespace Server.GenerarAST
 
         public String acceso(ParseTreeNode nodo)
         {
-            return nodo.ChildNodes.ElementAt(1).Token.Text;
+            return nodo.ChildNodes.ElementAt(1).Token.Text.ToLower();
         }
 
         public NodoAST sentenciaTranferencia(ParseTreeNode nodo)
@@ -609,7 +609,7 @@ namespace Server.GenerarAST
             }
             else
             {
-                String nombre = nodo.ChildNodes.ElementAt(0).Token.Text;
+                String nombre = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
                 switch (nombre)
                 {
                     case "continue":
@@ -741,13 +741,13 @@ namespace Server.GenerarAST
 
                     case "set":
                         return new Tipo(tipoDato.set,
-                            Tipos(nodo.ChildNodes.ElementAt(2)).tipo,
+                            Tipos(nodo.ChildNodes.ElementAt(2)),
                             nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
                     case "list":
                         return new Tipo(tipoDato.list,
-                            Tipos(nodo.ChildNodes.ElementAt(2)).tipo,
+                            Tipos(nodo.ChildNodes.ElementAt(2)),
                             nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
@@ -819,7 +819,14 @@ namespace Server.GenerarAST
 
         public Expresion expresiones(ParseTreeNode nodo)
         {
-            if (nodo.ChildNodes.Count == 4)
+            if (nodo.ChildNodes.Count == 5)
+            {
+                return new LLaveAsTypeUser(expresiones(nodo.ChildNodes.ElementAt(1)),
+                    nodo.ChildNodes.ElementAt(4).Token.Text.ToLower(),
+                    nodo.ChildNodes.ElementAt(3).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(3).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 4)
             {
                 string operador = nodo.ChildNodes.ElementAt(0).ToString();
                 switch (operador)
@@ -949,7 +956,9 @@ namespace Server.GenerarAST
                                     nodo.ChildNodes[0].Token.Location.Column);
 
                             case "{":
-                                break;
+                                return new Llaves(expresiones(nodo.ChildNodes.ElementAt(1)),
+                                    nodo.ChildNodes[0].Token.Location.Line,
+                                    nodo.ChildNodes[0].Token.Location.Column);
 
                         }
                         break;
@@ -1041,15 +1050,15 @@ namespace Server.GenerarAST
                             nodo.ChildNodes[0].Token.Location.Column);
                     
                     case "true":
-                        return new Booleano(nodo.ChildNodes.ElementAt(0).Token.Text, Operacion.tipoDato.booleano,
+                        return new Booleano(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(), Operacion.tipoDato.booleano,
                             nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column);
 
                     case "false":
-                        return new Booleano(nodo.ChildNodes.ElementAt(0).Token.Text, Operacion.tipoDato.booleano, 
+                        return new Booleano(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(), Operacion.tipoDato.booleano, 
                             nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column);
 
                     case "null":
-                        return new Nulo(nodo.ChildNodes.ElementAt(0).Token.Text, Operacion.tipoDato.booleano,
+                        return new Nulo(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(), Operacion.tipoDato.booleano,
                             nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column);
 
                     case "LLAMADASFUNCIONES":

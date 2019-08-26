@@ -25,6 +25,56 @@ namespace Server.AST.Instrucciones
             this.valor = valor;
         }
 
+        public CreateType CreaNuevoType(CreateType existente, Entorno entorno, ErrorImpresion listas)
+        {
+            CreateType nuevo = new CreateType();
+            nuevo.idType = existente.idType;
+            nuevo.ifnotexists = existente.ifnotexists;
+            nuevo.linea = existente.linea;
+            nuevo.columna = existente.columna;
+
+            foreach (itemType var in existente.itemTypee)
+            {
+                itemType i = new itemType();
+                i.id = var.id;
+                i.tipo = var.tipo;
+                i.valor = new Object();
+                if (var.tipo.tipo == tipoDato.id)
+                {
+                    Simbolo buscado2 = entorno.getEnActual(var.tipo.id.ToLower(), Simbolo.Rol.VARIABLE);
+                    if (buscado2 != null)
+                    {
+                        //arreglar solo declarar sin el clonar
+                        //CreateType typeComoTipo =(CreateType) buscado2.valor;
+                        i.valor = null;//typeComoTipo.Clone();
+                    }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
+                            "El tipo de esa variable del Type User no existe: Tipo:" + var.tipo.id.ToLower()));
+                    }
+                }
+                else if (var.tipo.tipo == tipoDato.entero)
+                {
+                    var.valor = 0;
+                }
+                else if (var.tipo.tipo == tipoDato.decimall)
+                {
+                    var.valor = 0.0;
+                }
+                else if (var.tipo.tipo == tipoDato.booleano)
+                {
+                    var.valor = false;
+                }
+                else
+                {
+                    var.valor = null;
+                }
+
+                nuevo.itemTypee.AddLast(i);
+            }
+            return nuevo;
+        }
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
@@ -63,8 +113,9 @@ namespace Server.AST.Instrucciones
                                     if (sim.valor is CreateType)
                                     {
                                         CreateType s = (CreateType)sim.valor;
-                                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), s.Clone(), tipo.linea, tipo.columna,
-                                            tipo.tipo, Simbolo.Rol.VARIABLE));
+                                        CreateType lista = CreaNuevoType(s, entorno, listas);
+                                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), lista, tipo.linea, tipo.columna,
+                                            tipo.tipo, tipo.id, Simbolo.Rol.VARIABLE));
                                     }
                                 }
                                 else
@@ -72,6 +123,15 @@ namespace Server.AST.Instrucciones
                                     listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
                                     "El tipo de la variable del User type NO EXISTE. Tipos en cuestion: " + Convert.ToString(tipo.id)));
                                     return tipoDato.errorSemantico;
+                                }
+                            }
+                            else if (valor is LLaveAsTypeUser) //user types
+                            {
+                                CreateType ty = (CreateType)valor.getValue(entorno, listas);
+                                if (tipo.id == ty.idType)
+                                {
+                                    entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), ty, tipo.linea, tipo.columna,
+                                            tipo.tipo, tipo.id, Simbolo.Rol.VARIABLE));
                                 }
                             }
                             else

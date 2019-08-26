@@ -28,7 +28,7 @@ namespace Server.AST.Expresiones
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
-            return Operacion.tipoDato.errorSemantico;
+            return this;
         }
     }
 }

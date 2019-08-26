@@ -11,11 +11,14 @@ namespace Server.AST.Otras
     {
         public String id { get; set; }
         public tipoDato tipo { get; set; }
-        public tipoDato tipoValor { get; set; }
+        //public Tipo tipo { get; set; }
+        public Tipo tipoValor { get; set; }
         public LinkedList<Tipo> listaTipos = new LinkedList<Tipo>();
         public int linea { get; set; }
         public int columna { get; set; }
 
+        public Tipo()
+        { }
 
         public Tipo(tipoDato tipo, int linea, int columna)
         {
@@ -24,7 +27,7 @@ namespace Server.AST.Otras
             this.columna = columna;
         }
 
-        public Tipo(tipoDato tipo, tipoDato tipoValor, int linea, int columna)
+        public Tipo(tipoDato tipo, Tipo tipoValor, int linea, int columna)
         {
             this.tipo = tipo;
             this.tipoValor = tipoValor;

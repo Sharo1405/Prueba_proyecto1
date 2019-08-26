@@ -144,6 +144,7 @@ namespace Server.Analizador
             MarkReservedWords("default");
             MarkReservedWords("not");
             MarkReservedWords("@");
+            MarkReservedWords("as");
             
             #endregion
 
@@ -269,6 +270,7 @@ namespace Server.Analizador
 
             var defaultt = ToTerm("default");
             var notpalabra = ToTerm("not");
+            var ass = ToTerm("as");
 
             #endregion
 
@@ -567,10 +569,10 @@ namespace Server.Analizador
                                 | map + LISTAVARIABLES + igual + acorchete + E + ccorchete;
 
             LISTCOLLECTIONS.Rule = list + LISTAVARIABLES + igual + neww + list + menorq + TIPOS + mayorq
-                                 | list + LISTAVARIABLES + igual + acorchete + E + ccorchete;
+                                 | list + LISTAVARIABLES + igual + E;//acorchete + E + ccorchete;
 
             SETCOLLECTIONS.Rule = set + LISTAVARIABLES + igual + neww + set + menorq + TIPOS + mayorq
-                                | set + LISTAVARIABLES + igual + acorchete + E + ccorchete;
+                                | set + LISTAVARIABLES + igual + E;//allave + E + cllave;
 
             FORR.Rule = forr + aparentesis + INICIALIZACION + puntoycoma + E + puntoycoma + ACTUALIZACION + cparentesis + STATEMENTBLOCK;
 
@@ -826,8 +828,11 @@ namespace Server.Analizador
                 | neww + TIPOS
                 | aparentesis + TIPOCASTEO + cparentesis + E
                 | aparentesis + E + cparentesis
-                | allave + E + cllave
-                | acorchete + E + ccorchete
+
+                | allave + E + cllave //set
+                | allave + E + cllave + ass + id  //user types
+                | acorchete + E + ccorchete //list y acceso normal [num]
+
                 | LLAMADASFUNCIONES
                 | FUNCIONESCOLLECTIONS
                 | FUNCIONESNATIVASCADENAS
