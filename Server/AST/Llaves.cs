@@ -40,7 +40,7 @@ namespace Server.AST
         List<Object> listaList = new List<Object>();
         tipoDato tipoValor = tipoDato.errorSemantico;
         tipoDato tipoValorAnterior = tipoDato.errorSemantico;
-        public Tipo tipoRetorno = new Tipo();
+        public LinkedList<Tipo> tipoRetorno = new LinkedList<Tipo>();
 
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
@@ -53,15 +53,13 @@ namespace Server.AST
                     LinkedList<Comas> lista = (LinkedList<Comas>)dev;
                     foreach (Comas coma in lista)
                     {
-                        contador++;
-                        
+                                               
                         Object resultado = coma.getValue(entorno, listas);
-
                         if (resultado is Auxiliar)
                         {
                             if (contador == 1)
                             {
-                                tipoRetorno = new Tipo();
+                               //tipoRetorno = new Tipo();
                             }
                             else
                             {
@@ -79,6 +77,7 @@ namespace Server.AST
                         }
                         else
                         {
+                            contador++;
                             tipoValor = coma.getType(entorno, listas);
                             if (contador == 1)
                             {
@@ -99,7 +98,7 @@ namespace Server.AST
                                 else
                                 {
                                     listaList.Add(resultado);
-                                    tipoRetorno = new Tipo(tipoValor, linea, columna);
+                                    tipoRetorno.AddFirst(new Tipo(tipoValor, linea, columna));
                                 }
                             }
                             else
@@ -154,7 +153,7 @@ namespace Server.AST
                         else
                         {
                             listaList.Add(dev);
-                            tipoRetorno = new Tipo(tipoValor, linea, columna);
+                            tipoRetorno.AddFirst(new Tipo(tipoValor, linea, columna));
                         }
                     }
                     else
@@ -181,7 +180,7 @@ namespace Server.AST
                         }
                     }                    
                 }
-                return new Auxiliar(new Tipo(tipoDato.set, tipoRetorno,linea, columna), listaList);//return listaList;
+                return new Auxiliar(tipoRetorno, listaList);//return listaList;
             }
             catch (Exception e)
             {
@@ -202,7 +201,7 @@ namespace Server.AST
                 {
                     Tipo auxparanada = new Tipo();
                     auxparanada.tipo = tipoDato.ok;
-                    tipoRetorno = new Tipo(tipoDato.set, auxparanada, linea, columna);
+                    //tipoRetorno = new Tipo(tipoDato.set, auxparanada, linea, columna);
                     listaList.Add(valor);
 
                 }
@@ -213,18 +212,57 @@ namespace Server.AST
                 }
                 else
                 {
-
-                    if (valor is Simbolo)
+                    contador++;
+                    tipoValor = cv2.getType(entorno, listas);
+                    if (contador == 1)
                     {
-                        Simbolo sim = (Simbolo)valor;
-                        listaList.Add(sim.valor);
+                        tipoValorAnterior = tipoValor;
+                        if (valor is Simbolo)
+                        {
+                            Simbolo sim = (Simbolo)valor;
+                            listaList.Add(sim.valor);
+
+                        }
+                        else if (tipoValor == tipoDato.id)
+                        {
+
+
+                        }
+                        else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
+                        {
+
+                        }
+                        else
+                        {
+                            listaList.Add(valor);
+                            tipoRetorno.AddFirst(new Tipo(tipoValor, linea, columna));
+                        }
                     }
                     else
                     {
-                        listaList.Add(valor);
+                        if (tipoValorAnterior == tipoValor)
+                        {
+                            if (valor is Simbolo)
+                            {
+                                Simbolo sim = (Simbolo)valor;
+                                listaList.Add(sim.valor);
+                            }
+                            else if (tipoValor == tipoDato.id)
+                            {
+
+                            }
+                            else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
+                            {
+
+                            }
+                            else
+                            {
+                                listaList.Add(valor);
+                            }
+                        }
                     }
                 }                 
-                }
+            }
             return tipoDato.ok;
         }            
     }

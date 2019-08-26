@@ -38,7 +38,7 @@ namespace Server.AST.Instrucciones
                     {
                         tipoDato tt = comprobandoTipos(entorno, listas, tipoValor);
                         if (tt == tipoDato.ok) {
-                            Tipo aux = new Tipo(tipoDato.ok, tiposSet, linea, columna);
+                            Tipo aux = new Tipo(tipoDato.set, tiposSet, linea, columna);
                             entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), new List<Object>(), linea, columna,
                                         tipoDato.set,aux.tipo, aux, Simbolo.Rol.VARIABLE));
                         }

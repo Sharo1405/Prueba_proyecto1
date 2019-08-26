@@ -38,11 +38,11 @@ namespace Server.AST.Instrucciones
                         Object setLista = valor.getValue(entorno, listas);
                         if (setLista is Auxiliar)
                         {
-                            tipoDato tip = valor.getType(entorno, listas);
-                            if (tip == tipoDato.set && valor is Llaves) {
-                                Llaves va = (Llaves)valor;
-                                entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), setLista, linea, columna,
-                                       tipoDato.set, va.tipoRetorno.tipo, va.tipoRetorno, Simbolo.Rol.VARIABLE));
+                            LinkedList<Tipo> tip = ((Auxiliar)setLista).listaTipos;
+                            if (valor is Llaves) {
+                                Tipo au = new Tipo(tipoDato.set, tip,linea, columna);
+                                entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), ((Auxiliar)setLista).valorLlaves, linea, columna,
+                                       tipoDato.set, au.tipo, au, Simbolo.Rol.VARIABLE));
                             }
                             else
                             {

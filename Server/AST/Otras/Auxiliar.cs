@@ -9,7 +9,7 @@ namespace Server.AST.Otras
     class Auxiliar
     {
         public LinkedList<Tipo> listaTipos = new LinkedList<Tipo>();
-        Tipo tipo = new Tipo();
+        public Tipo tipo = new Tipo();
         public Object valorLlaves = new Object();
         
         public Auxiliar(LinkedList<Tipo> listaTipos, Object valorLlaves)
