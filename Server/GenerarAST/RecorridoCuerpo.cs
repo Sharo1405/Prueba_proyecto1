@@ -168,10 +168,7 @@ namespace Server.GenerarAST
                         return FuncionesMetodos(nodo.ChildNodes.ElementAt(0));
 
                     case "LLAMADASFUNCIONES":
-                    return new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text.ToLower(),
-                        expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
-                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
-                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);          
+                        return llamadaaFuncion(nodo.ChildNodes.ElementAt(0));        
 
                     case "PROCEDIMIENTOS":
                         break;
@@ -194,6 +191,25 @@ namespace Server.GenerarAST
                     case "TRYCATCHH":
                         break;
                 }
+            return null;
+        }
+
+        public Expresion llamadaaFuncion(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 4)
+            {
+                new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                        expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);
+            }
+            else
+            {
+                new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                        null,
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);
+            }
             return null;
         }
 
@@ -1066,12 +1082,45 @@ namespace Server.GenerarAST
                             nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column);
 
                     case "LLAMADASFUNCIONES":
-                        return new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text,
-                        expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
-                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
-                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);
+                        return llamadaaFuncion(nodo.ChildNodes.ElementAt(0));
+                    /*new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text,
+                    expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
+                    nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);*/
+
+                    case "FUNCIONESNATIVASCADENAS":
+                        return funcionesCadenas(nodo.ChildNodes.ElementAt(0));
 
                 }
+            }
+            return null;
+        }
+
+
+        public Expresion funcionesCadenas(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 3) {
+                return new FuncionesNativasCadenas(
+                    nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 4) //starts and ends
+            {
+                return new FuncionesNativasCadenas(
+                    nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(2)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else
+            {  //6
+                return new FuncionesNativasCadenas(
+                    nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(2)),
+                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
             return null;
         }

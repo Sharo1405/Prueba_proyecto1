@@ -534,9 +534,9 @@ namespace Server.Analizador
             FUNCIONESNATIVASCADENAS.Rule = length + aparentesis + cparentesis
                                          | toUpperCase + aparentesis + cparentesis
                                          | toLowerCase + aparentesis + cparentesis
-                                         | startsWith + aparentesis + cparentesis
-                                         | endsWith + aparentesis + cparentesis
-                                         | subString + aparentesis + cparentesis;
+                                         | startsWith + aparentesis + E + cparentesis
+                                         | endsWith + aparentesis + E + cparentesis
+                                         | subString + aparentesis + E + coma + E + cparentesis;
 
             PROCEDIMIENTOS.Rule = procedure + id + aparentesis + PARAMETROS + cparentesis + coma + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
                                 | procedure + id + aparentesis + PARAMETROS + cparentesis + coma + aparentesis + cparentesis + STATEMENTBLOCK

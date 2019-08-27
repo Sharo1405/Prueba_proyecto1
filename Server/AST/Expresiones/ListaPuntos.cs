@@ -18,6 +18,8 @@ namespace Server.AST.Expresiones
 
         LinkedList<Puntos> ListaExpresionesPuntos = new LinkedList<Puntos>();
         int contador = 0;
+        int contadorFuncionNativa = 0;
+        object auxParaFunciones = new object();
 
         public ListaPuntos(Expresion izq, Expresion der, int linea, int columna)
         {
@@ -51,6 +53,8 @@ namespace Server.AST.Expresiones
             }
 
             //aqui comienza el acceso para retornar el valor
+            ///*****************************
+            //////
             Puntos puntos = ListaExpresionesPuntos.ElementAt(contador);
             Object ob = puntos.expresion1.getValue(entorno, listas);
             if (ob is Simbolo)
@@ -75,6 +79,7 @@ namespace Server.AST.Expresiones
                                     {
                                         contador++;
                                         object tipoDevuelto = tipoType(entorno, listas, otroitem, contador);
+                                        auxParaFunciones = tipoDevuelto;
                                         return tipoDevuelto;
                                     }
                                     else
@@ -95,14 +100,23 @@ namespace Server.AST.Expresiones
                                 else
                                 {
                                     tipoFinal = itType.tipo.tipo;
+                                    auxParaFunciones = itType.valor;
                                     return itType.valor;
                                 }
                             }                            
                         }
                     }
-                    else
+                    else if(punto.expresion1 is FuncionesNativasCadenas)
                     {
+                        FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas);
+                        if (tipoFinal != tipoDato.cadena)
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "La variable a la que se quiere aplicar : " +  funcion.nativa + "no es de tipo String"));
+                            return tipoDato.errorSemantico;
+                        }
 
+                        return devuelveFunconEjecutada(funcion, entorno, listas);
                     }                    
                 }
                 else if (s.tipo == tipoDato.list)
@@ -113,6 +127,36 @@ namespace Server.AST.Expresiones
                 {
 
                 }
+                else
+                {
+                    tipoFinal = s.tipo;
+                    auxParaFunciones = s.valor; // aqui solo vendrian variables normales
+                    contador++;
+                    while (contador < ListaExpresionesPuntos.Count)
+                    {
+                        Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
+                        if (puntos2.expresion1 is FuncionesNativasCadenas)
+                        {
+                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                            if (tipoFinal != tipoDato.cadena)
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
+                                return tipoDato.errorSemantico;
+                            }
+                            auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "El acceso no es valido porque es una variable normal"));
+                            return tipoDato.errorSemantico;
+                        }
+                        
+                        contador++;
+                    }
+                    return auxParaFunciones;
+                }
             }
             else
             {
@@ -120,6 +164,60 @@ namespace Server.AST.Expresiones
                                     "La variable no fue encontrada, no se puede hacer el acceso"));
                 return tipoDato.errorSemantico;
             }
+            return tipoDato.errorSemantico;
+        }
+
+        public object devuelveFunconEjecutada(FuncionesNativasCadenas funcion, Entorno entorno, ErrorImpresion listas)
+        {
+            switch (funcion.nativa)
+            {
+                case "length":
+                    return Convert.ToString(auxParaFunciones).Length;
+
+                case "touppercase":
+                    return Convert.ToString(auxParaFunciones).ToUpper();
+
+                case "tolowercase":
+                    return Convert.ToString(auxParaFunciones).ToLower();
+
+                case "startswith":
+                    tipoDato es = funcion.exp1.getType(entorno, listas);
+                    if (es != tipoDato.cadena)
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "El parametro de inicio para la funcion StartsWith no es de tipo cadena"));
+                        return tipoDato.errorSemantico;
+                    }
+                    Object cadena = funcion.exp1.getValue(entorno, listas);
+                    return Convert.ToString(auxParaFunciones).StartsWith(Convert.ToString(cadena));
+
+                case "endswith":
+                    tipoDato ess = funcion.exp1.getType(entorno, listas);
+                    if (ess != tipoDato.cadena)
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "El parametro de inicio para la funcion endsWith no es de tipo cadena"));
+                        return tipoDato.errorSemantico;
+                    }
+                    Object cadena2 = funcion.exp1.getValue(entorno, listas);
+                    return Convert.ToString(auxParaFunciones).StartsWith(Convert.ToString(cadena2));
+
+                case "substring":
+                    tipoDato esss = funcion.exp1.getType(entorno, listas);
+                    tipoDato essss = funcion.exp1.getType(entorno, listas);
+                    if (esss != tipoDato.entero && essss != tipoDato.entero)
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "El parametro de inicio para la funcion endsWith no es de tipo cadena"));
+                        return tipoDato.errorSemantico;
+                    }
+                    Object inicio = funcion.exp1.getValue(entorno, listas);
+                    Object final = funcion.exp2.getValue(entorno, listas);
+                    return Convert.ToString(auxParaFunciones).Substring(Int32.Parse(Convert.ToString(inicio)),
+                        Int32.Parse(Convert.ToString(final)));
+
+            }
+
             return tipoDato.errorSemantico;
         }
 
@@ -164,6 +262,7 @@ namespace Server.AST.Expresiones
                                 {
                                     contador++;
                                     object tipoDevuelto = tipoType(entorno, listas, otroitem, contador);
+                                    auxParaFunciones = tipoDevuelto;
                                     return tipoDevuelto;
                                 }
                                 else
@@ -172,9 +271,9 @@ namespace Server.AST.Expresiones
                                         "La variable \"" + identi.id +"\" no esta Instanciada para el acceso"));
                                     if (otroitem == null)
                                     {
-                                    return tipoDato.nulo;
+                                        return tipoDato.nulo;
                                     }
-                                    return tipoDato.errorSemantico;
+                                        return tipoDato.errorSemantico;
                                 }
                         }
                         else if (itType.tipo.tipo == tipoDato.list)
@@ -188,10 +287,40 @@ namespace Server.AST.Expresiones
                         else
                         {
                             tipoFinal = itType.tipo.tipo;
+                            auxParaFunciones = itType.valor;
                             return itType.valor;
                         }
                     }
                 }
+            }
+            else if (punto.expresion1 is FuncionesNativasCadenas)
+            {
+                
+                while (contador < ListaExpresionesPuntos.Count)
+                {
+                    Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
+                    if (puntos2.expresion1 is FuncionesNativasCadenas)
+                    {
+                        FuncionesNativasCadenas funcion2 = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                        if (tipoFinal != tipoDato.cadena)
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "La variable a la que se quiere aplicar : " + funcion2.nativa + "no es de tipo String"));
+                            return tipoDato.errorSemantico;
+                        }
+                        auxParaFunciones = devuelveFunconEjecutada(funcion2, entorno, listas);
+                    }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "El acceso no es valido porque es una variable normal"));
+                        return tipoDato.errorSemantico;
+                    }
+
+                    contador++;
+                }
+                return auxParaFunciones;
+                
             }
             else
             {
