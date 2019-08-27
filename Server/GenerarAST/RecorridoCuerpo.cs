@@ -943,6 +943,10 @@ namespace Server.GenerarAST
                             nodo.ChildNodes[1].Token.Location.Line, 
                             nodo.ChildNodes[1].Token.Location.Column);
 
+                    case ".":
+                        return new ListaPuntos(expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)),
+                            nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column);
+
                     case "E":
                         String sss = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
                         switch (sss)

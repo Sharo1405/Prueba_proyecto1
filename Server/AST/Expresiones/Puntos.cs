@@ -21,7 +21,7 @@ namespace Server.AST.Expresiones
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
-            return null;
+            return expresion1.getValue(entorno, listas);
         }
     }
 }

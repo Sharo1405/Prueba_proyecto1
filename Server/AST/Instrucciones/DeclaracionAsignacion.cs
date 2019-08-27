@@ -86,7 +86,7 @@ namespace Server.AST.Instrucciones
                     {
                         tipoDato tipoValor = valor.getType(entorno, listas);
                         object value = valor.getValue(entorno, listas);
-                        if (tipo.tipo == tipoValor)
+                        if (tipo.tipo == tipoValor && !(valor is LLaveAsTypeUser))
                         {
                             entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), value, tipo.linea, tipo.columna,
                                 tipo.tipo, Simbolo.Rol.VARIABLE));
@@ -127,7 +127,7 @@ namespace Server.AST.Instrucciones
                             }
                             else if (valor is LLaveAsTypeUser) //user types
                             {
-                                CreateType ty = (CreateType)valor.getValue(entorno, listas);
+                                CreateType ty = (CreateType)value;
                                 if (tipo.id == ty.idType)
                                 {
                                     entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), ty, tipo.linea, tipo.columna,

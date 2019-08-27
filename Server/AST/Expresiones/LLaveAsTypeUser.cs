@@ -49,7 +49,7 @@ namespace Server.AST.Expresiones
                 i.valor = new Object();
                 if (var.tipo.tipo == tipoDato.id)
                 {
-                    Simbolo buscado2 = entorno.getEnActual(var.tipo.id.ToLower(), Simbolo.Rol.VARIABLE);
+                    Simbolo buscado2 = entorno.get(var.tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
                     if (buscado2 != null)
                     {
                         //arreglar solo declarar sin el clonar
@@ -94,91 +94,13 @@ namespace Server.AST.Expresiones
                     CreateType ll = (CreateType)s.valor;
                     CreateType lista = CreaNuevoType(ll, entorno, listas);
                     
-                    Object objeto = listaValores.getValue(entorno, listas);
-                    if (objeto is LinkedList<Comas>) {
-                        LinkedList<Comas> listaComas = (LinkedList<Comas>)objeto;
-
-                        foreach (Comas itType2 in listaComas)
-                        {
-                            Comas cv2 = (Comas)itType2;
-                            Object valo = cv2.getValue(entorno, listas);
-                            if (valo is LinkedList<Comas>)
-                            {
-                                LinkedList<Comas> listaaComas = (LinkedList<Comas>)valo;
-                                paraComasTYPEUSER(listaaComas, entorno, listas, lista.itemTypee);
-                            }
-                            else
-                            {
-                                itemType itType = lista.itemTypee.ElementAt(contador);
-
-                                if (itType.tipo.tipo == tipoDato.id)
-                                {
-                                    if (valo is Neww)
-                                    {
-                                        Neww claseNeww = (Neww)valo;
-                                        Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
-                                        if (sim2 != null)
-                                        {
-                                            if (sim2.valor is CreateType)
-                                            {                                                
-                                                CreateType ss = (CreateType)sim2.valor;
-                                                CreateType lista2 = CreaNuevoType(ss, entorno, listas);
-                                                itType.valor = lista2;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                                "El tipo de la variable del User type NO EXISTE. Tipos en cuestion: " + Convert.ToString(itType.tipo.id)));
-                                            return tipoDato.errorSemantico;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        tipoDato tipoValue = cv2.getType(entorno, listas);
-                                        if (tipoValue == itType.tipo.tipo)
-                                        {
-                                            itType.valor = valo;
-                                        }
-                                        else
-                                        {
-                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                                "El tipo de la variable del User type NO EXISTE."));
-                                            return tipoDato.errorSemantico;
-                                        }
-                                    }
-                                }
-                                else if (itType.tipo.tipo == tipoDato.list)
-                                {
-
-                                }
-                                else if (itType.tipo.tipo == tipoDato.set)
-                                {
-
-                                }
-                                else
-                                {
-                                    tipoDato tipoValue = cv2.getType(entorno, listas);
-                                    if (tipoValue == itType.tipo.tipo)
-                                    {
-                                        itType.valor = cv2.getValue(entorno, listas);
-                                    }
-                                    else
-                                    {
-                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                        "El tipo de la variable del User type NO es el mismo."));
-                                        return tipoDato.errorSemantico;
-                                    }
-                                }
-                                contador++;
-                            }
-                        }
-                        
-                    }
-                    else
+                    LinkedList<Comas> objeto = (LinkedList<Comas>) listaValores.getValue(entorno, listas); //Lista comas
+                    foreach (Comas coma in objeto)
                     {
+                        Comas cv2 = (Comas)coma;
+                        Object valo = cv2.getValue(entorno, listas);
                         itemType itType = lista.itemTypee.ElementAt(contador);
-                        Object valo = listaValores.getValue(entorno, listas);
+
                         if (itType.tipo.tipo == tipoDato.id)
                         {
                             if (valo is Neww)
@@ -203,15 +125,26 @@ namespace Server.AST.Expresiones
                             }
                             else
                             {
-                                tipoDato tipoValue = listaValores.getType(entorno, listas);
+                                tipoDato tipoValue = cv2.getType(entorno, listas);
                                 if (tipoValue == itType.tipo.tipo)
+                                {
+                                    if (valo is Simbolo)
+                                    {
+                                        itType.valor = ((Simbolo)valo).valor;
+                                    }
+                                    else
+                                    {
+                                        itType.valor = valo;
+                                    }
+                                }
+                                else if (tipoValue == tipoDato.nulo && itType.tipo.tipo == tipoDato.id)
                                 {
                                     itType.valor = valo;
                                 }
                                 else
                                 {
                                     listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                        "El tipo de la variable del User type NO es el mismo."));
+                                        "El tipo de la variable del User type NO EXISTE."));
                                     return tipoDato.errorSemantico;
                                 }
                             }
@@ -226,10 +159,20 @@ namespace Server.AST.Expresiones
                         }
                         else
                         {
-                            tipoDato tipoValue = listaValores.getType(entorno, listas);
+                            tipoDato tipoValue = cv2.getType(entorno, listas);
                             if (tipoValue == itType.tipo.tipo)
                             {
-                                itType.valor = listaValores.getValue(entorno, listas);
+                                itType.valor = valo;
+                            }
+                            else if (tipoValue == tipoDato.nulo && (itType.tipo.tipo == tipoDato.cadena ||
+                                itType.tipo.tipo == tipoDato.date ||
+                                itType.tipo.tipo == tipoDato.time ||
+                                itType.tipo.tipo == tipoDato.list ||
+                                itType.tipo.tipo == tipoDato.set ||
+                                itType.tipo.tipo == tipoDato.id ||
+                                itType.tipo.tipo == tipoDato.map))
+                            {
+                                itType.valor = valo;
                             }
                             else
                             {
@@ -240,6 +183,7 @@ namespace Server.AST.Expresiones
                         }
                         contador++;
                     }
+
                     return lista;
                 }
             }

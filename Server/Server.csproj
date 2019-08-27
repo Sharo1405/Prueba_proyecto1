@@ -60,6 +60,7 @@
     <Compile Include="AST\Expresiones\Funciones.cs" />
     <Compile Include="AST\Expresiones\ListaErrorPrinter.cs" />
     <Compile Include="AST\Expresiones\ListaExpresiones.cs" />
+    <Compile Include="AST\Expresiones\ListaPuntos.cs" />
     <Compile Include="AST\Expresiones\LLaveAsTypeUser.cs" />
     <Compile Include="AST\Expresiones\Logicas\Nott.cs" />
     <Compile Include="AST\Expresiones\Logicas\Or.cs" />

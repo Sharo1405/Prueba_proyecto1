@@ -13,6 +13,16 @@ namespace Server.AST.Expresiones
         public int linea { get; set; }
         public int columna { get; set; }
 
+
+        LinkedList<Comas> listaComas = new LinkedList<Comas>();
+        int contador = 0;
+
+
+        public ListaExpresiones()
+        {
+
+        }
+
         public ListaExpresiones(Expresion izq, Expresion der, int linea, int columna)
         {
             ExpSeparadasComas.AddLast(new Comas(linea, columna, izq));
@@ -25,7 +35,40 @@ namespace Server.AST.Expresiones
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
-            return ExpSeparadasComas;
+            foreach (Comas exp in ExpSeparadasComas)
+            {
+                if (exp.expresion1 is ListaExpresiones)
+                {
+                    ListaExpresiones listanueva = (ListaExpresiones)exp.expresion1;
+                    LinkedList<Comas> otraLista = (LinkedList<Comas>)listanueva.ExpSeparadasComas;
+                    object result = masPuntos(entorno, listas, otraLista, contador);
+                }
+                else
+                {
+                    listaComas.AddLast(exp);
+                }
+            }
+
+            return listaComas;
+        }
+
+
+        public object masPuntos(Entorno entorno, ErrorImpresion listas, LinkedList<Comas> listapuntos, int contador)
+        {
+            foreach (Comas exp in listapuntos)
+            {
+                if (exp.expresion1 is ListaExpresiones)
+                {
+                    ListaExpresiones listanueva = (ListaExpresiones)exp.expresion1;
+                    LinkedList<Comas> otraLista = (LinkedList<Comas>)listanueva.ExpSeparadasComas;
+                    object result = masPuntos(entorno, listas, otraLista, contador);
+                }
+                else
+                {
+                    listaComas.AddLast(exp);
+                }
+            }
+            return null;
         }
     }
 }
