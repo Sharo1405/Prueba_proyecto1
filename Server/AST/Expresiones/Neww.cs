@@ -23,7 +23,7 @@ namespace Server.AST.Expresiones
 
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
-            return Operacion.tipoDato.neww;
+            return tipoNew.tipo;
         }
 
         public object getValue(Entorno entorno, ErrorImpresion listas)

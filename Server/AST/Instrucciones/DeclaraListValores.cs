@@ -35,147 +35,42 @@ namespace Server.AST.Instrucciones
         {
             try
             {
-                Object dev = valor.getValue(entorno, listas);
-                if (dev is LinkedList<Comas>)
+                List<object> lista = new List<object>();
+                Lista listaGuardar = new Lista();
+                foreach (String id in idList)
                 {
-                    LinkedList<Comas> listaComas = (LinkedList<Comas>)dev;
-                    foreach (Comas cv in listaComas)
+                    Simbolo s = entorno.getEnActual(id, Simbolo.Rol.VARIABLE);
+                    if (s == null)
                     {
-                        Comas cv2 = (Comas)cv;
-                        Object objeto = cv2.getValue(entorno, listas);
-                        if (objeto is LinkedList<Comas>)
+                        if (!(valor is Corchetes))
                         {
-                            LinkedList<Comas> listComas = (LinkedList<Comas>)objeto;
-                            tipoDato dato = paraComas(listComas, entorno, listas);
-                            if (dato == tipoDato.errorSemantico)
-                            {
-                                return tipoDato.errorSemantico;
-                            }
+                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                "Los valores asignar a una LISTA no son validos"));
+                            return tipoDato.errorSemantico;
+                        }
+                        Object setLista = valor.getValue(entorno, listas);
+                        if (setLista is tipoDato)
+                        {                            
+                            return tipoDato.errorSemantico;
+                        }
+                        tipoDato tipo = valor.getType(entorno, listas);
+                        if (setLista is List<object>)
+                        {
+                            lista = (List<object>)setLista;
+                            listaGuardar = new Lista(id.ToLower(), lista, tipoDato.list, tipo, linea, columna);
                         }
                         else
                         {
-                            contador++;
-                            if (contador == 1)
-                            {
-                                tipoValorAnterior = tipoValor;
-                                if (tipoValor == tipoDato.id)
-                                {
-
-                                    Object sim = valor.getValue(entorno, listas);
-                                    CreateType ss = (CreateType)sim;
-                                    LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
-                                    foreach (itemType zz in ss.itemTypee)
-                                    {
-                                        itemTy2.AddLast((itemType)zz.Clone());
-                                    }
-                                    CreateType lista2 = (CreateType)ss.Clone(itemTy2);
-                                    listaList.Add(lista2);
-
-                                }
-                                else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
-                                {
-                                    Object sim = cv2.getValue(entorno, listas);
-                                    Simbolo s = (Simbolo)sim;
-                                    listaList.Add(s.Clone());
-                                }
-                                else
-                                {
-                                    listaList.Add(objeto);
-                                }
-                            }
-                            else
-                            {
-                                if (tipoValor == tipoValorAnterior)
-                                {
-                                    if (tipoValor == tipoDato.id)
-                                    {
-                                        Object sim = cv2.getValue(entorno, listas);
-                                        CreateType ss = (CreateType)sim;
-                                        LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
-                                        foreach (itemType zz in ss.itemTypee)
-                                        {
-                                            itemTy2.AddLast((itemType)zz.Clone());
-                                        }
-                                        CreateType lista2 = (CreateType)ss.Clone(itemTy2);
-                                        listaList.Add(lista2);
-
-                                    }
-                                    else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
-                                    {
-                                        Object sim = cv2.getValue(entorno, listas);
-                                        Simbolo s = (Simbolo)sim;
-                                        listaList.Add(s.Clone());
-                                    }
-                                    else
-                                    {
-                                        listaList.Add(objeto);
-                                    }
-                                }
-                                else
-                                {
-                                    listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                                                    NodoError.tipoError.Semantico, "Los valores del List no son del mismo tipo."));
-                                    return tipoDato.errorSemantico;
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (String id in idList)
-                    {
-                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), listaList, linea, columna,
-                                    tipoDato.list, tipoValorAnterior, Simbolo.Rol.VARIABLE));
-                    }
-                }
-                else
-                {
-                    //Expresion exp = (Expresion)dev;
-                    tipoValor = valor.getType(entorno, listas);
-                    if (tipoValor == tipoDato.booleano ||
-                        tipoValor == tipoDato.cadena ||
-                        tipoValor == tipoDato.date ||
-                        tipoValor == tipoDato.decimall ||
-                        tipoValor == tipoDato.entero ||
-                        tipoValor == tipoDato.id ||
-                        tipoValor == tipoDato.list ||
-                        tipoValor == tipoDato.map ||
-                        tipoValor == tipoDato.set ||
-                        tipoValor == tipoDato.time)
-                    {
-                        if (tipoValor == tipoDato.id)
-                        {
-                            Object sim = valor.getValue(entorno, listas);
-                            CreateType ss = (CreateType)sim;
-                            LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
-                            foreach (itemType zz in ss.itemTypee)
-                            {
-                                itemTy2.AddLast((itemType)zz.Clone());
-                            }
-                            CreateType lista2 = (CreateType)ss.Clone(itemTy2);
-                            listaList.Add(lista2);
-
-                        }
-                        else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
-                        {
-                            Object sim = valor.getValue(entorno, listas);
-                            Simbolo s = (Simbolo)sim;
-                            listaList.Add(s.Clone());
-                        }
-                        else
-                        {
-                            listaList.Add(dev);
+                            lista.Add(setLista);
+                            listaGuardar = new Lista(id.ToLower(), lista, tipoDato.list, tipo, linea, columna);
                         }
 
-                        foreach (String id in idList)
-                        {
-                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), listaList, linea, columna,
-                                        tipoDato.list, tipoValor, Simbolo.Rol.VARIABLE));
-                        }
+                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), listaGuardar, linea, columna,
+                                tipoDato.list, tipo, Simbolo.Rol.VARIABLE));
                     }
                     else
                     {
-                        listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                                        NodoError.tipoError.Semantico, "Valor del List no es valido"));
+                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "Variable ya existe" + id));
                         return tipoDato.errorSemantico;
                     }
                 }
@@ -186,111 +81,7 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
-        }
-
-
-        public tipoDato paraComas(LinkedList<Comas> listComas, Entorno entorno, ErrorImpresion listas)
-        {
-            foreach (Comas cv in listComas)
-            {
-                Comas cv2 = (Comas)cv;
-                Object valor = cv2.getValue(entorno, listas);
-                if (valor is Comas)
-                {
-                    LinkedList<Comas> listaaComas = (LinkedList<Comas>)valor;
-                    paraComas(listaaComas, entorno, listas);
-                }
-                else
-                {
-                    tipoValor = cv2.getType(entorno, listas);
-                    if (tipoValor == tipoDato.booleano ||
-                            tipoValor == tipoDato.cadena ||
-                            tipoValor == tipoDato.date ||
-                            tipoValor == tipoDato.decimall ||
-                            tipoValor == tipoDato.entero ||
-                            tipoValor == tipoDato.id ||
-                            tipoValor == tipoDato.list ||
-                            tipoValor == tipoDato.map ||
-                            tipoValor == tipoDato.set ||
-                            tipoValor == tipoDato.time)
-                    {
-                        contador++;
-
-                        if (contador == 1)
-                        {
-                            tipoValorAnterior = tipoValor;
-                            tipoValorAnterior = tipoValor;
-                            if (tipoValor == tipoDato.id)
-                            {
-                                Object sim = cv2.getValue(entorno, listas);
-                                CreateType ss = (CreateType)sim;
-                                LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
-                                foreach (itemType zz in ss.itemTypee)
-                                {
-                                    itemTy2.AddLast((itemType)zz.Clone());
-                                }
-                                CreateType lista2 = (CreateType)ss.Clone(itemTy2);
-                                listaList.Add(lista2);
-
-                            }
-                            else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
-                            {
-                                Object sim = cv2.getValue(entorno, listas);
-                                Simbolo s = (Simbolo)sim;
-                                listaList.Add(s.Clone());
-                            }
-                            else
-                            {
-                                listaList.Add(valor);
-                            }
-                        }
-                        else
-                        {
-                            if (tipoValor == tipoValorAnterior)
-                            {
-                                if (tipoValor == tipoDato.id)
-                                {
-                                    Object sim = cv2.getValue(entorno, listas);                                  
-                                    CreateType ss = (CreateType)sim;
-                                    LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
-                                    foreach (itemType zz in ss.itemTypee)
-                                    {
-                                        itemTy2.AddLast((itemType)zz.Clone());
-                                    }
-                                    CreateType lista2 = (CreateType)ss.Clone(itemTy2);
-                                    listaList.Add(lista2);
-
-                                }
-                                else if (tipoValor == tipoDato.list || tipoValor == tipoDato.set)
-                                {
-                                    Object sim = cv2.getValue(entorno, listas);
-                                    Simbolo s = (Simbolo)sim;
-                                    listaList.Add(s.Clone());
-                                }
-                                else
-                                {
-                                    listaList.Add(valor);
-                                }
-                            }
-                            else
-                            {
-                                listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                                                NodoError.tipoError.Semantico, "Los valores del List no son del mismo tipo."));
-                                return tipoDato.errorSemantico;
-                            }
-                        }
-
-                    }
-                    else
-                    {
-                        listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                                        NodoError.tipoError.Semantico, "Valor del List no es valido"));
-                        return tipoDato.errorSemantico;
-                    }
-                }
-            }
-            return tipoDato.ok;
-        }
+        }        
     }
 }
 

@@ -566,6 +566,10 @@ namespace Server.GenerarAST
                         break;
 
                     case "FUNCIONESNATIVASCADENAS":
+                        /*return new accesosFuncionCadena3(variable(nodo.ChildNodes.ElementAt(0)),
+                            listaFuncionesNativasCadenas(nodo.ChildNodes.ElementAt(2)),
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column);*/
                         break;
 
                     case "FUNCIONESNATIVASABSTRACCION":
@@ -598,6 +602,22 @@ namespace Server.GenerarAST
             return null;
         }
 
+
+        public LinkedList<FuncionesNativasCadenas> listaFuncionesNativasCadenas(ParseTreeNode nodo)
+        {
+            LinkedList<FuncionesNativasCadenas> lista = new LinkedList<FuncionesNativasCadenas>();
+            foreach (ParseTreeNode ite in nodo.ChildNodes)
+            {
+                FuncionesNativasCadenas i =(FuncionesNativasCadenas) fnativacadenas(ite);
+                lista.AddLast(i);
+            }
+            return lista;
+        }
+
+        public Expresion fnativacadenas(ParseTreeNode nodo)
+        {
+            return funcionesCadenas(nodo);
+        }
 
         public LinkedList<String> puntosIdsAccesos(ParseTreeNode nodo)
         {

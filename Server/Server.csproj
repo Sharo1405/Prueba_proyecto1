@@ -54,6 +54,7 @@
     <Compile Include="AST\Entornos\Simbolo.cs" />
     <Compile Include="AST\Expresiones\Aritmeticas\Negatico.cs" />
     <Compile Include="AST\Expresiones\ArrobaId.cs" />
+    <Compile Include="AST\Expresiones\Casteos.cs" />
     <Compile Include="AST\Expresiones\Comas.cs" />
     <Compile Include="AST\Expresiones\Corchetes.cs" />
     <Compile Include="AST\Expresiones\DosPuntos.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="AST\Expresiones\Neww.cs" />
     <Compile Include="AST\Expresiones\Puntos.cs" />
     <Compile Include="AST\Instrucciones\AccesoIdsConASignacion.cs" />
+    <Compile Include="AST\Instrucciones\accesosFuncionCadena3.cs" />
     <Compile Include="AST\Instrucciones\Asignacion.cs" />
     <Compile Include="AST\Instrucciones\Breakk.cs" />
     <Compile Include="AST\Instrucciones\Casee.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="AST\Llaves.cs" />
     <Compile Include="AST\Otras\Auxiliar.cs" />
     <Compile Include="AST\Otras\ClaveValor.cs" />
+    <Compile Include="AST\Otras\Lista.cs" />
     <Compile Include="AST\Otras\Parametros.cs" />
     <Compile Include="AST\Expresiones\TipoDato\Identificador.cs" />
     <Compile Include="AST\Instrucciones\Ciclos\WhileCiclo.cs" />

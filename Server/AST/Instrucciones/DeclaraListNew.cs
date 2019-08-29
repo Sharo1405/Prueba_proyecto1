@@ -30,6 +30,7 @@ namespace Server.AST.Instrucciones
         {
             if (tipoVal.tipoValor is Tipo)
             {
+                tiposList.AddLast(new Tipo(tipoVal.tipo, linea, columna));
                 tipoDato t = comprobandoTipos(entorno, listas, tipoVal.tipoValor);
                 if (t == tipoDato.errorSemantico)
                 {
@@ -40,7 +41,7 @@ namespace Server.AST.Instrucciones
             {
                 if (tipoVal.tipo == tipoDato.id)
                 {
-                    Simbolo sim = entorno.getEnActual(tipoVal.id.ToLower(), Simbolo.Rol.VARIABLE);
+                    Simbolo sim = entorno.get(tipoVal.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
                     if (sim == null)
                     {
                         listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
@@ -62,6 +63,8 @@ namespace Server.AST.Instrucciones
             return tipoDato.ok;
         }
 
+        LinkedList<Tipo> tiposList = new LinkedList<Tipo>();
+
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
             try
@@ -74,13 +77,15 @@ namespace Server.AST.Instrucciones
                         tipoDato tt = comprobandoTipos(entorno, listas, tipoValor);
                         if (tt == tipoDato.ok)
                         {
-                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), new List<Object>(), linea, columna,
-                                        tipoDato.set, tipoValor.tipo, tipoValor, Simbolo.Rol.VARIABLE));
+                            Tipo aux = new Tipo(tipoDato.list, tiposList, linea, columna);
+                            Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.list, tiposList, linea, columna);
+                            entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), listaGuardar, linea, columna,
+                                        tipoDato.list, aux.tipo, aux, Simbolo.Rol.VARIABLE));
                         }
                         else
                         {
                             listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                "Tipos no valido en el valor del List: " + id));
+                                "Tipos no valido en el valor del list: " + id));
                             return tipoDato.errorSemantico;
                         }
                     }

@@ -419,6 +419,7 @@ namespace Server.Analizador
             var AUMENTOSSOLOS = new NonTerminal("AUMENTOSSOLOS");
             var TIPOCASTEO = new NonTerminal("TIPOCASTEO");
             var LLAMADASFUNCIONES = new NonTerminal("LLAMADASFUNCIONES");
+            var LISTAFUNCIONESNATIVASCADE = new NonTerminal("LISTAFUNCIONESNATIVASCADE");
             #endregion
 
             #region TERMINALES
@@ -631,10 +632,13 @@ namespace Server.Analizador
                                  | ARROBAID + PUNTOIDS + igual + E
                                  | ARROBAID + punto + FUNCIONESCOLLECTIONS
                                  | ARROBAID + PUNTOIDS + punto + FUNCIONESCOLLECTIONS
-                                 | ARROBAID + punto + FUNCIONESNATIVASCADENAS
-                                 | ARROBAID + PUNTOIDS + punto + FUNCIONESNATIVASCADENAS
+                                 | ARROBAID + punto + LISTAFUNCIONESNATIVASCADE
+                                 | ARROBAID + PUNTOIDS + punto + LISTAFUNCIONESNATIVASCADE
                                  | ARROBAID + punto + FUNCIONESNATIVASABSTRACCION
                                  | ARROBAID + PUNTOIDS + punto + FUNCIONESNATIVASABSTRACCION;
+
+            LISTAFUNCIONESNATIVASCADE.Rule = LISTAFUNCIONESNATIVASCADE + punto + FUNCIONESNATIVASCADENAS
+                                            | FUNCIONESNATIVASCADENAS;
 
             PUNTOIDS.Rule = MakePlusRule(PUNTOIDS, PUNTOIDS2);
 

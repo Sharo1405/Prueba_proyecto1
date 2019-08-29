@@ -32,46 +32,46 @@ namespace Server.AST.Instrucciones
         {
             try
             {
+                List<object> lista = new List<object>();
+                Lista listaGuardar = new Lista();
                 foreach (String id in idSet) {
                     Simbolo s = entorno.getEnActual(id, Simbolo.Rol.VARIABLE);
                     if (s == null) {
+                        if (!(valor is Llaves)) {
+                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, 
+                                "Los valores asignar a un SET no son validos"));
+                            return tipoDato.errorSemantico;
+                        }
                         Object setLista = valor.getValue(entorno, listas);
-                        if (setLista is Auxiliar)
+                        if (setLista is tipoDato)
                         {
-                            LinkedList<Tipo> tip = ((Auxiliar)setLista).listaTipos;
-                            if (valor is Llaves) {
-                                Tipo au = new Tipo(tipoDato.set, tip,linea, columna);
-                                entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), ((Auxiliar)setLista).valorLlaves, linea, columna,
-                                       tipoDato.set, au.tipo, au, Simbolo.Rol.VARIABLE));
-                            }
-                            else
-                            {
-                                //solo igualacion con una lista ya existente
-
-                            }
+                            return tipoDato.errorSemantico;
+                        }
+                        tipoDato tipo = valor.getType(entorno, listas);
+                        if (setLista is List<object>)
+                        {
+                            lista =(List<object>) setLista;
+                            listaGuardar = new Lista(id.ToLower(), lista, tipoDato.set, tipo, linea, columna);
                         }
                         else
-                        {
-                            if (setLista is tipoDato)
-                            {
-                                if ((tipoDato)setLista == tipoDato.errorSemantico)
-                                {
-                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "No se puede declarar el List"));
-                                    return tipoDato.errorSemantico;
-                                }
-                            }
+                        {                            
+                            lista.Add(setLista);
+                            listaGuardar = new Lista(id.ToLower(), lista, tipoDato.set, tipo, linea, columna);
                         }
+
+                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), listaGuardar, linea, columna,
+                                tipoDato.set, tipo, Simbolo.Rol.VARIABLE));
                     }
                     else
                     {
-                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "Variable ya existe"));
+                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "Variable ya existe" + id));
                         return tipoDato.errorSemantico;
                     }
                 }
             }
             catch (Exception e)
             {
-                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "No se puede declarar el List"));
+                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "No se puede declarar el Set"));
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;

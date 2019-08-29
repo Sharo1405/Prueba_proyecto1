@@ -28,8 +28,16 @@ namespace Server.AST.Expresiones
         }
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
+            ListaExpresionesPuntos = new LinkedList<Puntos>();
+            ListaExpresionesPuntos.Clear();
+            auxParaFunciones = new object();
             getValue(entorno, listas);
-            return tipoFinal;
+            contador = 0;
+            contadorFuncionNativa = 0;
+            auxParaFunciones = new object();
+            ListaExpresionesPuntos = new LinkedList<Puntos>();
+            tipoDato tipoFinal2 = tipoFinal;
+            return tipoFinal2;
         }
 
         tipoDato tipoFinal;
@@ -101,7 +109,32 @@ namespace Server.AST.Expresiones
                                 {
                                     tipoFinal = itType.tipo.tipo;
                                     auxParaFunciones = itType.valor;
-                                    return itType.valor;
+                                    contador++;
+                                    while (contador < ListaExpresionesPuntos.Count)
+                                    {
+                                        Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
+                                        if (puntos2.expresion1 is FuncionesNativasCadenas)
+                                        {
+                                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                                            if (tipoFinal != tipoDato.cadena)
+                                            {
+                                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                                "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                            auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                                "El acceso no es valido porque es una variable normal"));
+                                            return tipoDato.errorSemantico;
+                                        }
+
+                                        contador++;
+                                    }
+                                    return auxParaFunciones;
+
                                 }
                             }                            
                         }
@@ -288,7 +321,32 @@ namespace Server.AST.Expresiones
                         {
                             tipoFinal = itType.tipo.tipo;
                             auxParaFunciones = itType.valor;
-                            return itType.valor;
+                            contador++;
+                            while (contador < ListaExpresionesPuntos.Count)
+                            {
+                                Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
+                                if (puntos2.expresion1 is FuncionesNativasCadenas)
+                                {
+                                    FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                                    if (tipoFinal != tipoDato.cadena)
+                                    {
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                        "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
+                                        return tipoDato.errorSemantico;
+                                    }
+                                    auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                                }
+                                else
+                                {
+                                    listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                        "El acceso no es valido porque es una variable normal"));
+                                    return tipoDato.errorSemantico;
+                                }
+
+                                contador++;
+                            }
+                            return auxParaFunciones;
+
                         }
                     }
                 }
