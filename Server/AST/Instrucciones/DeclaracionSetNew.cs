@@ -70,7 +70,7 @@ namespace Server.AST.Instrucciones
         {
             if (tipoVal.tipoValor is Tipo)
             {
-                tiposSet.AddLast(new Tipo(tipoVal.tipo, linea, columna));
+                tiposSet.AddLast(new Tipo(tipoVal.tipo, tipoVal.tipoValor, linea, columna));
                 tipoDato t = comprobandoTipos(entorno, listas, tipoVal.tipoValor);
                 if (t == tipoDato.errorSemantico)
                 {

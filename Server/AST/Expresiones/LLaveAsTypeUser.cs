@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
+using Server.AST.Otras;
 using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Expresiones
@@ -152,11 +153,92 @@ namespace Server.AST.Expresiones
                             }
                             else if (itType.tipo.tipo == tipoDato.list)
                             {
-
+                                if (valo is Neww)
+                                {
+                                    Neww v = (Neww)valo;
+                                    tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
+                                    if (tt == tipoDato.ok)
+                                    {
+                                        //Tipo aux = new Tipo(tipoDato.set, tiposSet, linea, columna);
+                                        Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.list, tiposSet, linea, columna);
+                                        //listaRetorno.Add(listaGuardar);
+                                        itType.valor = listaGuardar;
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "Tipos no valido en el valor de la lista"));
+                                        return tipoDato.errorSemantico;
+                                    }
+                                }
+                                else if (cv2.expresion1 is Corchetes)
+                                {
+                                    if (valo is List<object>)
+                                    {
+                                        //listaRetorno = (List<object>)valo;
+                                        Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.list, cv2.getType(entorno, listas), linea, columna);
+                                        //listaRetorno.Add(listaGuardar);
+                                        itType.valor = listaGuardar;
+                                    }
+                                    else
+                                    {
+                                        List<Object> solo1 = new List<object>();
+                                        solo1.Add(valo);
+                                        Lista listaGuardar = new Lista("item", solo1, tipoDato.list, cv2.getType(entorno, listas), linea, columna);
+                                        //listaRetorno.Add(listaGuardar);
+                                        itType.valor = listaGuardar;
+                                    }
+                                }
+                                else
+                                {
+                                    //listaRetorno.Add(valo);
+                                    itType.valor = valo;
+                                }
                             }
                             else if (itType.tipo.tipo == tipoDato.set)
                             {
-
+                                if (valo is Neww)
+                                {
+                                    Neww v = (Neww)valo;
+                                    tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
+                                    if (tt == tipoDato.ok)
+                                    {
+                                        //Tipo aux = new Tipo(tipoDato.set, tiposSet, linea, columna);
+                                        Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.set, tiposSet, linea, columna);
+                                        //listaRetorno.Add(listaGuardar);
+                                        itType.valor = listaGuardar;
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "Tipos no valido en el valor del set"));
+                                        return tipoDato.errorSemantico;
+                                    }
+                                }
+                                else if (cv2.expresion1 is Llaves)
+                                {
+                                    if (valo is List<object>)
+                                    {
+                                        //listaRetorno = (List<object>)valo;
+                                        Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.set, cv2.getType(entorno, listas), linea, columna);
+                                        //listaRetorno.Add(listaGuardar);
+                                        itType.valor = listaGuardar;
+                                    }
+                                    else
+                                    {
+                                        //listaRetorno.Add(listaRetorno);
+                                        List<Object> solo1 = new List<object>();
+                                        solo1.Add(valo);
+                                        Lista listaGuardar = new Lista("item", solo1, tipoDato.set, cv2.getType(entorno, listas), linea, columna);
+                                        //listaRetorno.Add(listaGuardar);
+                                        itType.valor = listaGuardar;
+                                    }
+                                }
+                                else
+                                {
+                                    //listaRetorno.Add(valo);
+                                    itType.valor = valo;
+                                }
                             }
                             else
                             {
@@ -263,18 +345,99 @@ namespace Server.AST.Expresiones
                     }
                     else if (itType.tipo.tipo == tipoDato.list)
                     {
-
+                        if (valo is Neww)
+                        {
+                            Neww v = (Neww)valo;
+                            tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
+                            if (tt == tipoDato.ok)
+                            {
+                                //Tipo aux = new Tipo(tipoDato.set, tiposSet, linea, columna);
+                                Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.list, tiposSet, linea, columna);
+                                //listaRetorno.Add(listaGuardar);
+                                itType.valor = listaGuardar;
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "Tipos no valido en el valor de la lista"));
+                                return tipoDato.errorSemantico;
+                            }
+                        }
+                        else if (cv2.expresion1 is Corchetes)
+                        {
+                            if (valo is List<object>)
+                            {
+                                //listaRetorno = (List<object>)valo;
+                                Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.list, cv2.getType(entorno, listas), linea, columna);
+                                //listaRetorno.Add(listaGuardar);
+                                itType.valor = listaGuardar;
+                            }
+                            else
+                            {
+                                List<Object> solo1 = new List<object>();
+                                solo1.Add(valo);
+                                Lista listaGuardar = new Lista("item", solo1, tipoDato.list, cv2.getType(entorno, listas), linea, columna);
+                                //listaRetorno.Add(listaGuardar);
+                                itType.valor = listaGuardar;
+                            }
+                        }
+                        else
+                        {
+                            //listaRetorno.Add(valo);
+                            itType.valor = valo;
+                        }
                     }
                     else if (itType.tipo.tipo == tipoDato.set)
                     {
-
+                        if (valo is Neww)
+                        {
+                            Neww v = (Neww)valo;
+                            tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
+                            if (tt == tipoDato.ok)
+                            {
+                                //Tipo aux = new Tipo(tipoDato.set, tiposSet, linea, columna);
+                                Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.set, tiposSet, linea, columna);
+                                //listaRetorno.Add(listaGuardar);
+                                itType.valor = listaGuardar;
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "Tipos no valido en el valor del set"));
+                                return tipoDato.errorSemantico;
+                            }
+                        }
+                        else if (cv2.expresion1 is Llaves)
+                        {
+                            if (valo is List<object>)
+                            {
+                                //listaRetorno = (List<object>)valo;
+                                Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.set, cv2.getType(entorno, listas), linea, columna);
+                                //listaRetorno.Add(listaGuardar);
+                                itType.valor = listaGuardar;
+                            }
+                            else
+                            {
+                                //listaRetorno.Add(listaRetorno);
+                                List<Object> solo1 = new List<object>();
+                                solo1.Add(valo);
+                                Lista listaGuardar = new Lista("item", solo1, tipoDato.set, cv2.getType(entorno, listas), linea, columna);
+                                //listaRetorno.Add(listaGuardar);
+                                itType.valor = listaGuardar;
+                            }
+                        }
+                        else
+                        {
+                            //listaRetorno.Add(valo);
+                            itType.valor = valo;
+                        }
                     }
                     else
                     {
                         tipoDato tipoValue = cv2.getType(entorno, listas);
                         if (tipoValue == itType.tipo.tipo)
                         {
-                            itType.valor = cv2.getValue(entorno, listas);
+                            itType.valor = valo;
                         }
                         else
                         {
@@ -290,5 +453,46 @@ namespace Server.AST.Expresiones
 
             return tipoDato.ok;
         }
+
+
+        LinkedList<Tipo> tiposSet = new LinkedList<Tipo>();
+        List<Object> listaRetorno = new List<object>();
+        public tipoDato comprobandoTipos(Entorno entorno, ErrorImpresion listas, Tipo tipoVal)
+        {
+            if (tipoVal.tipoValor is Tipo)
+            {
+                tiposSet.AddLast(new Tipo(tipoVal.tipo, tipoVal.tipoValor, linea, columna));
+                tipoDato t = comprobandoTipos(entorno, listas, tipoVal.tipoValor);
+                if (t == tipoDato.errorSemantico)
+                {
+                    return tipoDato.errorSemantico;
+                }
+            }
+            else
+            {
+                if (tipoVal.tipo == tipoDato.id)
+                {
+                    Simbolo sim = entorno.get(tipoVal.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                    if (sim == null)
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                "El tipo de la variable del set no existe. El nombre es: " + tipoVal.id));
+                        return tipoDato.errorSemantico;
+                    }
+                }
+                else if (tipoVal.tipo == tipoDato.booleano ||
+                        tipoVal.tipo == tipoDato.cadena ||
+                        tipoVal.tipo == tipoDato.date ||
+                        tipoVal.tipo == tipoDato.decimall ||
+                        tipoVal.tipo == tipoDato.entero ||
+                        tipoVal.tipo == tipoDato.time)
+                {
+                    return tipoDato.ok;
+                }
+            }
+
+            return tipoDato.ok;
+        }
+
     }
 }

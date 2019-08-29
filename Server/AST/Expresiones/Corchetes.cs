@@ -277,8 +277,8 @@ namespace Server.AST.Expresiones
         public tipoDato comprobandoTipos(Entorno entorno, ErrorImpresion listas, Tipo tipoVal)
         {
             if (tipoVal.tipoValor is Tipo)
-            {
-                tiposSet.AddLast(new Tipo(tipoVal.tipo, linea, columna));
+            {                
+                tiposSet.AddLast(new Tipo(tipoVal.tipo, tipoVal.tipoValor, linea, columna));
                 tipoDato t = comprobandoTipos(entorno, listas, tipoVal.tipoValor);
                 if (t == tipoDato.errorSemantico)
                 {
