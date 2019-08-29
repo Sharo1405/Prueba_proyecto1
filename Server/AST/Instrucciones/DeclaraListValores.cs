@@ -42,7 +42,7 @@ namespace Server.AST.Instrucciones
                     Simbolo s = entorno.getEnActual(id, Simbolo.Rol.VARIABLE);
                     if (s == null)
                     {
-                        if (!(valor is Corchetes))
+                        if (!(valor is Corchetes || valor is LlamadaProcedimiento))
                         {
                             listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
                                 "Los valores asignar a una LISTA no son validos"));
@@ -54,7 +54,14 @@ namespace Server.AST.Instrucciones
                             return tipoDato.errorSemantico;
                         }
                         tipoDato tipo = valor.getType(entorno, listas);
-                        if (setLista is List<object>)
+
+                        if (valor is LlamadaProcedimiento)
+                        {
+                            Lista retornada = (Lista)setLista;
+                            retornada.idLista = id.ToLower();
+                            listaGuardar = retornada;                            
+                        }
+                        else if (setLista is List<object>)
                         {
                             lista = (List<object>)setLista;
                             listaGuardar = new Lista(id.ToLower(), lista, tipoDato.list, tipo, linea, columna);
@@ -66,7 +73,7 @@ namespace Server.AST.Instrucciones
                         }
 
                         entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), listaGuardar, linea, columna,
-                                tipoDato.list, tipo, Simbolo.Rol.VARIABLE));
+                                tipoDato.list, listaGuardar.tipoValor, Simbolo.Rol.VARIABLE));
                     }
                     else
                     {

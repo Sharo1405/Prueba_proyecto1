@@ -570,12 +570,15 @@ namespace Server.Analizador
                                       | contains + aparentesis + E + cparentesis;
 
             MAPCOLLECTIONS.Rule = map + LISTAVARIABLES + igual + neww + map + menorq + TIPOSPRIMITIVOS + coma + TIPOS + mayorq
+                                | map + LISTAVARIABLES
                                 | map + LISTAVARIABLES + igual + acorchete + E + ccorchete;
 
             LISTCOLLECTIONS.Rule = list + LISTAVARIABLES + igual + neww + list + menorq + TIPOS + mayorq
+                                 | list + LISTAVARIABLES
                                  | list + LISTAVARIABLES + igual + E;//acorchete + E + ccorchete;
 
             SETCOLLECTIONS.Rule = set + LISTAVARIABLES + igual + neww + set + menorq + TIPOS + mayorq
+                                | set + LISTAVARIABLES
                                 | set + LISTAVARIABLES + igual + E;//allave + E + cllave;
 
             FORR.Rule = forr + aparentesis + INICIALIZACION + puntoycoma + E + puntoycoma + ACTUALIZACION + cparentesis + STATEMENTBLOCK;
@@ -841,6 +844,7 @@ namespace Server.Analizador
                 | acorchete + E + ccorchete //list y acceso normal [num]
 
                 | LLAMADASFUNCIONES
+                | LLAMADASPROCEDIMIENTOS
                 | FUNCIONESCOLLECTIONS
                 | FUNCIONESNATIVASCADENAS
                 | FUNCIONESNATIVASABSTRACCION;

@@ -28,62 +28,121 @@ namespace Server.AST.Instrucciones
             this.columna = columna;
         }
 
+
+        public CreateType CreaNuevoType(CreateType existente, Entorno entorno, ErrorImpresion listas)
+        {
+            CreateType nuevo = new CreateType();
+            nuevo.idType = existente.idType;
+            nuevo.ifnotexists = existente.ifnotexists;
+            nuevo.linea = existente.linea;
+            nuevo.columna = existente.columna;
+
+            foreach (itemType var in existente.itemTypee)
+            {
+                itemType i = new itemType();
+                i.id = var.id;
+                i.tipo = var.tipo;
+                i.valor = new Object();
+                if (var.tipo.tipo == tipoDato.id)
+                {
+                    Simbolo buscado2 = entorno.get(var.tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                    if (buscado2 != null)
+                    {
+                        //arreglar solo declarar sin el clonar
+                        //CreateType typeComoTipo =(CreateType) buscado2.valor;
+                        i.valor = null;//typeComoTipo.Clone();
+                    }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                            "El tipo de esa variable del Type User no existe: Tipo:" + var.tipo.id.ToLower()));
+                    }
+                }
+                else if (var.tipo.tipo == tipoDato.entero)
+                {
+                    var.valor = 0;
+                }
+                else if (var.tipo.tipo == tipoDato.decimall)
+                {
+                    var.valor = 0.0;
+                }
+                else if (var.tipo.tipo == tipoDato.booleano)
+                {
+                    var.valor = false;
+                }
+                else
+                {
+                    var.valor = null;
+                }
+
+                nuevo.itemTypee.AddLast(i);
+            }
+            return nuevo;
+        }
+
+
         public object ejecutar(Entorno entorno, ErrorImpresion listas)
         {
             try
             {
                 Simbolo variable = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
                 if (variable != null)
-                {
-                    tipoDato tipoValor = valor.getType(entorno, listas);
+                {                    
                     object value = valor.getValue(entorno, listas);
+                    tipoDato tipoValor = valor.getType(entorno, listas);
                     if (valor is Corchetes)
                     {
-                        if (variable.tipo == tipoDato.list || variable.tipo == tipoDato.set)
-                        {
-                            List<Object> lista = (List<Object>)variable.valor;
-                            lista.Clear();
-                            if (tipoValor == variable.tipoValor)
+                        if (variable.tipo == tipoDato.list)
+                        { 
+                            Lista listaGuardar = new Lista();
+                            if (value is List<object>)
                             {
-                                lista.Add(value);
+                                List<object> lista = (List<object>)value;
+                                listaGuardar = new Lista(id.ToLower(), lista, tipoDato.list, tipoValor, linea, columna);
+                                variable.valor = listaGuardar;
                             }
                             else
                             {
-                                LinkedList<Comas> listaComas = (LinkedList<Comas>)value;
-                                foreach (Comas cv in listaComas)
-                                {
-                                    Comas cv2 = (Comas)cv;
-                                    Object objeto = cv2.getValue(entorno, listas);
-                                    if (objeto is LinkedList<Comas>)
-                                    {
-                                        LinkedList<Comas> listComas = (LinkedList<Comas>)objeto;
-                                        tipoDato dato = paraComas(listComas, entorno, listas, variable.tipoValor, lista);
-                                        if (dato == tipoDato.errorSemantico)
-                                        {
-                                            return tipoDato.errorSemantico;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (cv2.getType(entorno, listas) == variable.tipoValor)
-                                        {
-                                            lista.Add(objeto);
-                                        }
-                                        else
-                                        {
-                                            listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                                                               NodoError.tipoError.Semantico, "Los valores del List no son del mismo tipo."));
-                                            return tipoDato.errorSemantico;
-                                        }
-
-                                    }
-                                }
+                                List<object> lista = new List<object>();
+                                lista.Add(value);
+                                listaGuardar = new Lista(id.ToLower(), lista, tipoDato.list, tipoValor, linea, columna);
+                                variable.valor = listaGuardar;
                             }
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                   "La variable no es del mismo tipo que su asignacion, se esperaba: " + 
+                                   Convert.ToString(variable.tipo) + "Y se recibe un tipo: " + Convert.ToString(tipoDato.list)));
+                            return tipoDato.errorSemantico;
                         }
                     }
                     else if (valor is Llaves) //set
                     {
-                        
+                        if (variable.tipo == tipoDato.set)
+                        {
+                            Lista listaGuardar = new Lista();
+                            if (value is List<object>)
+                            {
+                                List<object> lista = (List<object>)value;
+                                listaGuardar = new Lista(id.ToLower(), lista, tipoDato.set, tipoValor, linea, columna);
+                                variable.valor = listaGuardar;
+                            }
+                            else
+                            {
+                                List<object> lista = new List<object>();
+                                lista.Add(value);
+                                listaGuardar = new Lista(id.ToLower(), lista, tipoDato.set, tipoValor, linea, columna);
+                                variable.valor = listaGuardar;
+                            }
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                   "La variable no es del mismo tipo que su asignacion, se esperaba: " +
+                                   Convert.ToString(variable.tipo) + "Y se recibe un tipo: " + Convert.ToString(tipoDato.set)));
+                            return tipoDato.errorSemantico;
+                        }
                     }
                     else if (valor is LLaveAsTypeUser) //user types
                     {
@@ -97,35 +156,59 @@ namespace Server.AST.Instrucciones
                     {
                         Neww clase = (Neww)valor;
                         Tipo tipo = clase.tipoNew;
-                        if (tipo.tipo == tipoDato.map && tipoDato.map == variable.tipo)
+                        if (tipo.tipo == tipoDato.list && variable.tipo == tipoDato.list)
                         {
-                            variable.valor = new HashSet<ClaveValor>();
-                            if (tipo.listaTipos.Count == 2)
+                            Neww v = (Neww)value;
+                            tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
+                            if (tt == tipoDato.ok)
                             {
-                                int contador = 0;
-                                foreach (Tipo tipoclavevalor in tipo.listaTipos)
+                                //Tipo aux = new Tipo(tipoDato.set, tiposSet, linea, columna);
+                                Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.list, tiposSet, linea, columna);
+                                //listaRetorno.Add(listaGuardar);
+                                variable.valor = listaGuardar;
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "Tipos no valido en el valor de la lista"));
+                                return tipoDato.errorSemantico;
+                            }
+                        }
+                        else if (tipo.tipo == tipoDato.set && variable.tipo == tipoDato.set)
+                        {
+                            Neww v = (Neww)value;
+                            tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
+                            if (tt == tipoDato.ok)
+                            {
+                                Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.set, tiposSet, linea, columna);
+                                variable.valor = listaGuardar;
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "Tipos no valido en el valor del set"));
+                                return tipoDato.errorSemantico;
+                            }
+                        }
+                        else if (tipo.tipo == tipoDato.id && variable.tipo == tipoDato.id)
+                        {
+                            Neww claseNeww = (Neww)value;
+                            Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                            if (sim2 != null)
+                            {
+                                if (sim2.valor is CreateType)
                                 {
-                                    contador++;
-                                    if (contador == 1)
-                                    {
-                                        variable.tipoClave = tipoclavevalor.tipo;
-                                    }
-                                    else
-                                    {
-                                        variable.tipoValor = tipoclavevalor.tipo;
-                                    }
+                                    CreateType ss = (CreateType)sim2.valor;
+                                    CreateType lista2 = CreaNuevoType(ss, entorno, listas);
+                                    variable.valor = lista2;
                                 }
                             }
                             else
                             {
                                 listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                    "La cantidad de tipos no es valida para el map"));
+                                    "El tipo de la variable del User type NO EXISTE."));
+                                return tipoDato.errorSemantico;
                             }
-                        }
-                        else if (tipo.tipo == variable.tipo)
-                        {
-                            variable.tipoValor = tipo.tipoValor.tipo;
-                            variable.valor = new List<Object>();
                         }
                         else
                         {
@@ -133,6 +216,12 @@ namespace Server.AST.Instrucciones
                                 "Los tipos no coinciden para la variable, No se puede hacer la instancia. Tipos en cuestion: " +
                                 Convert.ToString(variable.tipo) + Convert.ToString(tipo.tipo)));
                         }
+                    }
+                    else if (valor is LlamadaProcedimiento)
+                    {
+                        Lista retornada = (Lista)value;
+                        retornada.idLista = id.ToLower();
+                        variable.valor = retornada;
                     }
                     else if (variable.tipo == tipoValor)
                     {
@@ -171,55 +260,45 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
-        }       
+        }
 
 
-        public tipoDato paraComas(LinkedList<Comas> listComas, Entorno entorno, ErrorImpresion listas, tipoDato tipoValorLista, List<Object> list)
+        LinkedList<Tipo> tiposSet = new LinkedList<Tipo>();
+        List<Object> listaRetorno = new List<object>();
+        public tipoDato comprobandoTipos(Entorno entorno, ErrorImpresion listas, Tipo tipoVal)
         {
-            foreach (Comas cv in listComas)
+            if (tipoVal.tipoValor is Tipo)
             {
-                Comas cv2 = (Comas)cv;
-                Object valor = cv2.getValue(entorno, listas);
-                if (valor is Comas)
+                tiposSet.AddLast(new Tipo(tipoVal.tipo, tipoVal.tipoValor, linea, columna));
+                tipoDato t = comprobandoTipos(entorno, listas, tipoVal.tipoValor);
+                if (t == tipoDato.errorSemantico)
                 {
-                    LinkedList<Comas> listaaComas = (LinkedList<Comas>)valor;
-                    paraComas(listaaComas, entorno, listas, tipoValorLista, list);
+                    return tipoDato.errorSemantico;
                 }
-                else
+            }
+            else
+            {
+                if (tipoVal.tipo == tipoDato.id)
                 {
-                    tipoDato tipoValor = cv2.getType(entorno, listas);
-                    if (tipoValor == tipoDato.booleano ||
-                            tipoValor == tipoDato.cadena ||
-                            tipoValor == tipoDato.date ||
-                            tipoValor == tipoDato.decimall ||
-                            tipoValor == tipoDato.entero ||
-                            tipoValor == tipoDato.id ||
-                            tipoValor == tipoDato.list ||
-                            tipoValor == tipoDato.map ||
-                            tipoValor == tipoDato.set ||
-                            tipoValor == tipoDato.time)
+                    Simbolo sim = entorno.get(tipoVal.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                    if (sim == null)
                     {
-                        
-                            if (tipoValor == tipoValorLista)
-                            {
-                                list.Add(valor);
-                            }
-                            else
-                            {
-                                listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                                                NodoError.tipoError.Semantico, "Los valores del List no son del mismo tipo."));
-                                return tipoDato.errorSemantico;
-                            }
-                       
-                    }
-                    else
-                    {
-                        listas.errores.AddLast(new NodoError(this.linea, this.columna,
-                                        NodoError.tipoError.Semantico, "Valor del List no es valido"));
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                "El tipo de la variable del set no existe. El nombre es: " + tipoVal.id));
                         return tipoDato.errorSemantico;
                     }
                 }
+                else if (tipoVal.tipo == tipoDato.booleano ||
+                        tipoVal.tipo == tipoDato.cadena ||
+                        tipoVal.tipo == tipoDato.date ||
+                        tipoVal.tipo == tipoDato.decimall ||
+                        tipoVal.tipo == tipoDato.entero ||
+                        tipoVal.tipo == tipoDato.time)
+                {
+                    return tipoDato.ok;
+                }
             }
+
             return tipoDato.ok;
         }
     }

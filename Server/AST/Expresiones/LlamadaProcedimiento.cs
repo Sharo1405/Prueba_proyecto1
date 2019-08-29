@@ -185,7 +185,7 @@ namespace Server.AST.Expresiones
 
                                     Corchetes haciendoLista = new Corchetes(rr.retorno, rr.linea, rr.col);
                                     List<Object> listRetornada = (List<Object>)haciendoLista.getValue(entorno, listas);
-                                    tipoDato t = rr.getType(entorno, listas);
+                                    tipoDato t = haciendoLista.getType(entorno, listas);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
                                 }

@@ -27,8 +27,16 @@ namespace Server.AST.Instrucciones
         {
             try
             {
-                string valor = Convert.ToString(expImpre.getValue(entorno, listas));
-                listas.impresiones.AddLast(valor);
+                object valor = expImpre.getValue(entorno, listas);
+                if (valor is Simbolo)
+                {
+                    Simbolo ss = (Simbolo)valor;
+                    listas.impresiones.AddLast(Convert.ToString(ss.valor));
+                }
+                else
+                {
+                    listas.impresiones.AddLast(Convert.ToString(valor));
+                }
             }
             catch (Exception e)
             {

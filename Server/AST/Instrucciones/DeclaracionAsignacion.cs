@@ -84,8 +84,8 @@ namespace Server.AST.Instrucciones
                     Simbolo buscado = entorno.getEnActual(id.ToLower(), Simbolo.Rol.VARIABLE);
                     if (buscado == null)
                     {
-                        tipoDato tipoValor = valor.getType(entorno, listas);
                         object value = valor.getValue(entorno, listas);
+                        tipoDato tipoValor = valor.getType(entorno, listas);                        
                         if (tipo.tipo == tipoValor && !(valor is LLaveAsTypeUser))
                         {
                             entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), value, tipo.linea, tipo.columna,

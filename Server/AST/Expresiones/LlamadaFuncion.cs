@@ -29,6 +29,9 @@ namespace Server.AST.Expresiones
 
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
+
+            parametrosLista.Clear();
+            parametrosLista = new LinkedList<Comas>();
             String firmaFun = crearFirmaParas(entorno, listas);
             Simbolo buscado = entorno.get(firmaFun, entorno, Simbolo.Rol.FUNCION);
             if (buscado != null)

@@ -78,7 +78,7 @@ namespace Server.AST.Instrucciones
                         if (tt == tipoDato.ok)
                         {
                             Tipo aux = new Tipo(tipoDato.list, tiposList, linea, columna);
-                            Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.list, tiposList, linea, columna);
+                            Lista listaGuardar = new Lista(id.ToLower(), new List<Object>(), tipoDato.list, tiposList, linea, columna);
                             entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), listaGuardar, linea, columna,
                                         tipoDato.list, aux.tipo, aux, Simbolo.Rol.VARIABLE));
                         }

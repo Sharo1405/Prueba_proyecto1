@@ -199,7 +199,7 @@ namespace Server.GenerarAST
             }
 
         
-        public NodoAST llamadaProcedimientos(ParseTreeNode nodo)
+        public Expresion llamadaProcedimientos(ParseTreeNode nodo)
         {
             if (nodo.ChildNodes.Count == 5)
             {
@@ -264,17 +264,17 @@ namespace Server.GenerarAST
         {
             if (nodo.ChildNodes.Count == 4)
             {
-                new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text.ToLower(),
-                        expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
-                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
-                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);
+                return new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                        expresiones(nodo.ChildNodes.ElementAt(2)),
+                        nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(1).Token.Location.Column);
             }
             else
             {
-                new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                return new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
                         null,
-                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
-                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);
+                        nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(1).Token.Location.Column);
             }
             return null;
         }
@@ -447,6 +447,13 @@ namespace Server.GenerarAST
                     nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
+            else if (nodo.ChildNodes.Count == 2)
+            {
+                Tipo ti = new Tipo(tipoDato.set, nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                   nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+                return new Declarcion(ti,
+                    ListaVariables(nodo.ChildNodes.ElementAt(1)));
+            }
             else
             {
                 return new DeclaracionSetValores(ListaVariables(nodo.ChildNodes.ElementAt(1)),
@@ -465,6 +472,13 @@ namespace Server.GenerarAST
                     Tipos(nodo.ChildNodes.ElementAt(6)),
                     nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 2)
+            {
+                Tipo ti = new Tipo( tipoDato.list,nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+                return new Declarcion(ti,
+                    ListaVariables(nodo.ChildNodes.ElementAt(1)));
             }
             else
             {
@@ -908,7 +922,8 @@ namespace Server.GenerarAST
         public Instruccion Log(ParseTreeNode nodo)
         {
             return new Imprimir(expresiones(nodo.ChildNodes.ElementAt(2)), 
-                nodo.ChildNodes.ElementAt(0).Token.Location.Line, nodo.ChildNodes.ElementAt(0).Token.Location.Column); 
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column); 
         }
 
         public Instruccion whilee(ParseTreeNode nodo)
@@ -1169,10 +1184,9 @@ namespace Server.GenerarAST
 
                     case "LLAMADASFUNCIONES":
                         return llamadaaFuncion(nodo.ChildNodes.ElementAt(0));
-                    /*new LlamadaFuncion(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Text,
-                    expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(2)),
-                    nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Line,
-                    nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1).Token.Location.Column);*/
+
+                    case "LLAMADASPROCEDIMIENTOS":
+                        return llamadaProcedimientos(nodo.ChildNodes.ElementAt(0));
 
                     case "FUNCIONESNATIVASCADENAS":
                         return funcionesCadenas(nodo.ChildNodes.ElementAt(0));

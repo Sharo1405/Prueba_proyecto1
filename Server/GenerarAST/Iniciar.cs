@@ -61,7 +61,8 @@ namespace Server.GenerarAST
                     else
                     {//funciones 
                         Expresion exp = (Expresion)item;
-                        if (exp is Funciones) {
+                        if (exp is Funciones || 
+                            exp is Procedimientos) {
                             exp.getValue(global, listas);
                         }
                         //aqui faltan los procedimientos
@@ -87,7 +88,7 @@ namespace Server.GenerarAST
                     else
                     {//funciones 
                         Expresion exp = (Expresion)item;
-                        if (!(exp is Funciones))
+                        if (!(exp is Funciones || exp is Procedimientos))
                         {
                             exp.getValue(next, listas);
                         }
