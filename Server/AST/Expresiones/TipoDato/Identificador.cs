@@ -11,10 +11,10 @@ namespace Server.AST.Expresiones.TipoDato
     class Identificador : Entorno, Expresion
     {
 
-        public String id;
-        public tipoDato tipo;
-        public int linea;
-        public int columna;
+        public String id { get; set; }
+        public tipoDato tipo { get; set; }
+        public int linea { get; set; }
+        public int columna { get; set; }
 
         public Identificador(String id, tipoDato tipo, int linea, int columna)
         {

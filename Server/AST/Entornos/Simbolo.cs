@@ -22,16 +22,30 @@ namespace Server.AST.Entornos
         public tipoDato tipoValor { get; set; }
         public Rol rol { get; set; }
         public LinkedList<Parametros> parametros = new LinkedList<Parametros>();
+        public LinkedList<Parametros> retornos = new LinkedList<Parametros>();
 
         public enum Rol
         {
             VARIABLE,
             METODO,
-            FUNCION
+            FUNCION,
+            PROCEDIMIENTO
         }
 
         public Simbolo() { }
 
+        public Simbolo(String id, Object valor, int fila, int columna, tipoDato tipo, Rol rol, 
+            LinkedList<Parametros> parametros, LinkedList<Parametros> retornos)
+        {
+            this.id = id;
+            this.valor = valor;
+            this.fila = fila;
+            this.columna = columna;
+            this.tipo = tipo;
+            this.rol = rol;
+            this.parametros = parametros;
+            this.retornos = retornos;
+        }
 
         public Simbolo(String id, Object valor, int fila, int columna, //list con typeUSER
             tipoDato tipo, tipoDato tipoValor, String idTipo, Rol rol)

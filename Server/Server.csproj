@@ -63,11 +63,13 @@
     <Compile Include="AST\Expresiones\ListaErrorPrinter.cs" />
     <Compile Include="AST\Expresiones\ListaExpresiones.cs" />
     <Compile Include="AST\Expresiones\ListaPuntos.cs" />
+    <Compile Include="AST\Expresiones\LlamadaProcedimiento.cs" />
     <Compile Include="AST\Expresiones\LLaveAsTypeUser.cs" />
     <Compile Include="AST\Expresiones\Logicas\Nott.cs" />
     <Compile Include="AST\Expresiones\Logicas\Or.cs" />
     <Compile Include="AST\Expresiones\LlamadaFuncion.cs" />
     <Compile Include="AST\Expresiones\Neww.cs" />
+    <Compile Include="AST\Expresiones\Procedimientos.cs" />
     <Compile Include="AST\Expresiones\Puntos.cs" />
     <Compile Include="AST\Instrucciones\AccesoIdsConASignacion.cs" />
     <Compile Include="AST\Instrucciones\accesosFuncionCadena3.cs" />

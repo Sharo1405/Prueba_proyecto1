@@ -157,6 +157,7 @@ namespace Server.AST.Expresiones
             }
             catch (Exception e)
             {
+                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "NO se puede ejecutar llamada a funcion: " + idFuncion));
                 return tipoDato.errorSemantico;
             }
             return tipoDato.errorSemantico;

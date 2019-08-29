@@ -156,7 +156,8 @@ namespace Server.GenerarAST
                         return forstatement(nodo.ChildNodes.ElementAt(0));
 
                     case "MAPCOLLECTIONS":
-                        return MapCollectios(nodo.ChildNodes.ElementAt(0));
+                    //return MapCollectios(nodo.ChildNodes.ElementAt(0));
+                        break;
 
                     case "LISTCOLLECTIONS":
                         return ListCollectios(nodo.ChildNodes.ElementAt(0));
@@ -171,7 +172,7 @@ namespace Server.GenerarAST
                         return llamadaaFuncion(nodo.ChildNodes.ElementAt(0));        
 
                     case "PROCEDIMIENTOS":
-                        break;
+                        return Procedimientos(nodo.ChildNodes.ElementAt(0));
 
                     case "SENTENCIATRANSFERENCIA":
                         return sentenciaTranferencia(nodo.ChildNodes.ElementAt(0));
@@ -191,6 +192,61 @@ namespace Server.GenerarAST
                     case "TRYCATCHH":
                         break;
                 }
+            return null;
+        }
+
+
+        public NodoAST Procedimientos(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 10)
+            {
+                return new Procedimientos(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    Parametros(nodo.ChildNodes.ElementAt(3)),
+                    Parametros(nodo.ChildNodes.ElementAt(7)),
+                    bloque(nodo.ChildNodes.ElementAt(9)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 9)
+            {
+                String s = nodo.ChildNodes.ElementAt(3).Term.Name.ToLower();
+                switch (s)
+                {
+                    case "parametros":
+                        return new Procedimientos(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    Parametros(nodo.ChildNodes.ElementAt(3)),
+                    bloque(nodo.ChildNodes.ElementAt(8)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+
+                    case "aparentesis":
+                        return new Procedimientos(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    Parametros(nodo.ChildNodes.ElementAt(6)),
+                    bloque(nodo.ChildNodes.ElementAt(8)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column, 0);
+                }                
+            }
+            else if (nodo.ChildNodes.Count == 8)
+            {
+                return new Procedimientos(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    bloque(nodo.ChildNodes.ElementAt(7)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 5)
+            {
+                return new LlamadaProcedimiento(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(3)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 4)
+            {
+                return new LlamadaProcedimiento(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }
             return null;
         }
 
