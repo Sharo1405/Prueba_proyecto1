@@ -27,13 +27,19 @@ namespace Server.AST.Expresiones.Aritmeticas
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
+            object exp = expresion1.getValue(entorno, listas);            
+            if (expresion1 is ArrobaId)
+            {
+                Simbolo ar = (Simbolo)exp;
+                exp = ar.valor;
+            }            
             if ((tipoDato)expresion1.getType(entorno, listas) == tipoDato.decimall)
             {
-                return -1.0 * Convert.ToDouble(expresion1.getValue(entorno, listas));
+                return -1.0 * Convert.ToDouble(exp);
 
             }else if ((tipoDato)expresion1.getType(entorno, listas) == tipoDato.entero)
             {
-                return -1 * Convert.ToInt32(expresion1.getValue(entorno, listas));
+                return -1 * Convert.ToInt32(exp);
             }
             else
             {

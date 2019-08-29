@@ -31,7 +31,19 @@ namespace Server.AST.Expresiones.Logicas
             if (((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano) &&
                 ((tipoDato)expresion2.getType(entorno, listas) == tipoDato.booleano))
             {
-                return Convert.ToBoolean(expresion1.getValue(entorno, listas)) ^ Convert.ToBoolean((Boolean)expresion2.getValue(entorno, listas));
+                object exp = expresion1.getValue(entorno, listas);
+                object exp2 = expresion2.getValue(entorno, listas);
+                if (expresion1 is ArrobaId)
+                {
+                    Simbolo ar = (Simbolo)exp;
+                    exp = ar.valor;
+                }
+                if (expresion2 is ArrobaId)
+                {
+                    Simbolo ar = (Simbolo)exp2;
+                    exp2 = ar.valor;
+                }
+                return Convert.ToBoolean(exp) ^ Convert.ToBoolean(exp2);
             }
             else
             {

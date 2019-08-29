@@ -41,6 +41,7 @@ namespace Server.AST.Expresiones
             }            
         }
 
+
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
             try
@@ -50,89 +51,80 @@ namespace Server.AST.Expresiones
                 if (buscado != null && buscado.rol == Simbolo.Rol.FUNCION)
                 {
                     StatementBlock sentenciasEject = (StatementBlock)buscado.valor;
-                    Boolean retexiste = false;
-                    /*foreach (var item in sentenciasEject.listaIns)
-                    {
-                        if(item is Retorno)
-                        {
-                            retexiste = true;
-                            break;
-                        }
-                    } */                   
-
-                    //if (retexiste == true) {
+                    Boolean retexiste = false;                    
 
                         Entorno actual = new Entorno(entorno);
-                        if (parametros != null)
-                        {
+                    if (parametros != null)
+                    {
 
-                            object v = parametros.getValue(actual, listas);
-                            if (v is LinkedList<Comas>)
-                            {
-                                declararParametros(actual, listas, buscado.parametros, (LinkedList<Comas>)parametros.getValue(actual, listas));
-                            }
-                            else
-                            {
-                                LinkedList<Comas> listaparas = new LinkedList<Comas>();
-                                listaparas.AddLast(new Comas(linea, columna, parametros));
-                                declararParametros(actual, listas, buscado.parametros, listaparas);
-                            }                            
+                        //object v = parametros.getValue(actual, listas);
+                        if (parametrosLista.Count > 0)
+                        {
+                            declararParametros(actual, listas, buscado.parametros, parametrosLista);
                         }
                         else
                         {
-                            //no hace nada
+                            LinkedList<Comas> listaparas = new LinkedList<Comas>();
+                            listaparas.AddLast(new Comas(linea, columna, parametros));
+                            declararParametros(actual, listas, buscado.parametros, listaparas);
                         }
+                    }
+                    else
+                    {
+                        //no hace nada
+                    }
 
-                        foreach (NodoAST sentencia in sentenciasEject.listaIns)
+                    foreach (NodoAST sentencia in sentenciasEject.listaIns)
+                    {
+                        if (sentencia is Instruccion)
                         {
-                            if (sentencia is Instruccion)
+                            Instruccion ins = (Instruccion)sentencia;
+                            Object reto = ins.ejecutar(actual, listas);
+                            if (ins is Breakk)
                             {
-                                Instruccion ins = (Instruccion)sentencia;
-                                Object reto = ins.ejecutar(actual, listas);
-                                if (ins is Breakk)
+                                return ins;
+                            }
+                            else if (ins is Continuee)
+                            {
+                                return ins;
+                            }
+                            else if (reto is Retorno)
+                            {
+                                retexiste = true;
+                                Expresion r = (Expresion)reto;
+                                if (buscado.tipo == r.getType(actual, listas))
                                 {
-                                    return ins;
-                                }
-                                else if (ins is Continuee)
-                                {
-                                    return ins;
-                                }
-                                else if (reto is Retorno)
-                                {
-                                    Expresion r = (Expresion)reto;
-                                    if (buscado.tipo == r.getType(actual, listas))
-                                    {
-                                        return r.getValue(actual, listas);
-                                    }                                
+                                    return r.getValue(actual, listas);
                                 }
                             }
-                            else
-                            {//funciones 
-                                Expresion exp = (Expresion)sentencia;
+                        }
+                        else
+                        {//funciones 
+                            Expresion exp = (Expresion)sentencia;
+                            //exp.getValue(actual, listas);
+                            if (exp is Retorno)
+                            {
+                                retexiste = true;
                                 //exp.getValue(actual, listas);
-                                if (exp is Retorno)
+                                if (buscado.tipo == exp.getType(actual, listas))
                                 {
-                                    retexiste = true;
-                                    //exp.getValue(actual, listas);
-                                    if (buscado.tipo == exp.getType(actual, listas))
-                                    {
-                                        return exp.getValue(actual, listas);                                        
-                                    }
-                                    else
-                                    {
-                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                            "Retorno de funcion no es el mismo tipo de la funcion: Tipo funcion "
-                                            + Convert.ToString(buscado.tipo) + "Tipo retorno: " + Convert.ToString(exp.getType(actual, listas))));
-                                        return tipoDato.errorSemantico;
-                                    }
-
-                                }                                
+                                    return exp.getValue(actual, listas);
+                                }
                                 else
                                 {
-                                    exp.getValue(actual, listas);
+                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                        "Retorno de funcion no es el mismo tipo de la funcion: Tipo funcion "
+                                        + Convert.ToString(buscado.tipo) + "Tipo retorno: " + Convert.ToString(exp.getType(actual, listas))));
+                                    return tipoDato.errorSemantico;
                                 }
-                            }                            
+
+                            }
+                            else
+                            {
+                                exp.getValue(actual, listas);
+                            }
                         }
+                    }
 
                     if (retexiste == false)
                     {
@@ -140,13 +132,6 @@ namespace Server.AST.Expresiones
                             "Retorno de funcion no EXISTE, funcion: " + firmaFun));
                         return tipoDato.errorSemantico;
                     }
-                    /*}
-                    else
-                    {
-                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, 
-                            "No existe el retorno en la funcion: " + firmaFun));
-                        return tipoDato.errorSemantico;
-                    }*/
                 }
                 else
                 {
@@ -190,27 +175,28 @@ namespace Server.AST.Expresiones
                         var.tipo.tipo, Simbolo.Rol.VARIABLE));
                 }
             }
-
-
-
         }
+
+        LinkedList<Comas> parametrosLista = new LinkedList<Comas>();
 
         public String crearFirmaParas(Entorno entorno, ErrorImpresion listas)
         {
             String firmaFuncion = "";
             firmaFuncion += idFuncion;
-            if (parametros != null) {
+            if (parametros != null)
+            {
                 object v = parametros.getValue(entorno, listas);
                 if (v is LinkedList<Comas>)
                 {
-                    LinkedList<Comas> param = (LinkedList<Comas>)parametros.getValue(entorno, listas);
-                    foreach (Expresion parametro in param)
+                    parametrosLista = (LinkedList<Comas>)v;
+                    foreach (Expresion parametro in parametrosLista)
                     {
                         tipoDato tipoPara = parametro.getType(entorno, listas);
                         firmaFuncion += "_" + Convert.ToString(tipoPara);
                     }
                 }
-                else {
+                else
+                {
                     tipoDato tipoPara = parametros.getType(entorno, listas);
                     firmaFuncion += "_" + Convert.ToString(tipoPara);
                 }

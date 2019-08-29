@@ -34,7 +34,9 @@ namespace Server.AST.Instrucciones
             {
                 return retorno.getType(entorno, listas);
             }
-            else {                
+            else {
+                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                    "EL RETURN NO RETORNA NADA, por eso retornara un error en el tipo"));
                 return Operacion.tipoDato.errorSemantico;
             }
         }
@@ -47,7 +49,7 @@ namespace Server.AST.Instrucciones
             }
             else
             {
-                return Operacion.tipoDato.errorSemantico;
+                return "";
             }            
         }
     }

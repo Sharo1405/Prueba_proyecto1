@@ -32,7 +32,19 @@ namespace Server.AST.Ciclos
             if (((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano) &&
                 ((tipoDato)expresion2.getType(entorno, listas) == tipoDato.booleano))
             {
-                return (Boolean)expresion1.getValue(entorno, listas) || (Boolean)expresion2.getValue(entorno, listas);
+                object exp = expresion1.getValue(entorno, listas);
+                object exp2 = expresion2.getValue(entorno, listas);
+                if (expresion1 is ArrobaId)
+                {
+                    Simbolo ar = (Simbolo)exp;
+                    exp = ar.valor;
+                }
+                if (expresion2 is ArrobaId)
+                {
+                    Simbolo ar = (Simbolo)exp2;
+                    exp2 = ar.valor;
+                }
+                return (Boolean)exp || (Boolean)exp2;
             }
             else
             {

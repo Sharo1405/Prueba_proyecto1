@@ -420,6 +420,7 @@ namespace Server.Analizador
             var TIPOCASTEO = new NonTerminal("TIPOCASTEO");
             var LLAMADASFUNCIONES = new NonTerminal("LLAMADASFUNCIONES");
             var LISTAFUNCIONESNATIVASCADE = new NonTerminal("LISTAFUNCIONESNATIVASCADE");
+            var LLAMADASPROCEDIMIENTOS = new NonTerminal("LLAMADASPROCEDIMIENTOS");
             #endregion
 
             #region TERMINALES
@@ -475,6 +476,7 @@ namespace Server.Analizador
                            | FUNCIONESMETODOS
                            | LLAMADASFUNCIONES + puntoycoma
                            | PROCEDIMIENTOS
+                           | LLAMADASPROCEDIMIENTOS + puntoycoma
                            | SENTENCIATRANSFERENCIA + puntoycoma
                            | CURSORES + puntoycoma
                            | FOREACH_ACCESOCURSOR
@@ -542,9 +544,10 @@ namespace Server.Analizador
             PROCEDIMIENTOS.Rule = procedure + id + aparentesis + PARAMETROS + cparentesis + coma + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
                                 | procedure + id + aparentesis + PARAMETROS + cparentesis + coma + aparentesis + cparentesis + STATEMENTBLOCK
                                 | procedure + id + aparentesis + cparentesis + coma + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK
-                                | procedure + id + aparentesis + cparentesis + coma + aparentesis + cparentesis + STATEMENTBLOCK
-                                | call + id + aparentesis + E + cparentesis
-                                | call + id + aparentesis + cparentesis;
+                                | procedure + id + aparentesis + cparentesis + coma + aparentesis + cparentesis + STATEMENTBLOCK;
+
+            LLAMADASPROCEDIMIENTOS.Rule = call + id + aparentesis + E + cparentesis
+                                        | call + id + aparentesis + cparentesis;
 
 
             FUNCIONESMETODOS.Rule = TIPOS + id + aparentesis + PARAMETROS + cparentesis + STATEMENTBLOCK

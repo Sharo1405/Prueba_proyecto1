@@ -44,6 +44,18 @@ namespace Server.AST.Expresiones.Relacionales
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
             tipoDato nuevo = tipoResultanteRELACIONALES((tipoDato)expresion1.getType(entorno, listas), (tipoDato)expresion2.getType(entorno, listas), entorno, listas);
+            object exp = expresion1.getValue(entorno, listas);
+            object exp2 = expresion2.getValue(entorno, listas);
+            if (expresion1 is ArrobaId)
+            {
+                Simbolo ar = (Simbolo)exp;
+                exp = ar.valor;
+            }
+            if (expresion2 is ArrobaId)
+            {
+                Simbolo ar = (Simbolo)exp2;
+                exp2 = ar.valor;
+            }
 
             if (nuevo == tipoDato.nulo)
             {
@@ -86,27 +98,28 @@ namespace Server.AST.Expresiones.Relacionales
             }
             else if (nuevo == tipoDato.decimall)
             {
-                return Convert.ToDouble(expresion1.getValue(entorno, listas)) == Convert.ToDouble(expresion2.getValue(entorno, listas));
+                return Convert.ToDouble(exp) == 
+                    Convert.ToDouble(exp2);
             }
             else if (nuevo == tipoDato.date)
             {
-                return Convert.ToDateTime(expresion1.getValue(entorno, listas)) ==
-                       Convert.ToDateTime(expresion2.getValue(entorno, listas));
+                return Convert.ToDateTime(exp) ==
+                       Convert.ToDateTime(exp2);
             }
             else if (nuevo == tipoDato.time)
             {
-                return Convert.ToDateTime(expresion1.getValue(entorno, listas)) ==
-                       Convert.ToDateTime(expresion2.getValue(entorno, listas));
+                return Convert.ToDateTime(exp) ==
+                       Convert.ToDateTime(exp2);
             }
             else if (nuevo == tipoDato.cadena)
             {
-                return Convert.ToString(expresion1.getValue(entorno, listas))
-                    .Equals(Convert.ToString(expresion2.getValue(entorno, listas)));
+                return Convert.ToString(exp)
+                    .Equals(Convert.ToString(exp2));
             }
             else if (nuevo == tipoDato.booleano)
             {
-                return Convert.ToBoolean(expresion1.getValue(entorno, listas))
-                    .Equals(Convert.ToBoolean(expresion2.getValue(entorno, listas)));
+                return Convert.ToBoolean(exp)
+                    .Equals(Convert.ToBoolean(exp2));
             }
             else
             {

@@ -174,6 +174,9 @@ namespace Server.GenerarAST
                     case "PROCEDIMIENTOS":
                         return Procedimientos(nodo.ChildNodes.ElementAt(0));
 
+                    case "LLAMADASPROCEDIMIENTOS":
+                        return llamadaProcedimientos(nodo.ChildNodes.ElementAt(0));
+
                     case "SENTENCIATRANSFERENCIA":
                         return sentenciaTranferencia(nodo.ChildNodes.ElementAt(0));
 
@@ -192,8 +195,28 @@ namespace Server.GenerarAST
                     case "TRYCATCHH":
                         break;
                 }
+               return null;
+            }
+
+        
+        public NodoAST llamadaProcedimientos(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 5)
+            {
+                return new LlamadaProcedimiento(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(3)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 4)
+            {
+                return new LlamadaProcedimiento(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+            }
             return null;
         }
+
 
 
         public NodoAST Procedimientos(ParseTreeNode nodo)
@@ -233,20 +256,7 @@ namespace Server.GenerarAST
                     bloque(nodo.ChildNodes.ElementAt(7)),
                     nodo.ChildNodes.ElementAt(1).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(1).Token.Location.Column);
-            }
-            else if (nodo.ChildNodes.Count == 5)
-            {
-                return new LlamadaProcedimiento(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
-                    expresiones(nodo.ChildNodes.ElementAt(3)),
-                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
-                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
-            }
-            else if (nodo.ChildNodes.Count == 4)
-            {
-                return new LlamadaProcedimiento(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
-                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
-                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
-            }
+            }            
             return null;
         }
 

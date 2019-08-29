@@ -29,7 +29,13 @@ namespace Server.AST.Expresiones.Logicas
         {
             if ((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano)
             {
-                return !(Boolean)expresion1.getValue(entorno, listas);
+                object exp = expresion1.getValue(entorno, listas);                
+                if (expresion1 is ArrobaId)
+                {
+                    Simbolo ar = (Simbolo)exp;
+                    exp = ar.valor;
+                }                
+                return !(Boolean)exp;
             }
             else
             {
