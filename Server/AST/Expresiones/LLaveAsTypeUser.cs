@@ -101,11 +101,23 @@ namespace Server.AST.Expresiones
                         {
                             Comas cv2 = (Comas)coma;
                             Object valo = cv2.getValue(entorno, listas);
+                            tipoDato tipoVALO = cv2.getType(entorno, listas);
                             itemType itType = lista.itemTypee.ElementAt(contador);
 
                             if (itType.tipo.tipo == tipoDato.id)
                             {
-                                if (valo is Neww)
+                                Simbolo simi = new Simbolo();
+                                if (valo is Simbolo)
+                                {
+                                    simi = (Simbolo)valo;
+                                    valo = simi.valor;
+
+                                    //se copia la misma lista porque ya viene asi
+                                    if (tipoVALO == itType.tipo.tipo) {
+                                        itType.valor = valo;
+                                    }
+                                }
+                                else if (valo is Neww)
                                 {
                                     Neww claseNeww = (Neww)valo;
                                     Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
@@ -153,13 +165,33 @@ namespace Server.AST.Expresiones
                             }
                             else if (itType.tipo.tipo == tipoDato.list)
                             {
-                                if (valo is Neww)
+                                Simbolo simi = new Simbolo();
+                                if (valo is Simbolo)
+                                {
+                                    simi = (Simbolo)valo;
+                                    valo = simi.valor;
+                                    if (simi.tipo == tipoDato.list)
+                                    {
+                                        //se copia la misma lista porque ya viene asi
+                                        itType.valor = valo;                                        
+                                    }
+                                    else
+                                    {
+
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "Los tipos para guardar no son iguales en UserType"));
+                                        return tipoDato.errorSemantico;
+                                        
+                                    }
+                                }
+                                else if (valo is Neww)
                                 {
                                     Neww v = (Neww)valo;
                                     tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
                                     if (tt == tipoDato.ok)
                                     {
                                         //Tipo aux = new Tipo(tipoDato.set, tiposSet, linea, columna);
+
                                         Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.list, tiposSet, linea, columna);
                                         //listaRetorno.Add(listaGuardar);
                                         itType.valor = listaGuardar;
@@ -188,16 +220,43 @@ namespace Server.AST.Expresiones
                                         //listaRetorno.Add(listaGuardar);
                                         itType.valor = listaGuardar;
                                     }
-                                }
+                                }                                
                                 else
                                 {
                                     //listaRetorno.Add(valo);
-                                    itType.valor = valo;
+                                    if (tipoVALO == itType.tipo.tipo) {
+                                        itType.valor = valo;
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "Los tipos para guardar no son iguales en UserType"));
+                                        return tipoDato.errorSemantico;
+                                    }
                                 }
                             }
                             else if (itType.tipo.tipo == tipoDato.set)
                             {
-                                if (valo is Neww)
+                                Simbolo simi = new Simbolo();
+                                if (valo is Simbolo)
+                                {
+                                    simi = (Simbolo)valo;
+                                    valo = simi.valor;
+                                    if (simi.tipo == tipoDato.set)
+                                    {
+                                        //se copia la misma lista porque ya viene asi
+                                        itType.valor = valo;                                        
+                                    }
+                                    else
+                                    {
+
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "Los tipos para guardar no son iguales en UserType"));
+                                        return tipoDato.errorSemantico;
+                                        
+                                    }
+                                }
+                                else if (valo is Neww)
                                 {
                                     Neww v = (Neww)valo;
                                     tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
@@ -243,7 +302,24 @@ namespace Server.AST.Expresiones
                             else
                             {
                                 tipoDato tipoValue = cv2.getType(entorno, listas);
-                                if (tipoValue == itType.tipo.tipo)
+                                Simbolo simi = new Simbolo();
+                                if (valo is Simbolo)
+                                {
+                                    simi = (Simbolo)valo;
+                                    valo = simi.valor;
+                                    if (tipoValue == itType.tipo.tipo)
+                                    {
+                                        itType.valor = valo;
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "Los tipos para guardar no son iguales en UserType"));
+                                        return tipoDato.errorSemantico;
+                                    }
+                                    
+                                }
+                                else if (tipoValue == itType.tipo.tipo)
                                 {
                                     itType.valor = valo;
                                 }
@@ -290,35 +366,84 @@ namespace Server.AST.Expresiones
                                         }
                                         else
                                         {
-                                            if (it.tipo.tipo == t)
-                                            {
-                                                it.valor = o;
-                                            }
-                                            else
-                                            {
-                                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                                    "Los tipos para guardar no son iguales en UserType"));
-                                                return tipoDato.errorSemantico;
-                                            }
+
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "Los tipos para guardar no son iguales en UserType"));
+                                            return tipoDato.errorSemantico;
+                                            
                                         }
                                     }
                                     else if (listaValores is Corchetes)
                                     {
-                                        /*if (t == it.tipo.tipoValor.tipo)
+                                        if (it.tipo.tipo != tipoDato.list)
                                         {
-                                            List<object> nuevalll = new List<object>();
-                                            nuevalll.Add(o);
-                                            Lista lololo = new Lista(it.id.ToLower(), nuevalll, it.tipo.tipo, it.tipo.tipoValor.tipo, linea, columna);
-                                            it.valor = lololo;
-                                        }*/
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "Los tipos para guardar no son iguales en UserType"));
+                                            return tipoDato.errorSemantico;
+                                        }
+
+                                        if (o is List<object>)
+                                        {
+                                            //listaRetorno = (List<object>)valo;
+                                            Lista listaGuardar = new Lista("item", (List<object>)o, tipoDato.list, t, linea, columna);
+                                            //listaRetorno.Add(listaGuardar);
+                                            it.valor = listaGuardar;
+                                        }
+                                        else
+                                        {
+                                            List<Object> solo1 = new List<object>();
+                                            solo1.Add(o);
+                                            Lista listaGuardar = new Lista("item", solo1, tipoDato.list, t, linea, columna);
+                                            //listaRetorno.Add(listaGuardar);
+                                            it.valor = listaGuardar;
+                                        }
                                     }
                                     else if (listaValores is Llaves)
                                     {
-
+                                        if (it.tipo.tipo != tipoDato.set)
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "Los tipos para guardar no son iguales en UserType"));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                        if (o is List<object>)
+                                        {
+                                            Lista listaGuardar = new Lista("item", (List<object>)o, tipoDato.set, t, linea, columna);                                           
+                                            it.valor = listaGuardar;
+                                        }
+                                        else
+                                        {
+                                            List<Object> solo1 = new List<object>();
+                                            solo1.Add(o);
+                                            Lista listaGuardar = new Lista("item", solo1, tipoDato.set, t, linea, columna);
+                                            it.valor = listaGuardar;
+                                        }
                                     }
                                     else if(listaValores is Neww)
                                     {
-
+                                        Neww v = (Neww)o;
+                                        tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
+                                        if (tt == tipoDato.ok)
+                                        {
+                                            if (v.tipoNew.tipo == it.tipo.tipo)
+                                            {
+                                                Lista listaGuardar = new Lista("item", new List<Object>(), v.tipoNew.tipo, tiposSet, linea, columna);
+                                                it.valor = listaGuardar;
+                                            }
+                                            else
+                                            {
+                                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "Los tipos para guardar no son iguales en UserType"));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                            
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "Tipos no valido en el valor de la lista"));
+                                            return tipoDato.errorSemantico;
+                                        }
                                     }
                                     else
                                     {
@@ -336,7 +461,68 @@ namespace Server.AST.Expresiones
                                 }
                                 else if (it.tipo.tipo == tipoDato.id)
                                 {
-                                    it.valor = o;
+                                    //it.valor = o;
+                                    Simbolo simi = new Simbolo();
+                                    if (o is Simbolo)
+                                    {
+                                        simi = (Simbolo)o;
+                                        o = simi.valor;
+
+                                        //se copia la misma lista porque ya viene asi
+                                        if (it.id == simi.idTipo) {
+                                            it.valor = o;
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "Los tipos no son iguales, no se pueden asignar"));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                    else if (o is Neww)
+                                    {
+                                        Neww claseNeww = (Neww)o;
+                                        Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                                        if (sim2 != null)
+                                        {
+                                            if (sim2.valor is CreateType)
+                                            {
+                                                CreateType ss = (CreateType)sim2.valor;
+                                                CreateType lista2 = CreaNuevoType(ss, entorno, listas);
+                                                it.valor = lista2;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "El tipo de la variable del User type NO EXISTE. Tipos en cuestion: " + Convert.ToString(it.tipo.id)));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (t == it.tipo.tipo)
+                                        {
+                                            if (o is Simbolo)
+                                            {
+                                                it.valor = ((Simbolo)o).valor;
+                                            }
+                                            else
+                                            {
+                                                it.valor = o;
+                                            }
+                                        }
+                                        else if (t == tipoDato.nulo && it.tipo.tipo == tipoDato.id)
+                                        {
+                                            it.valor = o;
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "El tipo de la variable del User type NO EXISTE."));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
                                 }
                                 else if (it.tipo.tipo == tipoDato.map)
                                 {
@@ -346,7 +532,14 @@ namespace Server.AST.Expresiones
                                 {
                                     if (it.tipo.tipo == t)
                                     {
-                                        it.valor = o;
+                                        if (o is Simbolo)
+                                        {
+                                            it.valor = ((Simbolo)o).valor;
+                                        }
+                                        else
+                                        {
+                                            it.valor = o;
+                                        }
                                     }
                                     else
                                     {
