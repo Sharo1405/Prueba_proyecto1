@@ -1191,7 +1191,40 @@ namespace Server.GenerarAST
                     case "FUNCIONESNATIVASCADENAS":
                         return funcionesCadenas(nodo.ChildNodes.ElementAt(0));
 
+                    case "FUNCIONESCOLLECTIONS":
+                        return funcionesCollections(nodo.ChildNodes.ElementAt(0));
+
                 }
+            }
+            return null;
+        }
+
+
+        public Expresion funcionesCollections(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 6)
+            {
+                return new FuncionesCollections(
+                   nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                   expresiones(nodo.ChildNodes.ElementAt(2)),
+                   expresiones(nodo.ChildNodes.ElementAt(4)),
+                   nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                   nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 4)
+            {
+                return new FuncionesCollections(
+                    nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(2)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 3)
+            {
+                return new FuncionesCollections(
+                   nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                   nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                   nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
             return null;
         }

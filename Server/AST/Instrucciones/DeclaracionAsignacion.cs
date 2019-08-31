@@ -86,7 +86,7 @@ namespace Server.AST.Instrucciones
                     {
                         object value = valor.getValue(entorno, listas);
                         tipoDato tipoValor = valor.getType(entorno, listas);                        
-                        if (tipo.tipo == tipoValor && !(valor is LLaveAsTypeUser))
+                        if (tipo.tipo == tipoValor && !(valor is LLaveAsTypeUser) && !(valor is Neww))
                         {
                             entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), value, tipo.linea, tipo.columna,
                                 tipo.tipo, Simbolo.Rol.VARIABLE));
@@ -113,8 +113,8 @@ namespace Server.AST.Instrucciones
                                     if (sim.valor is CreateType)
                                     {
                                         CreateType s = (CreateType)sim.valor;
-                                        CreateType lista = CreaNuevoType(s, entorno, listas);
-                                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), lista, tipo.linea, tipo.columna,
+                                        CreateType lista2 = CreaNuevoType(s, entorno, listas);
+                                        entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), lista2, tipo.linea, tipo.columna,
                                             tipo.tipo, tipo.id, Simbolo.Rol.VARIABLE));
                                     }
                                 }

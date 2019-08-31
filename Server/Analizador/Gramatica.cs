@@ -560,7 +560,7 @@ namespace Server.Analizador
             PARAMETROS.Rule = PARAMETROS + coma + TIPOS + arroba + id
                            | TIPOS + arroba + id;
 
-            FUNCIONESCOLLECTIONS.Rule = insert + aparentesis + E + coma + E + cparentesis
+            FUNCIONESCOLLECTIONS.Rule = insert + aparentesis + E + coma + E + cparentesis //map
                                       | insert + aparentesis + E + cparentesis
                                       | get + aparentesis + E + cparentesis
                                       | set + aparentesis + E + coma + E + cparentesis

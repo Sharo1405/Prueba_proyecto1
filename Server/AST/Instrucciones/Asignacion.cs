@@ -162,9 +162,7 @@ namespace Server.AST.Instrucciones
                             tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
                             if (tt == tipoDato.ok)
                             {
-                                //Tipo aux = new Tipo(tipoDato.set, tiposSet, linea, columna);
-                                Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.list, tiposSet, linea, columna);
-                                //listaRetorno.Add(listaGuardar);
+                                Lista listaGuardar = new Lista(variable.id.ToLower(), new List<Object>(), tipoDato.list, tiposSet, linea, columna);
                                 variable.valor = listaGuardar;
                             }
                             else
@@ -180,7 +178,7 @@ namespace Server.AST.Instrucciones
                             tipoDato tt = comprobandoTipos(entorno, listas, v.tipoNew);
                             if (tt == tipoDato.ok)
                             {
-                                Lista listaGuardar = new Lista("item", new List<Object>(), tipoDato.set, tiposSet, linea, columna);
+                                Lista listaGuardar = new Lista(variable.id.ToLower(), new List<Object>(), tipoDato.set, tiposSet, linea, columna);
                                 variable.valor = listaGuardar;
                             }
                             else

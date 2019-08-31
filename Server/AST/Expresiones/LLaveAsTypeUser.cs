@@ -269,7 +269,45 @@ namespace Server.AST.Expresiones
                     }
                     else
                     {
-                        return this.listaValores.getValue(entorno, listas);
+                        LinkedList<itemType> ty2 =  lista.itemTypee;
+                        if (ty2.Count == 1)
+                        {
+                            foreach (itemType it in ty2)
+                            {
+                                object o = listaValores.getValue(entorno, listas);
+                                tipoDato t = listaValores.getType(entorno, listas);
+                                if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                {
+                                    if (t != tipoDato.list)
+                                    {
+                                        if (t == it.tipo.tipoValor.tipo) {
+                                            List<object> nuevalll = new List<object>();
+                                            nuevalll.Add(o);
+                                            Lista lololo = new Lista(it.id.ToLower(), nuevalll, it.tipo.tipo, it.tipo.tipoValor.tipo, linea, columna);
+                                            it.valor = lololo;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        it.valor = o;
+                                    }
+                                }
+                                else
+                                {
+                                    if (it.tipo.tipo == t)
+                                    {
+                                        it.valor = o;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    "Error hay mas argumentos para guardar y no vienen en la lista"));
+                            return tipoDato.errorSemantico;
+                        }
+                        return lista;
                     }
 
                     return lista;
