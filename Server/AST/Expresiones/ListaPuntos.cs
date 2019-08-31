@@ -102,16 +102,25 @@ namespace Server.AST.Expresiones
                                     Lista l = (Lista)itType.valor;
                                     auxParaFunciones = null;
                                     auxParaFunciones = l.listaValores;
+                                    tipoDato tvtvtv = l.tipoValor;
 
                                     while (contador < ListaExpresionesPuntos.Count)
                                     {
                                         punto = ListaExpresionesPuntos.ElementAt(contador);
                                         if (punto.expresion1 is FuncionesCollections)
                                         {
+                                            Lista ll = new Lista();
+                                            if (auxParaFunciones is Lista)
+                                            {
+                                                ll = (Lista)auxParaFunciones;
+                                                auxParaFunciones = null;
+                                                auxParaFunciones = ll.listaValores;
+                                                tvtvtv = ll.tipoValor;
+                                            }
                                             FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas);
                                             if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                                             {
-                                                devuleveFuncionCollection(funcion, entorno, listas, l.tipoValor);
+                                                devuleveFuncionCollection(funcion, entorno, listas, tvtvtv);
                                             }
                                             else
                                             {
@@ -221,17 +230,25 @@ namespace Server.AST.Expresiones
                     Lista l = (Lista)s.valor;
                     auxParaFunciones = null;
                     auxParaFunciones = l.listaValores;
-                    
+                    tipoDato tvlista = s.tipoValor;
 
                     while (contador < ListaExpresionesPuntos.Count)
                     {
+                        Lista ll = new Lista();
+                        if (auxParaFunciones is Lista)
+                        {
+                            ll = (Lista)auxParaFunciones;
+                            auxParaFunciones = null;
+                            auxParaFunciones = ll.listaValores;
+                            tvlista = ll.tipoValor;
+                        }
                         Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
                         if (puntos2.expresion1 is FuncionesCollections)
                         {
                             FuncionesCollections funcion = (FuncionesCollections)puntos2.expresion1.getValue(entorno, listas);
                             if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                             {
-                                devuleveFuncionCollection(funcion, entorno, listas, s.tipoValor);
+                                devuleveFuncionCollection(funcion, entorno, listas, tvlista);
                             }
                             else
                             {
@@ -627,16 +644,25 @@ namespace Server.AST.Expresiones
                             Lista l = (Lista)itType.valor;
                             auxParaFunciones = null;
                             auxParaFunciones = l.listaValores;
+                            tipoDato tvtvtv = l.tipoValor;
 
                             while (contador < ListaExpresionesPuntos.Count)
                             {
+                                Lista ll = new Lista();
+                                if (auxParaFunciones is Lista)
+                                {
+                                    ll = (Lista)auxParaFunciones;
+                                    auxParaFunciones = null;
+                                    auxParaFunciones = ll.listaValores;
+                                    tvtvtv = ll.tipoValor;
+                                }
                                 punto = ListaExpresionesPuntos.ElementAt(contador);
                                 if (punto.expresion1 is FuncionesCollections)
                                 {
                                     FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas);
                                     if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                                     {
-                                        devuleveFuncionCollection(funcion, entorno, listas, l.tipoValor);
+                                        devuleveFuncionCollection(funcion, entorno, listas, tvtvtv);
                                     }
                                     else
                                     {

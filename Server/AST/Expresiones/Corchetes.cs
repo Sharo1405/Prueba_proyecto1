@@ -28,19 +28,7 @@ namespace Server.AST.Expresiones
 
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
-            if (expresion is ListaExpresiones)
-            {
-                /*listaRetorno = new List<object>();
-                listaRetorno.Clear();
-                getValue(entorno, listas);
-                contador = 0;
-                listaRetorno = new List<object>();*/
-                return tipoValor;
-            }
-            else
-            {
-                return expresion.getType(entorno, listas);
-            }
+            return tipoValor;           
         }
 
 
@@ -259,8 +247,61 @@ namespace Server.AST.Expresiones
                     return listaRetorno;
 
                 }
+                else if (expresion is Llaves)
+                {
+                    object valo = expresion.getValue(entorno, listas);
+                    tipoDato tipo = expresion.getType(entorno, listas);
+                    if (valo is List<object>)
+                    {
+                        //listaRetorno = (List<object>)valo;
+                        Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.set, tipo, linea, columna);
+                        listaRetorno.Add(listaGuardar);
+                    }
+                    else
+                    {
+                        //listaRetorno.Add(listaRetorno);
+                        List<Object> solo1 = new List<object>();
+                        solo1.Add(valo);
+                        Lista listaGuardar = new Lista("item", solo1, tipoDato.set, tipo, linea, columna);
+                        listaRetorno.Add(listaGuardar);
+                    }
+                    tipo = tipoDato.set;
+                    tipoValor = tipo;
+                    return listaRetorno;
+                }
+                else if (expresion is LLaveAsTypeUser)
+                {
+                    object valo = expresion.getValue(entorno, listas);
+                    tipoDato tipo = expresion.getType(entorno, listas);
+                    listaRetorno.Add(valo); //guardando un Type User
+                    tipo = tipoDato.id;
+                    tipoValor = tipo;
+                    return listaRetorno;
+                }
+                else if (expresion is Corchetes)
+                {
+                    object valo = expresion.getValue(entorno, listas);
+                    tipoDato tipo = expresion.getType(entorno, listas);
+                    if (valo is List<object>)
+                    {
+                        //listaRetorno = (List<object>)valo;
+                        Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.list, tipo, linea, columna);
+                        listaRetorno.Add(listaGuardar);
+                    }
+                    else
+                    {
+                        List<Object> solo1 = new List<object>();
+                        solo1.Add(valo);
+                        Lista listaGuardar = new Lista("item", solo1, tipoDato.list, tipo, linea, columna);
+                        listaRetorno.Add(listaGuardar);
+                    }
+                    tipo = tipoDato.list;
+                    tipoValor = tipo;
+                    return listaRetorno;
+                }
                 else
                 {
+                    tipoValor = expresion.getType(entorno, listas);
                     return expresion.getValue(entorno, listas); //un solo valor
                 }
             }
