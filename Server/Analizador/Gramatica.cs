@@ -852,7 +852,9 @@ namespace Server.Analizador
 
             TIPOCASTEO.Rule = date
                             | time
-                            | stringg;
+                            | stringg
+                            | intt
+                            | doublee;
 
             //RegisterOperators(1, Associativity.Left, aparentesis, cparentesis, allave, cllave, acorchete, ccorchete);
             RegisterOperators(1, Associativity.Left, arroba);

@@ -945,11 +945,15 @@ namespace Server.GenerarAST
             }
             else if (nodo.ChildNodes.Count == 4)
             {
-                string operador = nodo.ChildNodes.ElementAt(0).ToString();
+                string operador = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
                 switch (operador)
                 {                    
-                    case "aparentesis": //CASTEOS
-                        break;
+                    case "(": //CASTEOS
+                        return new Casteos(
+                            nodo.ChildNodes.ElementAt(1).ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                            expresiones(nodo.ChildNodes.ElementAt(3)),
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
                 }
             }
             else if (nodo.ChildNodes.Count == 3)
