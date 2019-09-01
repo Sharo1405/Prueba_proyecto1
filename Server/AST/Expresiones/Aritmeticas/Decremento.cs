@@ -1,4 +1,5 @@
 ﻿using Server.AST.Entornos;
+using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +73,30 @@ namespace Server.AST.Expresiones.Aritmeticas
                                 NodoError.tipoError.Semantico, "No se puede realizar el Decremento -- porque el tipo no lo admite: " + Convert.ToString(tipovar)));
                             return tipoDato.errorSemantico;
                         }
+                    }
+                    else if (idExp is ListaPuntos)
+                    {
+                        object valorExpid = idExp.getValue(entorno, listas);
+                        tipoDato tipoExpId = idExp.getType(entorno, listas);
+                        if (tipoExpId != tipoDato.entero && tipoExpId != tipoDato.decimall)
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna,
+                                NodoError.tipoError.Semantico, "El tipo del incremento no es numerico sino: " + Convert.ToString(tipoExpId)));
+                            return tipoDato.errorSemantico;
+                        }
+
+                        if (tipoExpId == tipoDato.entero)
+                        {
+                            valorExpid = Convert.ToInt32(valorExpid) - 1;
+                        }
+                        else if (tipoExpId == tipoDato.decimall)
+                        {
+                            valorExpid = Convert.ToDouble(valorExpid) - 1.0;
+                        }
+                        ListaPuntos l = (ListaPuntos)idExp;
+                        SetearvaloresAccesos setear = new SetearvaloresAccesos(l, valorExpid, this.linea, this.columna);
+                        setear.ejecutar(entorno, listas);
+                        return valorExpid;
                     }
                     else
                     {

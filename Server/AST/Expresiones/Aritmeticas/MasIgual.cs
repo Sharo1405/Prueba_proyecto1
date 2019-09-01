@@ -1,4 +1,5 @@
 ﻿using Server.AST.Entornos;
+using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,56 +84,33 @@ namespace Server.AST.Expresiones.Aritmeticas
 
                 if (expresion1 is ListaPuntos && expresion2 is ListaPuntos)
                 {
-                    if (arrobaid)
+                    if (tipoExp1 == tipoDato.entero)
                     {
-                        if (s.tipo == tipoDato.entero)
-                        {
-                            s.valor = Convert.ToInt32(s.valor) + Convert.ToInt32(valorExp2);
-
-                        }
-                        else if (s.tipo == tipoDato.decimall)
-                        {
-                            s.valor = Convert.ToDouble(s.valor) + Convert.ToDouble(valorExp2);
-                        }
-                        return s.valor;
+                        valorExp1 = Convert.ToInt32(valorExp1) + Convert.ToInt32(valorExp2);
                     }
-                    else
+                    else if (tipoExp1 == tipoDato.decimall)
                     {
-                        if (tipoExp1 == tipoDato.entero)
-                        {
-                            return Convert.ToInt32(valorExp1) + Convert.ToInt32(valorExp2);
-                        }
-                        else if (tipoExp1 == tipoDato.decimall)
-                        {
-                            return Convert.ToDouble(valorExp1) + Convert.ToDouble(valorExp2);
-                        }
+                        valorExp1 = Convert.ToDouble(valorExp1) + Convert.ToDouble(valorExp2);
                     }
+                    ListaPuntos l = (ListaPuntos)expresion1;
+                    SetearvaloresAccesos setear = new SetearvaloresAccesos(l, valorExp1, this.linea, this.columna);
+                    setear.ejecutar(entorno, listas);
+                    return valorExp1;
                 }
                 else if (expresion1 is ListaPuntos)
-                {
-                    if (arrobaid) {
-                        if (s.tipo == tipoDato.entero)
-                        {
-                            s.valor = Convert.ToInt32(s.valor) + Convert.ToInt32(valorExp2);
-
-                        }
-                        else if (s.tipo == tipoDato.decimall)
-                        {
-                            s.valor = Convert.ToDouble(s.valor) + Convert.ToDouble(valorExp2);
-                        }
-                        return s.valor;
-                    }
-                    else
+                {                                 
+                    if (tipoExp1 == tipoDato.entero)
                     {
-                        if (tipoExp1 == tipoDato.entero)
-                        {
-                            return Convert.ToInt32(valorExp1) + Convert.ToInt32(valorExp2);
-                        }
-                        else if (tipoExp1 == tipoDato.decimall)
-                        {
-                            return Convert.ToDouble(valorExp1) + Convert.ToDouble(valorExp2);
-                        }
+                        valorExp1 = Convert.ToInt32(valorExp1) + Convert.ToInt32(valorExp2);
                     }
+                    else if (tipoExp1 == tipoDato.decimall)
+                    {
+                        valorExp1 = Convert.ToDouble(valorExp1) + Convert.ToDouble(valorExp2);
+                    }
+                    ListaPuntos l = (ListaPuntos)expresion1;
+                    SetearvaloresAccesos setear = new SetearvaloresAccesos(l, valorExp1, this.linea, this.columna);
+                    setear.ejecutar(entorno, listas);
+                    return valorExp1;
                 }
                 else if (expresion2 is ListaPuntos)
                 {

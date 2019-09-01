@@ -155,7 +155,7 @@ namespace Server.AST.Expresiones
                                             if (auxParaFunciones is CreateType)
                                             {
                                                 CreateType type2 = (CreateType)auxParaFunciones;
-                                                contador++;
+                                                //contador++;
                                                 auxParaFunciones = tipoType(entorno, listas, type2, contador);
                                                 return auxParaFunciones;
                                             }
@@ -282,7 +282,7 @@ namespace Server.AST.Expresiones
                         {
                             if (auxParaFunciones is CreateType) {
                                 CreateType type = (CreateType)auxParaFunciones;
-                                contador++;
+                                //contador++;
                                 auxParaFunciones = tipoType(entorno, listas, type, contador);
                                 return auxParaFunciones;
                             }
@@ -697,7 +697,7 @@ namespace Server.AST.Expresiones
                                     if (auxParaFunciones is CreateType)
                                     {
                                         CreateType type = (CreateType)auxParaFunciones;
-                                        contador++;
+                                        //contador++;
                                         auxParaFunciones = tipoType(entorno, listas, type, contador);
                                         return auxParaFunciones;
                                     }

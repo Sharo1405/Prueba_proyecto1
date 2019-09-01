@@ -139,6 +139,7 @@
     <Compile Include="AST\Instrucciones\StatementBlock.cs" />
     <Compile Include="AST\NodoAST.cs" />
     <Compile Include="AST\NodoError.cs" />
+    <Compile Include="AST\Otras\SetearvaloresAccesos.cs" />
     <Compile Include="AST\Otras\Tipo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
