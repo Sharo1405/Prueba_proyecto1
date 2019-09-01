@@ -255,6 +255,9 @@ namespace Server.AST.Expresiones
                     {
                         //listaRetorno = (List<object>)valo;
                         Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.set, tipo, linea, columna);
+                        /*List<Object> guar = new List<object>();
+                        guar.Add(listaGuardar);
+                        Lista guarda = new Lista("item", guar, tipoDato.list, tipoDato.set, linea, columna);*/
                         listaRetorno.Add(listaGuardar);
                     }
                     else
@@ -263,6 +266,9 @@ namespace Server.AST.Expresiones
                         List<Object> solo1 = new List<object>();
                         solo1.Add(valo);
                         Lista listaGuardar = new Lista("item", solo1, tipoDato.set, tipo, linea, columna);
+                        /*List<Object> guar = new List<object>();
+                        guar.Add(listaGuardar);
+                        Lista guarda = new Lista("item", guar, tipoDato.list, tipoDato.set, linea, columna);*/
                         listaRetorno.Add(listaGuardar);
                     }
                     tipo = tipoDato.set;

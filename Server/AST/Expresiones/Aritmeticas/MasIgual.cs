@@ -36,49 +36,128 @@ namespace Server.AST.Expresiones.Aritmeticas
 
         public tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
-            if (expresion1 != null)
-            {
-                return expresion1.getType(entorno, listas);
-            }
-            else
-            {
-                ArrobaId ididid = new ArrobaId(id, linea, columna);
-                return ididid.getType(entorno, listas);
-            }
+            
+            return expresion1.getType(entorno, listas);
+            
         }
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
             try
             {
-                if (expresion1 != null)
+                Boolean arrobaid = false;
+                Simbolo s = new Simbolo();
+                object valorExp1 = expresion1.getValue(entorno, listas);
+                object valorExp2 = expresion2.getValue(entorno, listas);
+
+                tipoDato tipoExp1 = expresion1.getType(entorno, listas);
+                tipoDato tipoExp2 = expresion2.getType(entorno, listas);
+
+
+                if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
                 {
-                    //accesos
+                    listas.errores.AddLast(new NodoError(linea, columna,
+                        NodoError.tipoError.Semantico, "No se puede realizar la operacion += por no son tipo numerico las expresiones"));
+                    return tipoDato.errorSemantico;
                 }
-                else
+
+                if (tipoExp2 != tipoDato.entero && tipoExp2 != tipoDato.decimall)
                 {
-                    ArrobaId ididid = new ArrobaId(id, linea, columna);
-                    tipoDato tipovar = ididid.getType(entorno, listas);
-                    Object valor2 = expresion2.getValue(entorno, listas);
-                    Simbolo variable = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
-                    if (tipovar == tipoDato.entero)
+                    listas.errores.AddLast(new NodoError(linea, columna,
+                        NodoError.tipoError.Semantico, "No se puede realizar la operacion += por no son tipo numerico las expresiones"));
+                    return tipoDato.errorSemantico;
+                }
+
+
+                if (valorExp1 is Simbolo)
+                {
+                    arrobaid = true;
+                    s = (Simbolo)valorExp1;
+
+                }
+                if (valorExp2 is Simbolo)
+                {
+                    Simbolo ss = (Simbolo)valorExp2;
+                    valorExp2 = ss.valor;
+                }
+
+                if (expresion1 is ListaPuntos && expresion2 is ListaPuntos)
+                {
+                    if (arrobaid)
                     {
-                        int valorantiguo = Convert.ToInt32(variable.valor);
-                        variable.valor = Convert.ToInt32(variable.valor) + Convert.ToInt32(valor2);
-                        return valorantiguo;
-                    }
-                    else if (tipovar == tipoDato.decimall)
-                    {
-                        Double valorantiguo = Double.Parse(Convert.ToString(variable.valor));
-                        variable.valor = Double.Parse(Convert.ToString(variable.valor)) + Double.Parse(Convert.ToString(valor2));
-                        return valorantiguo;
+                        if (s.tipo == tipoDato.entero)
+                        {
+                            s.valor = Convert.ToInt32(s.valor) + Convert.ToInt32(valorExp2);
+
+                        }
+                        else if (s.tipo == tipoDato.decimall)
+                        {
+                            s.valor = Convert.ToDouble(s.valor) + Convert.ToDouble(valorExp2);
+                        }
+                        return s.valor;
                     }
                     else
                     {
-                        listas.errores.AddLast(new NodoError(linea, columna,
-                            NodoError.tipoError.Semantico, "No se puede realizar la operacion += porque el tipo no lo admite: " + Convert.ToString(tipovar)));
-                        return tipoDato.errorSemantico;
+                        if (tipoExp1 == tipoDato.entero)
+                        {
+                            return Convert.ToInt32(valorExp1) + Convert.ToInt32(valorExp2);
+                        }
+                        else if (tipoExp1 == tipoDato.decimall)
+                        {
+                            return Convert.ToDouble(valorExp1) + Convert.ToDouble(valorExp2);
+                        }
                     }
+                }
+                else if (expresion1 is ListaPuntos)
+                {
+                    if (arrobaid) {
+                        if (s.tipo == tipoDato.entero)
+                        {
+                            s.valor = Convert.ToInt32(s.valor) + Convert.ToInt32(valorExp2);
+
+                        }
+                        else if (s.tipo == tipoDato.decimall)
+                        {
+                            s.valor = Convert.ToDouble(s.valor) + Convert.ToDouble(valorExp2);
+                        }
+                        return s.valor;
+                    }
+                    else
+                    {
+                        if (tipoExp1 == tipoDato.entero)
+                        {
+                            return Convert.ToInt32(valorExp1) + Convert.ToInt32(valorExp2);
+                        }
+                        else if (tipoExp1 == tipoDato.decimall)
+                        {
+                            return Convert.ToDouble(valorExp1) + Convert.ToDouble(valorExp2);
+                        }
+                    }
+                }
+                else if (expresion2 is ListaPuntos)
+                {
+                    if (s.tipo == tipoDato.entero)
+                    {
+                        s.valor = Convert.ToInt32(s.valor) + Convert.ToInt32(valorExp2);
+
+                    }
+                    else if (s.tipo == tipoDato.decimall)
+                    {
+                        s.valor = Convert.ToDouble(s.valor) + Convert.ToDouble(valorExp2);
+                    }
+                    return s.valor;
+                }
+                else
+                {
+                    if (s.tipo == tipoDato.entero)
+                    {
+                        s.valor = Convert.ToInt32(s.valor) + Convert.ToInt32(valorExp2);
+
+                    }else if (s.tipo == tipoDato.decimall)
+                    {
+                        s.valor = Convert.ToDouble(s.valor) + Convert.ToDouble(valorExp2);
+                    }
+                    return s.valor;
                 }
             }
             catch (Exception e)

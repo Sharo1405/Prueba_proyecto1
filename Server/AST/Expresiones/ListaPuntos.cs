@@ -31,8 +31,8 @@ namespace Server.AST.Expresiones
             ListaExpresionesPuntos = new LinkedList<Puntos>();
             ListaExpresionesPuntos.Clear();
             auxParaFunciones = new object();
-            getValue(entorno, listas);
             contador = 0;
+            getValue(entorno, listas);            
             auxParaFunciones = new object();
             ListaExpresionesPuntos = new LinkedList<Puntos>();
             tipoDato tipoFinal2 = tipoFinal;
