@@ -10,7 +10,7 @@ using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Instrucciones
 {
-    class Asignacion : Instruccion
+    class Asignacion : Expresion
     {
         public String id { get; set; }
         public Expresion valor { get; set; }
@@ -78,22 +78,66 @@ namespace Server.AST.Instrucciones
                 nuevo.itemTypee.AddLast(i);
             }
             return nuevo;
+        }        
+
+
+        LinkedList<Tipo> tiposSet = new LinkedList<Tipo>();
+        List<Object> listaRetorno = new List<object>();
+        public tipoDato comprobandoTipos(Entorno entorno, ErrorImpresion listas, Tipo tipoVal)
+        {
+            if (tipoVal.tipoValor is Tipo)
+            {
+                tiposSet.AddLast(new Tipo(tipoVal.tipo, tipoVal.tipoValor, linea, columna));
+                tipoDato t = comprobandoTipos(entorno, listas, tipoVal.tipoValor);
+                if (t == tipoDato.errorSemantico)
+                {
+                    return tipoDato.errorSemantico;
+                }
+            }
+            else
+            {
+                if (tipoVal.tipo == tipoDato.id)
+                {
+                    Simbolo sim = entorno.get(tipoVal.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                    if (sim == null)
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                "El tipo de la variable del set no existe. El nombre es: " + tipoVal.id));
+                        return tipoDato.errorSemantico;
+                    }
+                }
+                else if (tipoVal.tipo == tipoDato.booleano ||
+                        tipoVal.tipo == tipoDato.cadena ||
+                        tipoVal.tipo == tipoDato.date ||
+                        tipoVal.tipo == tipoDato.decimall ||
+                        tipoVal.tipo == tipoDato.entero ||
+                        tipoVal.tipo == tipoDato.time)
+                {
+                    return tipoDato.ok;
+                }
+            }
+
+            return tipoDato.ok;
         }
 
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        {
+            return tipoDato.ok;
+        }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas)
         {
             try
             {
                 Simbolo variable = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
                 if (variable != null)
-                {                    
+                {
                     object value = valor.getValue(entorno, listas);
                     tipoDato tipoValor = valor.getType(entorno, listas);
                     if (valor is Corchetes)
                     {
                         if (variable.tipo == tipoDato.list)
-                        { 
+                        {
                             Lista listaGuardar = new Lista();
                             if (value is List<object>)
                             {
@@ -112,7 +156,7 @@ namespace Server.AST.Instrucciones
                         else
                         {
                             listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                   "La variable no es del mismo tipo que su asignacion, se esperaba: " + 
+                                   "La variable no es del mismo tipo que su asignacion, se esperaba: " +
                                    Convert.ToString(variable.tipo) + "Y se recibe un tipo: " + Convert.ToString(tipoDato.list)));
                             return tipoDato.errorSemantico;
                         }
@@ -257,46 +301,6 @@ namespace Server.AST.Instrucciones
                 "La asignacion no es valida: " + id));
                 return tipoDato.errorSemantico;
             }
-            return tipoDato.ok;
-        }
-
-
-        LinkedList<Tipo> tiposSet = new LinkedList<Tipo>();
-        List<Object> listaRetorno = new List<object>();
-        public tipoDato comprobandoTipos(Entorno entorno, ErrorImpresion listas, Tipo tipoVal)
-        {
-            if (tipoVal.tipoValor is Tipo)
-            {
-                tiposSet.AddLast(new Tipo(tipoVal.tipo, tipoVal.tipoValor, linea, columna));
-                tipoDato t = comprobandoTipos(entorno, listas, tipoVal.tipoValor);
-                if (t == tipoDato.errorSemantico)
-                {
-                    return tipoDato.errorSemantico;
-                }
-            }
-            else
-            {
-                if (tipoVal.tipo == tipoDato.id)
-                {
-                    Simbolo sim = entorno.get(tipoVal.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
-                    if (sim == null)
-                    {
-                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                "El tipo de la variable del set no existe. El nombre es: " + tipoVal.id));
-                        return tipoDato.errorSemantico;
-                    }
-                }
-                else if (tipoVal.tipo == tipoDato.booleano ||
-                        tipoVal.tipo == tipoDato.cadena ||
-                        tipoVal.tipo == tipoDato.date ||
-                        tipoVal.tipo == tipoDato.decimall ||
-                        tipoVal.tipo == tipoDato.entero ||
-                        tipoVal.tipo == tipoDato.time)
-                {
-                    return tipoDato.ok;
-                }
-            }
-
             return tipoDato.ok;
         }
     }

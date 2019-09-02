@@ -10,7 +10,7 @@ using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Instrucciones
 {
-    class AccesoIdsConASignacion : Instruccion
+    class AccesoIdsConASignacion : Expresion
     {
         public String variable { get; set; }
         //public LinkedList<String> accesos { get; set; }
@@ -27,9 +27,9 @@ namespace Server.AST.Instrucciones
             this.valor = valor;
             this.linea = linea;
             this.columna = columna;
-        }
+        }        
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace Server.AST.Instrucciones
                             sett.ejecutar(entorno, listas);
                         }
                         else
-                        { 
+                        {
                             SetearvaloresAccesos sett = new SetearvaloresAccesos(variable, a, value, this.linea, this.columna, tipoValor);
                             sett.ejecutar(entorno, listas);
                         }
@@ -93,7 +93,7 @@ namespace Server.AST.Instrucciones
                     {
                         ArrobaId a = new ArrobaId(variable, this.linea, this.columna);
                         Expresion exp = (Expresion)a;
-                        ListaPuntos b = new ListaPuntos(exp, accesos,this.linea, this.columna);
+                        ListaPuntos b = new ListaPuntos(exp, accesos, this.linea, this.columna);
 
                         object value = valor.getValue(entorno, listas);
                         tipoDato tipoValor = valor.getType(entorno, listas);
@@ -150,7 +150,7 @@ namespace Server.AST.Instrucciones
                     listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                         "La variable \"" + variable + "\" NO EXISTE no se puede asignar valor"));
                     return tipoDato.errorSemantico;
-                }                
+                }
 
             }
             catch (Exception e)
@@ -160,6 +160,11 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.id;
-        }        
+        }
+
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        {
+            return tipoDato.ok;
+        }
     }
 }

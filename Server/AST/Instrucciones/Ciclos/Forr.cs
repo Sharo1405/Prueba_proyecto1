@@ -44,12 +44,13 @@ namespace Server.AST.Instrucciones.Ciclos
                     h.getValue(actual, listas);
                 }
 
+                object ob = condicion.getValue(actual, listas);
                 tipoDato t = condicion.getType(actual, listas);
                 if (t == tipoDato.booleano)
                 {
 
                     //hace la validacion del for
-                    while ((Boolean)condicion.getValue(actual, listas))
+                    while ((Boolean)ob)
                     {
                         Boolean reiniciar = false;
                         //SE LE DEBE COPIAR EL CONTENIDO DEL ENTORNO ACTUAL AL NUEVO PARA QUE LA VARIABLE DECLARADA DEL FOR(esta) NO SE OCULTE
@@ -68,6 +69,7 @@ namespace Server.AST.Instrucciones.Ciclos
 
                         Object valor = aumento.getValue(actualactual, listas);
 
+                        ob = condicion.getValue(actual, listas);
                     }
 
                 }
@@ -80,11 +82,12 @@ namespace Server.AST.Instrucciones.Ciclos
             }
             catch (Exception e)
             {
-            }
-            listas.errores.AddLast(new NodoError(linea, col,
+                listas.errores.AddLast(new NodoError(linea, col,
                 NodoError.tipoError.Semantico, "No se puede realizar el for"));
-            return tipoDato.errorSemantico;
+                return tipoDato.errorSemantico;
+            }
 
+            return tipoDato.ok;
         }
     }
 }

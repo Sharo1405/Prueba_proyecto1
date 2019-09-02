@@ -535,8 +535,18 @@ namespace Server.GenerarAST
                             expresiones(nodo.ChildNodes.ElementAt(2)),
                             variable(nodo.ChildNodes.ElementAt(0)));
 
-                    case "LISTAID":
-                        break;
+                    case "*=":
+                        return new PorIgual(nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column,
+                            expresiones(nodo.ChildNodes.ElementAt(2)),
+                            variable(nodo.ChildNodes.ElementAt(0)));
+
+                    case "/=":
+                        return new DividirIgual(nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column,
+                            expresiones(nodo.ChildNodes.ElementAt(2)),
+                            variable(nodo.ChildNodes.ElementAt(0)));
+
                 }
             }
             else if (nodo.ChildNodes.Count == 2)
@@ -579,11 +589,12 @@ namespace Server.GenerarAST
         {
             switch (nodo.ChildNodes.ElementAt(0).ToString())
             {
+                case "ACCESOASIGNACION":
+                    return accesoAsignacion(nodo.ChildNodes.ElementAt(0));
+
                 case "AUMENTOSSOLOS":
                     return AumentosSolos(nodo.ChildNodes.ElementAt(0));
-
-                case "E":
-                    break;
+                    
             }
 
             return null;
@@ -629,7 +640,7 @@ namespace Server.GenerarAST
             }
         }
 
-        public NodoAST accesoAsignacion(ParseTreeNode nodo)
+        public Expresion accesoAsignacion(ParseTreeNode nodo)
         {
             if (nodo.ChildNodes.Count == 3)
             {

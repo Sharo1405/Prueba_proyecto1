@@ -38,7 +38,7 @@ namespace Server.AST.Ciclos
                 tipoDato tipo = condicion.getType(entorno, listas);
                 if (tipoDato.booleano == tipo)
                 {
-                    while ((Boolean)condicion.getValue(entorno, listas))
+                    while ((Boolean)valor)
                     {
                         Object retorno = sentencias.ejecutar(entorno, listas);
 
@@ -54,6 +54,8 @@ namespace Server.AST.Ciclos
                         {
                             return retorno;
                         }
+
+                        valor = condicion.getValue(entorno, listas);
                     }
                 }
                 else

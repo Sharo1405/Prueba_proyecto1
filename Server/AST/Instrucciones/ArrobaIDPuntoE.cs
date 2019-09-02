@@ -11,7 +11,7 @@ using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Instrucciones
 {
-    class ArrobaIDPuntoE : Instruccion
+    class ArrobaIDPuntoE : Expresion
     {
         public String id { get; set; }
         public Expresion valor { get; set; }
@@ -30,9 +30,14 @@ namespace Server.AST.Instrucciones
 
         public ArrobaIDPuntoE()
         {
+        }        
+
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        {
+            return tipoDato.ok;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas)
         {
             try
             {
@@ -47,7 +52,7 @@ namespace Server.AST.Instrucciones
                         {
                             ListaPuntos a = (ListaPuntos)valor;
                             ListaPuntos sett = new ListaPuntos(id, a.ExpSeparadasPuntos, this.linea, this.columna);
-                            sett.getValue(entorno, listas);                                                       
+                            sett.getValue(entorno, listas);
                         }
                         else if (valor is MasIgual)
                         {
@@ -93,7 +98,7 @@ namespace Server.AST.Instrucciones
 
                             ListaPuntos sett = new ListaPuntos(id, b.ExpSeparadasPuntos, this.linea, this.columna);
                             sett.getValue(entorno, listas);
-                                                      
+
                         }
                     }
                     else
@@ -118,6 +123,6 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
-        }
+        }        
     }
 }

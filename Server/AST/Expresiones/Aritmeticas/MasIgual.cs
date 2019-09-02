@@ -21,6 +21,7 @@ namespace Server.AST.Expresiones.Aritmeticas
 
         public MasIgual(int linea, int columna, Expresion expresion2, String id)
         {
+            this.expresion1 = null;
             this.id = id;
             this.expresion2 = expresion2;
             this.linea = linea;
@@ -163,6 +164,34 @@ namespace Server.AST.Expresiones.Aritmeticas
                         }
                         return s.valor;
                     }
+                }
+                else if (expresion1 == null)
+                {
+                    Simbolo jk = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
+                    if (jk != null)
+                    {                       
+
+                        if (jk.tipo == tipoExp2)
+                        {
+                            if (jk.tipo == tipoDato.entero)
+                            {
+                                jk.valor = Convert.ToInt32(jk.valor) + Convert.ToInt32(valorExp2);
+
+                            }
+                            else if (jk.tipo == tipoDato.decimall)
+                            {
+                                jk.valor = Convert.ToDouble(jk.valor) + Convert.ToDouble(valorExp2);
+                            }
+                            return jk.valor;
+                        }
+                    }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna,
+                                NodoError.tipoError.Semantico, "No se puede realizar la operacion += porque no existe la variable" + id));
+                        return tipoDato.errorSemantico;
+                    }
+
                 }
                 else
                 {

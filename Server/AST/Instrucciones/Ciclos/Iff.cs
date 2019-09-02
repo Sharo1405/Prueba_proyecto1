@@ -33,10 +33,11 @@ namespace Server.AST.Instrucciones.Ciclos
                 entro = false;
                 foreach (IfLista ifLista in ejecutarIFS)
                 {
+                    Object ob = ifLista.condicion.getValue(entorno, listas);
                     tipoDato tipo = ifLista.condicion.getType(entorno, listas);
                     if (tipo == tipoDato.booleano)
                     {
-                        Boolean prueba = (Boolean)ifLista.condicion.getValue(entorno, listas);
+                        Boolean prueba = (Boolean)ob;
                         if (prueba)
                         {
                             entro = true;

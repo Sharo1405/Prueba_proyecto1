@@ -28,6 +28,7 @@ namespace Server.AST.Instrucciones.Ciclos
         {
             try
             {
+                Object ob = condicion.getValue(entorno, listas);
                 do
                 {
                     Boolean reiniciar = false;
@@ -47,6 +48,7 @@ namespace Server.AST.Instrucciones.Ciclos
                     }
 
                     //-----------------------------------------------------------------------------------------------
+                    ob = condicion.getValue(entorno, listas);
                     tipoDato tipo = condicion.getType(entorno, listas);
                     if (tipo == tipoDato.booleano)
                     {
@@ -60,7 +62,7 @@ namespace Server.AST.Instrucciones.Ciclos
                     }
                     //-----------------------------------------------------------------------------------------------
 
-                } while ((Boolean)condicion.getValue(entorno, listas));
+                } while ((Boolean)ob);
 
                 return tipoDato.ok;
             }

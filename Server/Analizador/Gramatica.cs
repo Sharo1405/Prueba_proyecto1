@@ -589,18 +589,20 @@ namespace Server.Analizador
                                 | DECLAASGINACION
                                 | ACCESOASIGNACION;
 
-            ACTUALIZACION.Rule =  //AUMENTOSSOLOS
-                                  ACCESOASIGNACION
-                                | E + igual + E;
+            ACTUALIZACION.Rule = AUMENTOSSOLOS
+                                | ACCESOASIGNACION;
+                                //| E + igual + E;
 
-            AUMENTOSSOLOS.Rule = ARROBAID + LISTAID + incremento
-                               | ARROBAID + LISTAID + decremento
-                               | ARROBAID + incremento
+            AUMENTOSSOLOS.Rule = //ARROBAID + LISTAID + incremento
+                               //| ARROBAID + LISTAID + decremento
+                                ARROBAID + incremento
                                | ARROBAID + decremento
-                               | ARROBAID + LISTAID + masigual + E
-                               | ARROBAID + LISTAID + menosigual + E
+                               //| ARROBAID + LISTAID + masigual + E
+                               //| ARROBAID + LISTAID + menosigual + E
                                | ARROBAID + masigual + E
-                               | ARROBAID + menosigual + E;
+                               | ARROBAID + menosigual + E
+                               | ARROBAID + porigual + E
+                               | ARROBAID + dividirigual + E;
 
             WHILEE.Rule = whilee + aparentesis + E + cparentesis + STATEMENTBLOCK;
 
