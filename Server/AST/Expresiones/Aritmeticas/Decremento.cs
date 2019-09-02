@@ -30,8 +30,17 @@ namespace Server.AST.Expresiones.Aritmeticas
             this.linea = linea;
             this.columna = columna;
         }
-   
 
+        public Decremento(String id, Expresion idex, int linea, int columna)
+        {
+            this.id = id;
+            this.idExp = idex;
+            this.linea = linea;
+            this.columna = columna;
+        }
+
+        tipoDato tipoOpcion1 = tipoDato.errorSemantico;
+        tipoDato tipoOpcion2 = tipoDato.errorSemantico;
         public tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
             if (idExp != null)
@@ -50,7 +59,79 @@ namespace Server.AST.Expresiones.Aritmeticas
             {
                 if (idExp != null)
                 {
-                    if (idExp is ArrobaId)
+                    if (!id.Equals(""))
+                    {
+                        if (idExp is ListaPuntos)
+                        {
+                            ListaPuntos a = (ListaPuntos)idExp;
+                            ListaPuntos sett = new ListaPuntos(id, a.ExpSeparadasPuntos, this.linea, this.columna);
+                            object valorExp1 = sett.getValue(entorno, listas);
+                            tipoDato tipoExp1 = sett.getType(entorno, listas);
+                            tipoOpcion1 = tipoExp1;
+
+                            if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna,
+                                    NodoError.tipoError.Semantico, "No se puede realizar la operacion ++ por no son tipo numerico las expresiones"));
+                                return tipoDato.errorSemantico;
+                            }
+
+                            if (valorExp1 is Simbolo)
+                            {
+                                valorExp1 = ((Simbolo)valorExp1).valor;
+                            }
+
+                            if (tipoExp1 == tipoDato.entero)
+                            {
+                                valorExp1 = Convert.ToInt32(valorExp1) - 1;
+                            }
+                            else if (tipoExp1 == tipoDato.decimall)
+                            {
+                                valorExp1 = Convert.ToDouble(valorExp1) - 1.0;
+                            }
+
+                            SetearvaloresAccesos setear = new SetearvaloresAccesos(id, a, valorExp1, this.linea, this.columna, tipoExp1);
+                            setear.ejecutar(entorno, listas);
+                            return valorExp1;
+                        }
+                        else
+                        {
+                            ArrobaId a = new ArrobaId(id, this.linea, this.columna);
+                            Expresion exp = (Expresion)a;
+                            ListaPuntos b = new ListaPuntos(exp, idExp, this.linea, this.columna);
+
+                            object valorExp1 = b.getValue(entorno, listas);
+                            tipoDato tipoExp1 = b.getType(entorno, listas);
+                            tipoOpcion2 = tipoExp1;
+
+                            if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna,
+                                    NodoError.tipoError.Semantico, "No se puede realizar la operacion ++ por no son tipo numerico las expresiones"));
+                                return tipoDato.errorSemantico;
+                            }
+
+                            if (valorExp1 is Simbolo)
+                            {
+                                valorExp1 = ((Simbolo)valorExp1).valor;
+                            }
+
+                            if (tipoExp1 == tipoDato.entero)
+                            {
+                                valorExp1 = Convert.ToInt32(valorExp1) - 1;
+                            }
+                            else if (tipoExp1 == tipoDato.decimall)
+                            {
+                                valorExp1 = Convert.ToDouble(valorExp1) - 1.0;
+                            }
+
+                            SetearvaloresAccesos setear = new SetearvaloresAccesos(b, valorExp1, this.linea, this.columna, tipoExp1);
+                            setear.ejecutar(entorno, listas);
+                            return valorExp1;
+                        }
+
+                    }
+                    else if (idExp is ArrobaId)
                     {
                         ArrobaId id2 = (ArrobaId)idExp;
                         tipoDato tipovar = idExp.getType(entorno, listas);
@@ -94,7 +175,7 @@ namespace Server.AST.Expresiones.Aritmeticas
                             valorExpid = Convert.ToDouble(valorExpid) - 1.0;
                         }
                         ListaPuntos l = (ListaPuntos)idExp;
-                        SetearvaloresAccesos setear = new SetearvaloresAccesos(l, valorExpid, this.linea, this.columna);
+                        SetearvaloresAccesos setear = new SetearvaloresAccesos(l, valorExpid, this.linea, this.columna, tipoExpId);
                         setear.ejecutar(entorno, listas);
                         return valorExpid;
                     }

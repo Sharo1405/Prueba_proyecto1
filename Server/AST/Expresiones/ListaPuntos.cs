@@ -17,15 +17,28 @@ namespace Server.AST.Expresiones
         public int linea { get; set; }
         public int columna { get; set; }
 
+        public String idvariable { get; set; }
+
         LinkedList<Puntos> ListaExpresionesPuntos = new LinkedList<Puntos>();
         int contador = 0;
         object auxParaFunciones = new object();
 
         public ListaPuntos(Expresion izq, Expresion der, int linea, int columna)
         {
+            this.idvariable = "";
             ExpSeparadasPuntos.AddLast(new Puntos(linea, columna, izq));
             ExpSeparadasPuntos.AddLast(new Puntos(linea, columna, der));
         }
+
+
+        public ListaPuntos(String id, LinkedList<Puntos> ExpSeparadasPuntos, int linea, int columna)
+        {
+            this.idvariable = id;
+            this.ExpSeparadasPuntos = ExpSeparadasPuntos;
+            this.linea = linea;
+            this.columna = columna;
+        }
+
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
         {
             ListaExpresionesPuntos = new LinkedList<Puntos>();
@@ -61,8 +74,21 @@ namespace Server.AST.Expresiones
 
             //aqui comienza el acceso para retornar el valor
             
-            Puntos puntos = ListaExpresionesPuntos.ElementAt(contador);
-            Object ob = puntos.expresion1.getValue(entorno, listas);
+            //Puntos puntos = ListaExpresionesPuntos.ElementAt(contador);
+
+            Object ob = new object();
+            if (idvariable.Equals(""))
+            {
+                Puntos puntos = ListaExpresionesPuntos.ElementAt(contador);
+                ob = puntos.expresion1.getValue(entorno, listas);
+            }
+            else
+            {
+                contador--;
+                ob = entorno.get(idvariable, entorno, Simbolo.Rol.VARIABLE);
+            }
+
+            //Object ob = puntos.expresion1.getValue(entorno, listas);
             if (ob is Simbolo)
             {
                 Simbolo s = (Simbolo)ob;

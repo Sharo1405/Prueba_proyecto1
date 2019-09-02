@@ -13,8 +13,11 @@ namespace Server.AST.Otras
 {
     class SetearvaloresAccesos : Instruccion
     {
+        public String idVarInicio { get; set; }
+
         public ListaPuntos idExp { get; set; }
         public object valorParaAsignar { get; set; }
+        public tipoDato tipoValorParaAsignar { get; set; }
         public int linea { get; set; }
         public int columna { get; set; }
 
@@ -23,10 +26,22 @@ namespace Server.AST.Otras
         int contador = 0;
         object auxParaFunciones = new object();
 
-        public SetearvaloresAccesos(ListaPuntos idExp, object valorParaAsignar, int linea, int columna)
+        public SetearvaloresAccesos(String idVarInicio, ListaPuntos idExp, object valorParaAsignar, int linea, int columna, tipoDato tipovalorasignar)
         {
+            this.idVarInicio = idVarInicio;
             this.idExp = idExp;
             this.valorParaAsignar = valorParaAsignar;
+            this.tipoValorParaAsignar = tipovalorasignar;
+            this.linea = linea;
+            this.columna = columna;
+        }
+
+        public SetearvaloresAccesos(ListaPuntos idExp, object valorParaAsignar, int linea, int columna, tipoDato tipovalorasignar)
+        {
+            this.idVarInicio = "";
+            this.idExp = idExp;
+            this.valorParaAsignar = valorParaAsignar;
+            this.tipoValorParaAsignar = tipovalorasignar;
             this.linea = linea;
             this.columna = columna;
         }
@@ -51,8 +66,17 @@ namespace Server.AST.Otras
 
 
             //----------------------------------------------------------------------------------------
-            Puntos puntos = ListaExpresionesPuntos.ElementAt(contador);
-            Object ob = puntos.expresion1.getValue(entorno, listas);
+            Object ob = new object();
+            if (idVarInicio.Equals("")) {
+                Puntos puntos = ListaExpresionesPuntos.ElementAt(contador);
+                ob = puntos.expresion1.getValue(entorno, listas);
+            }
+            else
+            {
+                contador--;
+                ob = entorno.get(idVarInicio, entorno, Simbolo.Rol.VARIABLE);
+            }
+
             if (ob is Simbolo)
             {
                 Simbolo s = (Simbolo)ob;
@@ -71,6 +95,12 @@ namespace Server.AST.Otras
                                 if (itType.tipo.tipo == tipoDato.id)
                                 {
                                     CreateType otroitem = (CreateType)itType.valor;
+
+                                    if (valorParaAsignar is CreateType && contador >= ListaExpresionesPuntos.Count)
+                                    {
+                                        itType.valor = valorParaAsignar;
+                                    }
+
                                     if (otroitem != null)
                                     {
                                         contador++;
@@ -91,6 +121,16 @@ namespace Server.AST.Otras
                                     auxParaFunciones = null;
                                     auxParaFunciones = l.listaValores;
                                     tipoDato tvtvtv = l.tipoValor;
+
+
+                                    if (valorParaAsignar is Lista && contador >= ListaExpresionesPuntos.Count)
+                                    {
+                                        Lista vv = (Lista)valorParaAsignar;
+                                        if (vv.tipoGeneral == itType.tipo.tipo)
+                                        {
+                                            itType.valor = valorParaAsignar;
+                                        }
+                                    }
 
                                     while (contador < ListaExpresionesPuntos.Count)
                                     {
@@ -147,7 +187,19 @@ namespace Server.AST.Otras
                                 else
                                 {
                                     tipoFinal = itType.tipo.tipo;
-                                    itType.valor = valorParaAsignar;
+                                    if (tipoValorParaAsignar == itType.tipo.tipo) {
+
+                                        itType.valor = valorParaAsignar;
+                                        
+                                    }
+                                    else if (tipoValorParaAsignar == tipoDato.entero && tipoDato.decimall == itType.tipo.tipo)
+                                    {
+                                        itType.valor = Convert.ToDouble(valorParaAsignar);
+                                    }
+                                    else if (tipoValorParaAsignar == tipoDato.decimall && tipoDato.entero == itType.tipo.tipo)
+                                    {
+                                        itType.valor = Convert.ToInt32(valorParaAsignar);
+                                    }
                                     contador++;
                                     return tipoDato.ok ;
 
@@ -164,6 +216,15 @@ namespace Server.AST.Otras
                     auxParaFunciones = null;
                     auxParaFunciones = l.listaValores;
                     tipoDato tvlista = s.tipoValor;
+
+                    if (valorParaAsignar is Lista && contador >= ListaExpresionesPuntos.Count)
+                    {
+                        Lista vv = (Lista)valorParaAsignar;
+                        if (vv.tipoGeneral == s.tipo)
+                        {
+                            s.valor = valorParaAsignar;
+                        }
+                    }
 
                     while (contador < ListaExpresionesPuntos.Count)
                     {
@@ -308,8 +369,12 @@ namespace Server.AST.Otras
                     {
                         if (itType.tipo.tipo == tipoDato.id)
                         {
-
                             CreateType otroitem = (CreateType)itType.valor;
+                            if (valorParaAsignar is CreateType && contador >= ListaExpresionesPuntos.Count)
+                            {
+                                itType.valor = valorParaAsignar;
+                            }
+
                             if (otroitem != null)
                             {
                                 contador++;
@@ -336,6 +401,24 @@ namespace Server.AST.Otras
                             auxParaFunciones = null;
                             auxParaFunciones = l.listaValores;
                             tipoDato tvtvtv = l.tipoValor;
+
+                            if (valorParaAsignar is Lista && contador >= ListaExpresionesPuntos.Count)
+                            {
+                                Lista vv = (Lista)valorParaAsignar;
+                                if (vv.tipoGeneral == itType.tipo.tipo)
+                                {
+                                    itType.valor = valorParaAsignar;
+                                }
+                            }
+
+                            if (valorParaAsignar is Lista && contador >= ListaExpresionesPuntos.Count)
+                            {
+                                Lista vv = (Lista)valorParaAsignar;
+                                if (vv.tipoGeneral == itType.tipo.tipo)
+                                {
+                                    itType.valor = valorParaAsignar;
+                                }
+                            }
 
                             while (contador < ListaExpresionesPuntos.Count)
                             {
@@ -392,7 +475,19 @@ namespace Server.AST.Otras
                         else
                         {
                             tipoFinal = itType.tipo.tipo;
-                            itType.valor = valorParaAsignar;
+                            if (tipoValorParaAsignar == itType.tipo.tipo)
+                            {
+                                itType.valor = valorParaAsignar;
+                            }
+                            else if (tipoValorParaAsignar == tipoDato.entero && tipoDato.decimall == itType.tipo.tipo)
+                            {
+                                itType.valor = Convert.ToDouble(valorParaAsignar);
+                            }
+                            else if (tipoValorParaAsignar == tipoDato.decimall && tipoDato.entero == itType.tipo.tipo)
+                            {
+                                itType.valor = Convert.ToInt32(valorParaAsignar);
+                            }
+                            //itType.valor = valorParaAsignar;
                             contador++;                            
                             return tipoDato.ok;
 

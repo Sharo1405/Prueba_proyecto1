@@ -29,11 +29,13 @@ namespace Server.AST.Ciclos
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
+            object exp = expresion1.getValue(entorno, listas);
+            object exp2 = expresion2.getValue(entorno, listas);
+
             if (((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano) &&
                 ((tipoDato)expresion2.getType(entorno, listas) == tipoDato.booleano))
             {
-                object exp = expresion1.getValue(entorno, listas);
-                object exp2 = expresion2.getValue(entorno, listas);
+                
                 if (expresion1 is ArrobaId)
                 {
                     Simbolo ar = (Simbolo)exp;

@@ -74,6 +74,7 @@
     <Compile Include="AST\Expresiones\Puntos.cs" />
     <Compile Include="AST\Instrucciones\AccesoIdsConASignacion.cs" />
     <Compile Include="AST\Instrucciones\accesosFuncionCadena3.cs" />
+    <Compile Include="AST\Instrucciones\ArrobaIDPuntoE.cs" />
     <Compile Include="AST\Instrucciones\Asignacion.cs" />
     <Compile Include="AST\Instrucciones\Breakk.cs" />
     <Compile Include="AST\Instrucciones\Casee.cs" />

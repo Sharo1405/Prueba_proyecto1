@@ -27,6 +27,7 @@ namespace Server.AST.Expresiones.Logicas
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
         {
+            expresion1.getValue(entorno, listas);
             if ((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano)
             {
                 object exp = expresion1.getValue(entorno, listas);                

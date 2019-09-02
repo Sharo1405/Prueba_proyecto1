@@ -19,11 +19,12 @@ namespace Server.AST.Expresiones
         }
 
         public object getValue(Entorno entorno, ErrorImpresion listas)
-        {
-            tipoDato nuevo = tipoResultante((tipoDato)expresion1.getType(entorno, listas), (tipoDato)expresion2.getType(entorno, listas), entorno, listas);
-
+        {            
             object exp = expresion1.getValue(entorno, listas);
             object exp2 = expresion2.getValue(entorno, listas);
+
+            tipoDato nuevo = tipoResultante((tipoDato)expresion1.getType(entorno, listas), (tipoDato)expresion2.getType(entorno, listas), entorno, listas);
+
             if (expresion1 is ArrobaId)
             {
                 Simbolo ar = (Simbolo)exp;

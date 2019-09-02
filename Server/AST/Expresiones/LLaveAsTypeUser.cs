@@ -148,7 +148,18 @@ namespace Server.AST.Expresiones
                                         }
                                         else
                                         {
-                                            itType.valor = valo;
+                                            if (valo is List<object>)
+                                            {
+                                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                    "El tipo de la variable del no coincide con el experado, " + "esperado: " + Convert.ToString(tipoValue) +
+                                                    "Viene: list/set"));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                            else
+                                            {
+                                                itType.valor = valo;
+                                            }
+                                            
                                         }
                                     }
                                     else if (tipoValue == tipoDato.nulo && itType.tipo.tipo == tipoDato.id)
@@ -320,8 +331,18 @@ namespace Server.AST.Expresiones
                                     
                                 }
                                 else if (tipoValue == itType.tipo.tipo)
-                                {
-                                    itType.valor = valo;
+                                {                                   
+                                    if (valo is List<object>)
+                                    {
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                            "El tipo de la variable del no coincide con el experado, " + "esperado: " + Convert.ToString(tipoValue) +
+                                            "Viene: list/set"));
+                                        return tipoDato.errorSemantico;
+                                    }
+                                    else
+                                    {
+                                        itType.valor = valo;
+                                    }
                                 }
                                 else if (tipoValue == tipoDato.nulo && (itType.tipo.tipo == tipoDato.cadena ||
                                     itType.tipo.tipo == tipoDato.date ||
@@ -509,7 +530,16 @@ namespace Server.AST.Expresiones
                                             }
                                             else
                                             {
-                                                it.valor = o;
+                                                if (o is List<object>)
+                                                {
+                                                    listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                        "El tipo de la variable del no coincide con el experado, " + "esperado: " + Convert.ToString(t)+
+                                                        "Viene: list/set" ));
+                                                    return tipoDato.errorSemantico;
+                                                }
+                                                else {
+                                                    it.valor = o;
+                                                }
                                             }
                                         }
                                         else if (t == tipoDato.nulo && it.tipo.tipo == tipoDato.id)
@@ -538,7 +568,17 @@ namespace Server.AST.Expresiones
                                         }
                                         else
                                         {
-                                            it.valor = o;
+                                            if (o is List<object>)
+                                            {
+                                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                    "El tipo de la variable del no coincide con el experado, " + "esperado: " + Convert.ToString(t) +
+                                                    "Viene: list/set"));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                            else
+                                            {
+                                                it.valor = o;
+                                            }
                                         }
                                     }
                                     else

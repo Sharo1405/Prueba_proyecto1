@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
+using Server.AST.Otras;
 using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Instrucciones
@@ -12,12 +13,13 @@ namespace Server.AST.Instrucciones
     class AccesoIdsConASignacion : Instruccion
     {
         public String variable { get; set; }
-        public LinkedList<String> accesos { get; set; }
+        //public LinkedList<String> accesos { get; set; }
+        public Expresion accesos { get; set; }
         public Expresion valor { get; set; }
         public int linea { get; set; }
         public int columna { get; set; }
 
-        public AccesoIdsConASignacion(String variable, LinkedList<String> accesos,
+        public AccesoIdsConASignacion(String variable, Expresion accesos,
             Expresion valor, int linea, int columna)
         {
             this.variable = variable;
@@ -33,101 +35,114 @@ namespace Server.AST.Instrucciones
             {
                 Simbolo sim = entorno.get(variable.ToLower(), entorno, Simbolo.Rol.VARIABLE);
 
-                int contador = 0;
                 if (sim != null)
                 {
-                    if (sim.tipo == tipoDato.id)
+                    if (accesos is ListaPuntos)
                     {
-                        CreateType type = (CreateType)sim.valor;                        
-                        String id = accesos.ElementAt(contador).ToLower();
-                        foreach (itemType itType in type.itemTypee)
-                        {
-                            if (itType.id.Equals(id))
-                            {
-                                if (itType.tipo.tipo == tipoDato.id)
-                                {
-                                    if ((valor is Neww) && (contador == (accesos.Count -1)))
-                                    {
-                                        Simbolo sim2 = entorno.get(itType.tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
-                                        if (sim2 != null)
-                                        {
-                                            if (sim2.valor is CreateType)
-                                            {                                                
-                                                CreateType ss = (CreateType)sim2.valor;
-                                                LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
-                                                foreach (itemType zz in ss.itemTypee)
-                                                {
-                                                    itemTy2.AddLast((itemType)zz.Clone());
-                                                }
-                                                CreateType lista2 = (CreateType)ss.Clone(itemTy2);
-                                                itType.valor = lista2;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                                "El tipo de la variable del User type NO EXISTE. Tipos en cuestion: " + Convert.ToString(itType.tipo.id)));
-                                            return tipoDato.errorSemantico;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        CreateType otroitem = (CreateType)itType.valor;
-                                        if (otroitem != null) {
-                                            contador++;
-                                            tipoDato tipoDevuelto = tipoType(entorno, listas, otroitem, contador);
-                                            if (tipoDevuelto == tipoDato.errorSemantico)
-                                            {
-                                                return tipoDato.errorSemantico;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                                "La variable \"" + variable+ "." + id + "\" no esta Instanciada"));
-                                            return tipoDato.errorSemantico;
-                                        }
-                                    }
-                                    break;
-                                }
-                                else if (itType.tipo.tipo == tipoDato.list)
-                                {
+                        ListaPuntos a = (ListaPuntos)accesos;
 
-                                }
-                                else if (itType.tipo.tipo == tipoDato.set)
-                                {
-                                    
-                                }
-                                else
-                                {
-                                    tipoDato tipoValue = valor.getType(entorno, listas);
-                                    if (tipoValue == itType.tipo.tipo)
-                                    {
-                                        itType.valor = valor.getValue(entorno, listas);
-                                    }
-                                    else
-                                    {
-                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                                "Tipos no validos para asignar el valor en el Acesso de la variable: " + variable));
-                                        return tipoDato.errorSemantico;
-                                    }
-                                    break;
-                                }
-                            }
+                        object value = valor.getValue(entorno, listas);
+                        tipoDato tipoValor = valor.getType(entorno, listas);
+
+                        if (value is Simbolo)
+                        {
+                            value = ((Simbolo)value).valor;
                         }
 
-                    }
-                    else if (sim.tipo == tipoDato.list)
-                    {
+                        Lista listaGuardar = new Lista();
+                        if (valor is Corchetes)
+                        {
+                            if (value is List<object>)
+                            {
+                                List<object> lista = (List<object>)value;
+                                listaGuardar = new Lista("", lista, tipoDato.list, tipoValor, linea, columna);
+                            }
+                            else
+                            {
+                                List<object> lista = new List<object>();
+                                lista.Add(value);
+                                listaGuardar = new Lista("", lista, tipoDato.list, tipoValor, linea, columna);
+                            }
 
-                    }
-                    else if (sim.tipo == tipoDato.set)
-                    {
-
+                            SetearvaloresAccesos sett = new SetearvaloresAccesos(variable, a, listaGuardar, this.linea, this.columna, tipoDato.list);
+                            sett.ejecutar(entorno, listas);
+                        }
+                        else if (valor is Llaves) //set
+                        {
+                            if (value is List<object>)
+                            {
+                                List<object> lista = (List<object>)value;
+                                listaGuardar = new Lista("", lista, tipoDato.set, tipoValor, linea, columna);
+                            }
+                            else
+                            {
+                                List<object> lista = new List<object>();
+                                lista.Add(value);
+                                listaGuardar = new Lista("", lista, tipoDato.set, tipoValor, linea, columna);
+                            }
+                            SetearvaloresAccesos sett = new SetearvaloresAccesos(variable, a, listaGuardar, this.linea, this.columna, tipoDato.set);
+                            sett.ejecutar(entorno, listas);
+                        }
+                        else
+                        { 
+                            SetearvaloresAccesos sett = new SetearvaloresAccesos(variable, a, value, this.linea, this.columna, tipoValor);
+                            sett.ejecutar(entorno, listas);
+                        }
                     }
                     else
                     {
-                        //tipo primitivo normal
+                        ArrobaId a = new ArrobaId(variable, this.linea, this.columna);
+                        Expresion exp = (Expresion)a;
+                        ListaPuntos b = new ListaPuntos(exp, accesos,this.linea, this.columna);
+
+                        object value = valor.getValue(entorno, listas);
+                        tipoDato tipoValor = valor.getType(entorno, listas);
+
+
+                        if (value is Simbolo)
+                        {
+                            value = ((Simbolo)value).valor;
+                        }
+
+                        Lista listaGuardar = new Lista();
+                        if (valor is Corchetes)
+                        {
+                            if (value is List<object>)
+                            {
+                                List<object> lista = (List<object>)value;
+                                listaGuardar = new Lista("", lista, tipoDato.list, tipoValor, linea, columna);
+                            }
+                            else
+                            {
+                                List<object> lista = new List<object>();
+                                lista.Add(value);
+                                listaGuardar = new Lista("", lista, tipoDato.list, tipoValor, linea, columna);
+                            }
+
+                            SetearvaloresAccesos sett = new SetearvaloresAccesos(b, listaGuardar, this.linea, this.columna, tipoValor);
+                            sett.ejecutar(entorno, listas);
+                        }
+                        else if (valor is Llaves) //set
+                        {
+                            if (value is List<object>)
+                            {
+                                List<object> lista = (List<object>)value;
+                                listaGuardar = new Lista("", lista, tipoDato.set, tipoValor, linea, columna);
+                            }
+                            else
+                            {
+                                List<object> lista = new List<object>();
+                                lista.Add(value);
+                                listaGuardar = new Lista("", lista, tipoDato.set, tipoValor, linea, columna);
+                            }
+                            SetearvaloresAccesos sett = new SetearvaloresAccesos(b, listaGuardar, this.linea, this.columna, tipoValor);
+                            sett.ejecutar(entorno, listas);
+                        }
+                        else
+                        {
+                            SetearvaloresAccesos sett = new SetearvaloresAccesos(b, value, this.linea, this.columna, tipoValor);
+                            sett.ejecutar(entorno, listas);
+                        }
                     }
                 }
                 else
@@ -145,90 +160,6 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.id;
-        }
-
-
-        public tipoDato tipoType(Entorno entorno, ErrorImpresion listas, CreateType claseType, int contador)
-        {
-            
-            String id = accesos.ElementAt(contador).ToLower();
-            foreach (itemType itType in claseType.itemTypee)
-            {
-                if (itType.id.Equals(id))
-                {
-                    if (itType.tipo.tipo == tipoDato.id)
-                    {
-                        if ((valor is Neww) && (contador == (accesos.Count - 1)))
-                        {
-                            Simbolo sim2 = entorno.get(itType.tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
-                            if (sim2 != null)
-                            {
-                                if (sim2.valor is CreateType)
-                                {
-                                    CreateType ss = (CreateType)sim2.valor;
-                                    LinkedList<itemType> itemTy2 = new LinkedList<itemType>();
-                                    foreach (itemType zz in ss.itemTypee)
-                                    {
-                                        itemTy2.AddLast((itemType)zz.Clone());
-                                    }
-                                    CreateType lista2 = (CreateType)ss.Clone(itemTy2);
-                                    itType.valor = lista2;
-                                }
-                            }
-                            else
-                            {
-                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                    "El tipo de la variable del User type NO EXISTE. Tipos en cuestion: " + Convert.ToString(itType.tipo.id)));
-                                return tipoDato.errorSemantico;
-                            }
-                        }
-                        else
-                        {
-                            CreateType otroitem = (CreateType)itType.valor;
-                            if (otroitem != null)
-                            {
-                                contador++;
-                                tipoDato tipoDevuelto = tipoType(entorno, listas, otroitem, contador);
-                                if (tipoDevuelto == tipoDato.errorSemantico)
-                                {
-                                    return tipoDato.errorSemantico;
-                                }
-                            }
-                            else
-                            {
-                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                    "La variable \"" + variable + "." + id + "\" no esta Instanciada"));
-                                return tipoDato.errorSemantico;
-                            }
-                        }
-                        break;
-                    }
-                    else if (itType.tipo.tipo == tipoDato.list)
-                    {
-
-                    }
-                    else if (itType.tipo.tipo == tipoDato.set)
-                    {
-
-                    }
-                    else
-                    {
-                        tipoDato tipoValue = valor.getType(entorno, listas);
-                        if (tipoValue == itType.tipo.tipo)
-                        {
-                            itType.valor = valor.getValue(entorno, listas);
-                        }
-                        else
-                        {
-                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                    "Tipos no validos para asignar el valor en el Acesso de la variable: " + variable));
-                            return tipoDato.errorSemantico;
-                        }
-                        break;
-                    }
-                }
-            }
-            return tipoDato.ok;
-        }
+        }        
     }
 }

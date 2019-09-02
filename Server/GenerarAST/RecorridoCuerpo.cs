@@ -633,51 +633,31 @@ namespace Server.GenerarAST
         {
             if (nodo.ChildNodes.Count == 3)
             {
-                String s = nodo.ChildNodes.ElementAt(2).ToString();
+                String s = nodo.ChildNodes.ElementAt(1).Token.Text.ToString();
                 switch (s)
                 {
-                    case "E":
+                    case "=":
                         return new Asignacion(variable(nodo.ChildNodes.ElementAt(0)),
                             expresiones(nodo.ChildNodes.ElementAt(2)),
                             nodo.ChildNodes.ElementAt(1).Token.Location.Line,
                             nodo.ChildNodes.ElementAt(1).Token.Location.Column);
 
-                    case "FUNCIONESCOLLECTIONS":
-                        break;
-
-                    case "FUNCIONESNATIVASCADENAS":
-                        /*return new accesosFuncionCadena3(variable(nodo.ChildNodes.ElementAt(0)),
-                            listaFuncionesNativasCadenas(nodo.ChildNodes.ElementAt(2)),
+                    case ".":
+                        return new ArrobaIDPuntoE(variable(nodo.ChildNodes.ElementAt(0)),
+                            expresiones(nodo.ChildNodes.ElementAt(2)),
                             nodo.ChildNodes.ElementAt(1).Token.Location.Line,
-                            nodo.ChildNodes.ElementAt(1).Token.Location.Column);*/
-                        break;
-
-                    case "FUNCIONESNATIVASABSTRACCION":
-                        break;
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+                        
                 }
             }
-            else if (nodo.ChildNodes.Count == 4)
-            {
-                String s = nodo.ChildNodes.ElementAt(3).ToString();
-                switch (s)
-                {
-                    case "E":
-                        return new AccesoIdsConASignacion(
-                            variable(nodo.ChildNodes.ElementAt(0)),
-                            puntosIdsAccesos(nodo.ChildNodes.ElementAt(1)),
-                            expresiones(nodo.ChildNodes.ElementAt(3)),
-                            nodo.ChildNodes.ElementAt(2).Token.Location.Line,
-                            nodo.ChildNodes.ElementAt(2).Token.Location.Column);
-
-                    case "FUNCIONESCOLLECTIONS":
-                        break;
-
-                    case "FUNCIONESNATIVASCADENAS":
-                        break;
-
-                    case "FUNCIONESNATIVASABSTRACCION":
-                        break;
-                }
+            else if (nodo.ChildNodes.Count == 5)
+            {                
+                return new AccesoIdsConASignacion(
+                    variable(nodo.ChildNodes.ElementAt(0)),
+                    expresiones(nodo.ChildNodes.ElementAt(2)),
+                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);                                    
             }
             return null;
         }
@@ -995,15 +975,15 @@ namespace Server.GenerarAST
                             expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)));
 
                     case "-=":
-                        return new Resta(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
+                        return new MenosIgual(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
                             expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)));
 
                     case "*=":
-                        return new Resta(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
+                        return new PorIgual(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
                             expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)));
 
                     case "/=":
-                        return new Resta(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
+                        return new DividirIgual(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
                             expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)));
 
                     

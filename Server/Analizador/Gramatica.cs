@@ -421,6 +421,8 @@ namespace Server.Analizador
             var LLAMADASFUNCIONES = new NonTerminal("LLAMADASFUNCIONES");
             var LISTAFUNCIONESNATIVASCADE = new NonTerminal("LISTAFUNCIONESNATIVASCADE");
             var LLAMADASPROCEDIMIENTOS = new NonTerminal("LLAMADASPROCEDIMIENTOS");
+            var LISTAFUNCIONESCUALQUIERA = new NonTerminal("LISTAFUNCIONESCUALQUIERA");
+            var CUALQUIERFUNCION = new NonTerminal("CUALQUIERFUNCION");
             #endregion
 
             #region TERMINALES
@@ -587,7 +589,8 @@ namespace Server.Analizador
                                 | DECLAASGINACION
                                 | ACCESOASIGNACION;
 
-            ACTUALIZACION.Rule =  AUMENTOSSOLOS
+            ACTUALIZACION.Rule =  //AUMENTOSSOLOS
+                                  ACCESOASIGNACION
                                 | E + igual + E;
 
             AUMENTOSSOLOS.Rule = ARROBAID + LISTAID + incremento
@@ -635,16 +638,27 @@ namespace Server.Analizador
                           | IF_LISTA + elsee + iff + aparentesis + E + cparentesis + STATEMENTBLOCK;
 
             ACCESOASIGNACION.Rule = ARROBAID + igual + E
-                                 | ARROBAID + PUNTOIDS + igual + E
-                                 | ARROBAID + punto + FUNCIONESCOLLECTIONS
-                                 | ARROBAID + PUNTOIDS + punto + FUNCIONESCOLLECTIONS
-                                 | ARROBAID + punto + LISTAFUNCIONESNATIVASCADE
-                                 | ARROBAID + PUNTOIDS + punto + LISTAFUNCIONESNATIVASCADE
-                                 | ARROBAID + punto + FUNCIONESNATIVASABSTRACCION
-                                 | ARROBAID + PUNTOIDS + punto + FUNCIONESNATIVASABSTRACCION;
+                                  | ARROBAID + punto + E + igual + E
+                                 //| ARROBAID + PUNTOIDS + igual + E
 
-            LISTAFUNCIONESNATIVASCADE.Rule = LISTAFUNCIONESNATIVASCADE + punto + FUNCIONESNATIVASCADENAS
-                                            | FUNCIONESNATIVASCADENAS;
+                                 //| ARROBAID + punto + LISTAFUNCIONESCUALQUIERA
+                                 | ARROBAID + punto + E;
+                                 //| ARROBAID + PUNTOIDS + punto + LISTAFUNCIONESCUALQUIERA;
+
+                                 /*| ARROBAID + punto + LISTAFUNCIONESNATIVASCADE
+                                 | ARROBAID + PUNTOIDS + punto + LISTAFUNCIONESNATIVASCADE
+
+                                 | ARROBAID + punto + FUNCIONESNATIVASABSTRACCION
+                                 | ARROBAID + PUNTOIDS + punto + FUNCIONESNATIVASABSTRACCION*/;
+
+
+            /*LISTAFUNCIONESCUALQUIERA.Rule = LISTAFUNCIONESCUALQUIERA + punto + CUALQUIERFUNCION
+                                           | CUALQUIERFUNCION;
+
+            CUALQUIERFUNCION.Rule = FUNCIONESNATIVASCADENAS
+                                  | FUNCIONESCOLLECTIONS
+                                  | FUNCIONESNATIVASABSTRACCION;*/
+            
 
             PUNTOIDS.Rule = MakePlusRule(PUNTOIDS, PUNTOIDS2);
 
