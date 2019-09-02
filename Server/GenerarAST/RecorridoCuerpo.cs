@@ -929,10 +929,23 @@ namespace Server.GenerarAST
         {
             if (nodo.ChildNodes.Count == 5)
             {
-                return new LLaveAsTypeUser(expresiones(nodo.ChildNodes.ElementAt(1)),
-                    nodo.ChildNodes.ElementAt(4).Token.Text.ToLower(),
-                    nodo.ChildNodes.ElementAt(3).Token.Location.Line,
-                    nodo.ChildNodes.ElementAt(3).Token.Location.Column);
+                String str = nodo.ChildNodes.ElementAt(0).Term.Name;
+                switch (str) {
+                    case "{":
+                        return new LLaveAsTypeUser(expresiones(nodo.ChildNodes.ElementAt(1)),
+                            nodo.ChildNodes.ElementAt(4).Token.Text.ToLower(),
+                            nodo.ChildNodes.ElementAt(3).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(3).Token.Location.Column);
+
+                    case "E":
+                        return new Ternario(
+                            expresiones(nodo.ChildNodes.ElementAt(0)),
+                            expresiones(nodo.ChildNodes.ElementAt(2)),
+                            expresiones(nodo.ChildNodes.ElementAt(4)),
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+                        break;
+                }
             }
             else if (nodo.ChildNodes.Count == 4)
             {

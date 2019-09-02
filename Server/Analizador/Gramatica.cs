@@ -815,7 +815,7 @@ namespace Server.Analizador
 
 
             E.Rule = menos + E
-                | E + interrogacion + E
+                | E + interrogacion + E + dospuntos + E
                 | E + or + E
                 | E + and + E
                 | E + xor + E
