@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using static Server.AST.Expresiones.Operacion;
@@ -24,15 +25,15 @@ namespace Server.AST.Instrucciones.Ciclos
             this.col = col;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                Object ob = condicion.getValue(entorno, listas);
+                Object ob = condicion.getValue(entorno, listas, management);
                 do
                 {
                     Boolean reiniciar = false;
-                    Object retorno = sentenciasEjecutar.ejecutar(entorno, listas);
+                    Object retorno = sentenciasEjecutar.ejecutar(entorno, listas, management);
 
                     if (retorno is Breakk)
                     {
@@ -48,8 +49,8 @@ namespace Server.AST.Instrucciones.Ciclos
                     }
 
                     //-----------------------------------------------------------------------------------------------
-                    ob = condicion.getValue(entorno, listas);
-                    tipoDato tipo = condicion.getType(entorno, listas);
+                    ob = condicion.getValue(entorno, listas, management);
+                    tipoDato tipo = condicion.getType(entorno, listas, management);
                     if (tipo == tipoDato.booleano)
                     {
                         //todo cool

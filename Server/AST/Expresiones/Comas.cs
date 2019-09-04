@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 
 namespace Server.AST.Expresiones
@@ -14,14 +15,14 @@ namespace Server.AST.Expresiones
             : base(linea, columna, expresion1)
         { }
 
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            return expresion1.getType(entorno, listas);
+            return expresion1.getType(entorno, listas, management);
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            return expresion1.getValue(entorno, listas);
+            return expresion1.getValue(entorno, listas, management);
         }
     }
 }

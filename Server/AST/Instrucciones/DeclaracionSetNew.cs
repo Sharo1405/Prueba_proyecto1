@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Otras;
 using static Server.AST.Expresiones.Operacion;
@@ -27,7 +28,7 @@ namespace Server.AST.Instrucciones
 
         LinkedList<Tipo> tiposSet = new LinkedList<Tipo>();
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {

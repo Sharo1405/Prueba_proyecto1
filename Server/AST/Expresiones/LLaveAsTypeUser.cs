@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
 using Server.AST.Otras;
@@ -28,7 +29,7 @@ namespace Server.AST.Expresiones
             this.columna = columna;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas,Administrador management)
         {
             return tipoDato.id;
         }
@@ -85,7 +86,7 @@ namespace Server.AST.Expresiones
             return nuevo;
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
@@ -96,12 +97,12 @@ namespace Server.AST.Expresiones
                     CreateType lista = CreaNuevoType(ll, entorno, listas);
                     if (listaValores is ListaExpresiones)
                     {
-                        LinkedList<Comas> objeto = (LinkedList<Comas>)listaValores.getValue(entorno, listas); //Lista comas
+                        LinkedList<Comas> objeto = (LinkedList<Comas>)listaValores.getValue(entorno, listas, management); //Lista comas
                         foreach (Comas coma in objeto)
                         {
                             Comas cv2 = (Comas)coma;
-                            Object valo = cv2.getValue(entorno, listas);
-                            tipoDato tipoVALO = cv2.getType(entorno, listas);
+                            Object valo = cv2.getValue(entorno, listas, management);
+                            tipoDato tipoVALO = cv2.getType(entorno, listas, management);
                             itemType itType = lista.itemTypee.ElementAt(contador);
 
                             if (itType.tipo.tipo == tipoDato.id)
@@ -139,7 +140,7 @@ namespace Server.AST.Expresiones
                                 }
                                 else
                                 {
-                                    tipoDato tipoValue = cv2.getType(entorno, listas);
+                                    tipoDato tipoValue = cv2.getType(entorno, listas, management);
                                     if (tipoValue == itType.tipo.tipo)
                                     {
                                         if (valo is Simbolo)
@@ -219,7 +220,7 @@ namespace Server.AST.Expresiones
                                     if (valo is List<object>)
                                     {
                                         //listaRetorno = (List<object>)valo;
-                                        Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.list, cv2.getType(entorno, listas), linea, columna);
+                                        Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.list, cv2.getType(entorno, listas, management), linea, columna);
                                         //listaRetorno.Add(listaGuardar);
                                         itType.valor = listaGuardar;
                                     }
@@ -227,7 +228,7 @@ namespace Server.AST.Expresiones
                                     {
                                         List<Object> solo1 = new List<object>();
                                         solo1.Add(valo);
-                                        Lista listaGuardar = new Lista("item", solo1, tipoDato.list, cv2.getType(entorno, listas), linea, columna);
+                                        Lista listaGuardar = new Lista("item", solo1, tipoDato.list, cv2.getType(entorno, listas, management), linea, columna);
                                         //listaRetorno.Add(listaGuardar);
                                         itType.valor = listaGuardar;
                                     }
@@ -290,7 +291,7 @@ namespace Server.AST.Expresiones
                                     if (valo is List<object>)
                                     {
                                         //listaRetorno = (List<object>)valo;
-                                        Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.set, cv2.getType(entorno, listas), linea, columna);
+                                        Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.set, cv2.getType(entorno, listas, management), linea, columna);
                                         //listaRetorno.Add(listaGuardar);
                                         itType.valor = listaGuardar;
                                     }
@@ -299,7 +300,7 @@ namespace Server.AST.Expresiones
                                         //listaRetorno.Add(listaRetorno);
                                         List<Object> solo1 = new List<object>();
                                         solo1.Add(valo);
-                                        Lista listaGuardar = new Lista("item", solo1, tipoDato.set, cv2.getType(entorno, listas), linea, columna);
+                                        Lista listaGuardar = new Lista("item", solo1, tipoDato.set, cv2.getType(entorno, listas, management), linea, columna);
                                         //listaRetorno.Add(listaGuardar);
                                         itType.valor = listaGuardar;
                                     }
@@ -312,7 +313,7 @@ namespace Server.AST.Expresiones
                             }
                             else
                             {
-                                tipoDato tipoValue = cv2.getType(entorno, listas);
+                                tipoDato tipoValue = cv2.getType(entorno, listas, management);
                                 Simbolo simi = new Simbolo();
                                 if (valo is Simbolo)
                                 {
@@ -371,8 +372,8 @@ namespace Server.AST.Expresiones
                         {
                             foreach (itemType it in ty2)
                             {
-                                object o = listaValores.getValue(entorno, listas);
-                                tipoDato t = listaValores.getType(entorno, listas);
+                                object o = listaValores.getValue(entorno, listas, management);
+                                tipoDato t = listaValores.getType(entorno, listas, management);
                                 if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
                                 {
                                     Simbolo simi = new Simbolo();
@@ -618,16 +619,16 @@ namespace Server.AST.Expresiones
         }
 
 
-        public tipoDato paraComasTYPEUSER(LinkedList<Comas> listComas, Entorno entorno, ErrorImpresion listas, LinkedList<itemType> itTypes)
+        public tipoDato paraComasTYPEUSER(LinkedList<Comas> listComas, Entorno entorno, ErrorImpresion listas, LinkedList<itemType> itTypes,Administrador management)
         {
             foreach (Comas cv in listComas)
             {
                 Comas cv2 = (Comas)cv;
-                Object valo = cv2.getValue(entorno, listas);
+                Object valo = cv2.getValue(entorno, listas, management);
                 if (valo is Comas)
                 {
                     LinkedList<Comas> listaaComas = (LinkedList<Comas>)valo;
-                    paraComasTYPEUSER(listaaComas, entorno, listas, itTypes);
+                    paraComasTYPEUSER(listaaComas, entorno, listas, itTypes, management);
                 }
                 else
                 {
@@ -657,7 +658,7 @@ namespace Server.AST.Expresiones
                         }
                         else
                         {
-                            tipoDato tipoValue = cv2.getType(entorno, listas);
+                            tipoDato tipoValue = cv2.getType(entorno, listas, management);
                             if (tipoValue == itType.tipo.tipo)
                             {
                                 itType.valor = valo;
@@ -695,7 +696,7 @@ namespace Server.AST.Expresiones
                             if (valo is List<object>)
                             {
                                 //listaRetorno = (List<object>)valo;
-                                Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.list, cv2.getType(entorno, listas), linea, columna);
+                                Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.list, cv2.getType(entorno, listas, management), linea, columna);
                                 //listaRetorno.Add(listaGuardar);
                                 itType.valor = listaGuardar;
                             }
@@ -703,7 +704,7 @@ namespace Server.AST.Expresiones
                             {
                                 List<Object> solo1 = new List<object>();
                                 solo1.Add(valo);
-                                Lista listaGuardar = new Lista("item", solo1, tipoDato.list, cv2.getType(entorno, listas), linea, columna);
+                                Lista listaGuardar = new Lista("item", solo1, tipoDato.list, cv2.getType(entorno, listas, management), linea, columna);
                                 //listaRetorno.Add(listaGuardar);
                                 itType.valor = listaGuardar;
                             }
@@ -739,7 +740,7 @@ namespace Server.AST.Expresiones
                             if (valo is List<object>)
                             {
                                 //listaRetorno = (List<object>)valo;
-                                Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.set, cv2.getType(entorno, listas), linea, columna);
+                                Lista listaGuardar = new Lista("item", (List<object>)valo, tipoDato.set, cv2.getType(entorno, listas, management), linea, columna);
                                 //listaRetorno.Add(listaGuardar);
                                 itType.valor = listaGuardar;
                             }
@@ -748,7 +749,7 @@ namespace Server.AST.Expresiones
                                 //listaRetorno.Add(listaRetorno);
                                 List<Object> solo1 = new List<object>();
                                 solo1.Add(valo);
-                                Lista listaGuardar = new Lista("item", solo1, tipoDato.set, cv2.getType(entorno, listas), linea, columna);
+                                Lista listaGuardar = new Lista("item", solo1, tipoDato.set, cv2.getType(entorno, listas, management), linea, columna);
                                 //listaRetorno.Add(listaGuardar);
                                 itType.valor = listaGuardar;
                             }
@@ -761,7 +762,7 @@ namespace Server.AST.Expresiones
                     }
                     else
                     {
-                        tipoDato tipoValue = cv2.getType(entorno, listas);
+                        tipoDato tipoValue = cv2.getType(entorno, listas, management);
                         if (tipoValue == itType.tipo.tipo)
                         {
                             itType.valor = valo;

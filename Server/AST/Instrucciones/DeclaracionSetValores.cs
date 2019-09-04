@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Otras;
@@ -28,7 +29,7 @@ namespace Server.AST.Instrucciones
 
         
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
@@ -42,12 +43,12 @@ namespace Server.AST.Instrucciones
                                 "Los valores asignar a un SET no son validos"));
                             return tipoDato.errorSemantico;
                         }
-                        Object setLista = valor.getValue(entorno, listas);
+                        Object setLista = valor.getValue(entorno, listas, management);
                         if (setLista is tipoDato)
                         {
                             return tipoDato.errorSemantico;
                         }
-                        tipoDato tipo = valor.getType(entorno, listas);
+                        tipoDato tipo = valor.getType(entorno, listas, management);
                         if (setLista is List<object>)
                         {
                             lista =(List<object>) setLista;

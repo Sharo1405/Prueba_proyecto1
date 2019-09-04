@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using static Server.AST.Expresiones.Operacion;
@@ -29,23 +30,23 @@ namespace Server.AST.Instrucciones.Ciclos
         }
 
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
                 Entorno actual = new Entorno(entorno);
                 if (declaAsig is Instruccion) {
                     Instruccion h = (Instruccion)declaAsig;
-                    h.ejecutar(actual, listas);
+                    h.ejecutar(actual, listas, management);
                 }
                 else
                 {
                     Expresion h = (Expresion)declaAsig;
-                    h.getValue(actual, listas);
+                    h.getValue(actual, listas, management);
                 }
 
-                object ob = condicion.getValue(actual, listas);
-                tipoDato t = condicion.getType(actual, listas);
+                object ob = condicion.getValue(actual, listas, management);
+                tipoDato t = condicion.getType(actual, listas, management);
                 if (t == tipoDato.booleano)
                 {
 
@@ -57,7 +58,7 @@ namespace Server.AST.Instrucciones.Ciclos
                         Entorno actualactual = new Entorno(actual);
 
                         //ejecuta sentencias
-                        Object retorno = sentencias.ejecutar(actualactual, listas);
+                        Object retorno = sentencias.ejecutar(actualactual, listas, management);
 
                         if (retorno is Breakk) {
                             return retorno;
@@ -67,9 +68,9 @@ namespace Server.AST.Instrucciones.Ciclos
                             return retorno; 
                         }                        
 
-                        Object valor = aumento.getValue(actualactual, listas);
+                        Object valor = aumento.getValue(actualactual, listas, management);
 
-                        ob = condicion.getValue(actual, listas);
+                        ob = condicion.getValue(actual, listas, management);
                     }
 
                 }

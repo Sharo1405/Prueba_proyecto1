@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Expresiones.Aritmeticas;
@@ -32,12 +33,12 @@ namespace Server.AST.Instrucciones
         {
         }        
 
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return tipoDato.ok;
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
@@ -52,43 +53,43 @@ namespace Server.AST.Instrucciones
                         {
                             ListaPuntos a = (ListaPuntos)valor;
                             ListaPuntos sett = new ListaPuntos(id, a.ExpSeparadasPuntos, this.linea, this.columna);
-                            sett.getValue(entorno, listas);
+                            sett.getValue(entorno, listas, management);
                         }
                         else if (valor is MasIgual)
                         {
                             MasIgual m = (MasIgual)valor;
                             MasIgual masigual = new MasIgual(this.linea, this.columna, m.expresion1, m.expresion2, id);
-                            masigual.getValue(entorno, listas);
+                            masigual.getValue(entorno, listas, management);
                         }
                         else if (valor is MenosIgual)
                         {
                             MenosIgual m = (MenosIgual)valor;
                             MenosIgual masigual = new MenosIgual(this.linea, this.columna, m.expresion1, m.expresion2, id);
-                            masigual.getValue(entorno, listas);
+                            masigual.getValue(entorno, listas, management);
                         }
                         else if (valor is PorIgual)
                         {
                             PorIgual m = (PorIgual)valor;
                             PorIgual masigual = new PorIgual(this.linea, this.columna, m.expresion1, m.expresion2, id);
-                            masigual.getValue(entorno, listas);
+                            masigual.getValue(entorno, listas, management);
                         }
                         else if (valor is DividirIgual)
                         {
                             DividirIgual m = (DividirIgual)valor;
                             DividirIgual masigual = new DividirIgual(this.linea, this.columna, m.expresion1, m.expresion2, id);
-                            masigual.getValue(entorno, listas);
+                            masigual.getValue(entorno, listas, management);
                         }
                         else if (valor is Incremento)
                         {
                             Incremento i = (Incremento)valor;
                             Incremento ii = new Incremento(id, i.idExp, this.linea, this.columna);
-                            ii.getValue(entorno, listas);
+                            ii.getValue(entorno, listas, management);
                         }
                         else if (valor is Decremento)
                         {
                             Decremento i = (Decremento)valor;
                             Decremento ii = new Decremento(id, i.idExp, this.linea, this.columna);
-                            ii.getValue(entorno, listas);
+                            ii.getValue(entorno, listas, management);
                         }
                         else
                         {
@@ -97,7 +98,7 @@ namespace Server.AST.Instrucciones
                             ListaPuntos b = new ListaPuntos(exp, valor, this.linea, this.columna);
 
                             ListaPuntos sett = new ListaPuntos(id, b.ExpSeparadasPuntos, this.linea, this.columna);
-                            sett.getValue(entorno, listas);
+                            sett.getValue(entorno, listas, management);
 
                         }
                     }

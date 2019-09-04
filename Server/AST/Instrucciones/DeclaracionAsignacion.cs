@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Otras;
@@ -76,7 +77,7 @@ namespace Server.AST.Instrucciones
             return nuevo;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try {
                 foreach (String id in ids)
@@ -84,8 +85,8 @@ namespace Server.AST.Instrucciones
                     Simbolo buscado = entorno.getEnActual(id.ToLower(), Simbolo.Rol.VARIABLE);
                     if (buscado == null)
                     {
-                        object value = valor.getValue(entorno, listas);
-                        tipoDato tipoValor = valor.getType(entorno, listas);                        
+                        object value = valor.getValue(entorno, listas, management);
+                        tipoDato tipoValor = valor.getType(entorno, listas, management);                        
                         if (tipo.tipo == tipoValor && !(valor is LLaveAsTypeUser) && !(valor is Neww))
                         {
                             entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), value, tipo.linea, tipo.columna,

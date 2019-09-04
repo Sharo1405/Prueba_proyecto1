@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 
@@ -28,11 +29,11 @@ namespace Server.AST.Instrucciones
             this.col = col;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             if (retorno != null)
             {
-                return retorno.getType(entorno, listas);
+                return retorno.getType(entorno, listas, management);
             }
             else {
                 listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
@@ -41,11 +42,11 @@ namespace Server.AST.Instrucciones
             }
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             if (retorno != null)
             {
-                return retorno.getValue(entorno, listas);
+                return retorno.getValue(entorno, listas, management);
             }
             else
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
 using Server.AST.Otras;
@@ -26,7 +27,7 @@ namespace Server.AST.Expresiones
             this.columna = columna;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return tipoValor;           
         }
@@ -90,19 +91,19 @@ namespace Server.AST.Expresiones
         }
 
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
                 if (expresion is ListaExpresiones)
                 {
-                    LinkedList<Comas> objeto = (LinkedList<Comas>)expresion.getValue(entorno, listas); //Lista comas
+                    LinkedList<Comas> objeto = (LinkedList<Comas>)expresion.getValue(entorno, listas, management); //Lista comas
 
                     foreach (Comas coma in objeto)
                     {
                         Comas cv2 = (Comas)coma;
-                        Object valo = cv2.getValue(entorno, listas);
-                        tipoDato tipo = cv2.getType(entorno, listas);
+                        Object valo = cv2.getValue(entorno, listas, management);
+                        tipoDato tipo = cv2.getType(entorno, listas, management);
 
                         if (cv2.expresion1 is Llaves)
                         {
@@ -249,8 +250,8 @@ namespace Server.AST.Expresiones
                 }
                 else if (expresion is Llaves)
                 {
-                    object valo = expresion.getValue(entorno, listas);
-                    tipoDato tipo = expresion.getType(entorno, listas);
+                    object valo = expresion.getValue(entorno, listas, management);
+                    tipoDato tipo = expresion.getType(entorno, listas, management);
                     if (valo is List<object>)
                     {
                         //listaRetorno = (List<object>)valo;
@@ -277,8 +278,8 @@ namespace Server.AST.Expresiones
                 }
                 else if (expresion is LLaveAsTypeUser)
                 {
-                    object valo = expresion.getValue(entorno, listas);
-                    tipoDato tipo = expresion.getType(entorno, listas);
+                    object valo = expresion.getValue(entorno, listas, management);
+                    tipoDato tipo = expresion.getType(entorno, listas, management);
                     listaRetorno.Add(valo); //guardando un Type User
                     tipo = tipoDato.id;
                     tipoValor = tipo;
@@ -286,8 +287,8 @@ namespace Server.AST.Expresiones
                 }
                 else if (expresion is Corchetes)
                 {
-                    object valo = expresion.getValue(entorno, listas);
-                    tipoDato tipo = expresion.getType(entorno, listas);
+                    object valo = expresion.getValue(entorno, listas, management);
+                    tipoDato tipo = expresion.getType(entorno, listas, management);
                     if (valo is List<object>)
                     {
                         //listaRetorno = (List<object>)valo;
@@ -307,8 +308,8 @@ namespace Server.AST.Expresiones
                 }
                 else
                 {
-                    tipoValor = expresion.getType(entorno, listas);
-                    return expresion.getValue(entorno, listas); //un solo valor
+                    tipoValor = expresion.getType(entorno, listas, management);
+                    return expresion.getValue(entorno, listas, management); //un solo valor
                 }
             }
             catch (Exception e)

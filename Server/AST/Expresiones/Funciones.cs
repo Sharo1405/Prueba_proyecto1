@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
 using Server.AST.Otras;
@@ -31,12 +32,12 @@ namespace Server.AST.Expresiones
         }
 
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return tipo.tipo;
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
 
             //guardar la funcion en TS
@@ -46,7 +47,8 @@ namespace Server.AST.Expresiones
             {
                 
                 entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna, 
-                    this.getType(entorno, listas), Simbolo.Rol.FUNCION, parametros));
+                    this.getType(entorno, listas, management), 
+                    Simbolo.Rol.FUNCION, parametros));
             }
             else
             {

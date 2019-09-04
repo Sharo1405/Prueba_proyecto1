@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Otras;
 
@@ -21,12 +22,12 @@ namespace Server.AST.Expresiones
             this.columna = columna;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return tipoNew.tipo;
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return this;
         }

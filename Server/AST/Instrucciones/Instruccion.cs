@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Server.AST.Instrucciones
 {
     interface Instruccion: NodoAST
     {
-        Object ejecutar(Entorno entorno, ErrorImpresion listas);
+        Object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Expresiones.Relacionales;
@@ -28,11 +29,11 @@ namespace Server.AST.Instrucciones
             this.listaCaseDefault = listaCaseDefault;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                Object valor = condicion.getValue(entorno, listas);
+                Object valor = condicion.getValue(entorno, listas, management);
                 if (valor == null)
                 {
                     listas.errores.AddLast(new NodoError(linea, col, NodoError.tipoError.Semantico,"Condicion del Swicht no es valida para evaluar"));
@@ -50,7 +51,7 @@ namespace Server.AST.Instrucciones
                         Instruccion instru = (Instruccion)caseeDefault;
                         if (instru is Defaultt) {
 
-                            Object retorno = sentencias.ejecutar(entorno, listas);
+                            Object retorno = sentencias.ejecutar(entorno, listas, management);
 
                             if (retorno is Breakk) {
                                 return null;
@@ -64,9 +65,9 @@ namespace Server.AST.Instrucciones
                             if (instru is Casee) {
                                 IgualIgual relacion = new IgualIgual(linea, col, condicion ,((Casee)instru).valorCase);
                                 //Relacional relacion = new Relacional(condicion, ((Casee)instru).getValorCase(), Operacion.Operador.IGUAL, linea, col, null);
-                                if ((Boolean)relacion.getValue(entorno, listas))
+                                if ((Boolean)relacion.getValue(entorno, listas, management))
                                 {
-                                    Object retorno = sentencias.ejecutar(entorno, listas);
+                                    Object retorno = sentencias.ejecutar(entorno, listas, management);
 
                                     if (retorno is Breakk) {
                                             break;

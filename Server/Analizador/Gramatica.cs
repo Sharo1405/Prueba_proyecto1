@@ -744,7 +744,7 @@ namespace Server.Analizador
 
             TRUNCATEE.Rule = truncate + table + id;
 
-            CREARTABLA.Rule = create + table + iff + not + exists + id + aparentesis + DEFINICIONCOLUMNAS + cparentesis
+            CREARTABLA.Rule = create + table + iff + notpalabra + exists + id + aparentesis + DEFINICIONCOLUMNAS + cparentesis
                             | create + table + id + aparentesis + DEFINICIONCOLUMNAS + cparentesis;
 
             DEFINICIONCOLUMNAS.Rule = DEFINICIONCOLUMNAS + coma + COLUMNAS
@@ -786,7 +786,7 @@ namespace Server.Analizador
 
 
 
-            CREATETYPE.Rule = create + type +  iff + not + exists + id + aparentesis + ITEMCREATETYPE  + cparentesis
+            CREATETYPE.Rule = create + type +  iff + notpalabra + exists + id + aparentesis + ITEMCREATETYPE  + cparentesis
                             | create + type + id + aparentesis + ITEMCREATETYPE + cparentesis;
 
             ITEMCREATETYPE.Rule = MakePlusRule(ITEMCREATETYPE , coma , OPCIONESITEMCREATETYPES);

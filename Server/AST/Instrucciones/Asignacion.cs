@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Otras;
@@ -120,20 +121,20 @@ namespace Server.AST.Instrucciones
             return tipoDato.ok;
         }
 
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return tipoDato.ok;
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
                 Simbolo variable = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
                 if (variable != null)
                 {
-                    object value = valor.getValue(entorno, listas);
-                    tipoDato tipoValor = valor.getType(entorno, listas);
+                    object value = valor.getValue(entorno, listas, management);
+                    tipoDato tipoValor = valor.getType(entorno, listas, management);
                     if (valor is Corchetes)
                     {
                         if (variable.tipo == tipoDato.list)

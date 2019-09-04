@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace Server.AST.Expresiones.Logicas
             : base(linea, columna, expresion1)
         { }
 
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            if ((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano)
+            if ((tipoDato)expresion1.getType(entorno, listas, management) == tipoDato.booleano)
             {
                 return tipoDato.booleano;
             }
@@ -25,12 +26,12 @@ namespace Server.AST.Expresiones.Logicas
             }
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            expresion1.getValue(entorno, listas);
-            if ((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano)
+            expresion1.getValue(entorno, listas, management);
+            if ((tipoDato)expresion1.getType(entorno, listas, management) == tipoDato.booleano)
             {
-                object exp = expresion1.getValue(entorno, listas);                
+                object exp = expresion1.getValue(entorno, listas, management);                
                 if (expresion1 is ArrobaId)
                 {
                     Simbolo ar = (Simbolo)exp;
@@ -41,7 +42,7 @@ namespace Server.AST.Expresiones.Logicas
             else
             {
                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "Tipo de dato para operador \"!\" no valido Tipo: " +
-                   Convert.ToString(expresion1.getType(entorno, listas)) +" y se esperaba boolean"));
+                   Convert.ToString(expresion1.getType(entorno, listas, management)) +" y se esperaba boolean"));
                 return tipoDato.errorSemantico;
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using static Server.AST.Expresiones.Operacion;
 
@@ -28,7 +29,7 @@ namespace Server.AST.Expresiones
             this.columna = columna;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             if (seCasteo)
             {
@@ -40,12 +41,12 @@ namespace Server.AST.Expresiones
             }
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                object valor = expParaCastear.getValue(entorno, listas);
-                tipoDato tipoValor = expParaCastear.getType(entorno, listas);
+                object valor = expParaCastear.getValue(entorno, listas, management);
+                tipoDato tipoValor = expParaCastear.getType(entorno, listas, management);
 
                 if (tipoValor == tipoDato.counter || 
                     tipoValor == tipoDato.id ||

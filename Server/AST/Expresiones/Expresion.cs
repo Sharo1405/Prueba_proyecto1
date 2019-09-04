@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Server.AST.Expresiones
 {
     interface Expresion: NodoAST
     {
-        Object getValue(Entorno entorno, ErrorImpresion listas);
-        tipoDato getType(Entorno entorno, ErrorImpresion listas);
+        Object getValue(Entorno entorno, ErrorImpresion listas, Administrador management);
+        tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management);
     }
 }

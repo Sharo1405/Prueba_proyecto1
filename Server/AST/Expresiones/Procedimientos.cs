@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
 using Server.AST.Otras;
@@ -61,20 +62,36 @@ namespace Server.AST.Expresiones
             this.columna = col;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return tipoDato.list; //porque siempre va a devolver una lista
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             String firmaFuncion = crearFirma();
             Simbolo buscado = entorno.get(firmaFuncion, entorno, Simbolo.Rol.FUNCION);
             if (buscado == null)
             {
 
+                Object inUse = management.getInUse();
+                if (inUse != null)
+                {
+                    try {
+
+                        BaseDeDatos basee = (BaseDeDatos)inUse;
+                        basee.procedures.Add(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
+                        tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
+                    }
+                    catch (ArgumentException e)
+                    {
+                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                    "El procedimiento ya existe en la base de datos EN USO: " + firmaFuncion));
+                    }
+                }
+
                 entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
-                    tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
+                tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
             }
             else
             {

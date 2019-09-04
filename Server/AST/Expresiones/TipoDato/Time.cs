@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,7 +28,7 @@ namespace Server.AST.Expresiones.TipoDato
             this.columna = columna;
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             
             try
@@ -41,7 +42,7 @@ namespace Server.AST.Expresiones.TipoDato
             return "";
         }
 
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {            
             try
             {

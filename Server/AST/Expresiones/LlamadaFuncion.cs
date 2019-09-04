@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
 using static Server.AST.Expresiones.Operacion;
@@ -27,12 +28,12 @@ namespace Server.AST.Expresiones
         }
 
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
 
             parametrosLista.Clear();
             parametrosLista = new LinkedList<Comas>();
-            String firmaFun = crearFirmaParas(entorno, listas);
+            String firmaFun = crearFirmaParas(entorno, listas, management);
             Simbolo buscado = entorno.get(firmaFun, entorno, Simbolo.Rol.FUNCION);
             if (buscado != null)
             {
@@ -45,11 +46,11 @@ namespace Server.AST.Expresiones
         }
 
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                String firmaFun = crearFirmaParas(entorno, listas);
+                String firmaFun = crearFirmaParas(entorno, listas, management);
                 Simbolo buscado = entorno.get(firmaFun, entorno, Simbolo.Rol.FUNCION);
                 if (buscado != null && buscado.rol == Simbolo.Rol.FUNCION)
                 {
@@ -63,13 +64,13 @@ namespace Server.AST.Expresiones
                         //object v = parametros.getValue(actual, listas);
                         if (parametrosLista.Count > 0)
                         {
-                            declararParametros(actual, listas, buscado.parametros, parametrosLista);
+                            declararParametros(actual, listas, buscado.parametros, parametrosLista, management);
                         }
                         else
                         {
                             LinkedList<Comas> listaparas = new LinkedList<Comas>();
                             listaparas.AddLast(new Comas(linea, columna, parametros));
-                            declararParametros(actual, listas, buscado.parametros, listaparas);
+                            declararParametros(actual, listas, buscado.parametros, listaparas, management);
                         }
                     }
                     else
@@ -82,7 +83,7 @@ namespace Server.AST.Expresiones
                         if (sentencia is Instruccion)
                         {
                             Instruccion ins = (Instruccion)sentencia;
-                            Object reto = ins.ejecutar(actual, listas);
+                            Object reto = ins.ejecutar(actual, listas, management);
                             if (ins is Breakk)
                             {
                                 return ins;
@@ -95,9 +96,9 @@ namespace Server.AST.Expresiones
                             {
                                 retexiste = true;
                                 Expresion r = (Expresion)reto;
-                                if (buscado.tipo == r.getType(actual, listas))
+                                if (buscado.tipo == r.getType(actual, listas, management))
                                 {
-                                    return r.getValue(actual, listas);
+                                    return r.getValue(actual, listas, management);
                                 }
                             }
                         }
@@ -109,22 +110,22 @@ namespace Server.AST.Expresiones
                             {
                                 retexiste = true;
                                 //exp.getValue(actual, listas);
-                                if (buscado.tipo == exp.getType(actual, listas))
+                                if (buscado.tipo == exp.getType(actual, listas, management))
                                 {
-                                    return exp.getValue(actual, listas);
+                                    return exp.getValue(actual, listas, management);
                                 }
                                 else
                                 {
                                     listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
                                         "Retorno de funcion no es el mismo tipo de la funcion: Tipo funcion "
-                                        + Convert.ToString(buscado.tipo) + "Tipo retorno: " + Convert.ToString(exp.getType(actual, listas))));
+                                        + Convert.ToString(buscado.tipo) + "Tipo retorno: " + Convert.ToString(exp.getType(actual, listas, management))));
                                     return tipoDato.errorSemantico;
                                 }
 
                             }
                             else
                             {
-                                exp.getValue(actual, listas);
+                                exp.getValue(actual, listas, management);
                             }
                         }
                     }
@@ -153,7 +154,7 @@ namespace Server.AST.Expresiones
 
 
         public void declararParametros(Entorno lista, ErrorImpresion impresion, 
-            LinkedList<Parametros> parametros, LinkedList<Comas> valoresParametros)
+            LinkedList<Parametros> parametros, LinkedList<Comas> valoresParametros,Administrador management)
         {
             int cantidad = parametros.Count;
             for (int i = 0; i < cantidad; i++)
@@ -167,13 +168,13 @@ namespace Server.AST.Expresiones
 
                 if (value is LlamadaFuncion)//llamada a funcion en el parametro
                 {
-                    Object val = value.getValue(lista.padreANTERIOR, impresion);
+                    Object val = value.getValue(lista.padreANTERIOR, impresion, management);
                     lista.setSimbolo(nombreVar, new Simbolo(nombreVar, val, valor.linea, valor.columna,
                         var.tipo.tipo, Simbolo.Rol.VARIABLE));
                 }
                 else
                 {
-                    Object val = value.getValue(lista, impresion);
+                    Object val = value.getValue(lista, impresion, management);
                     lista.setSimbolo(nombreVar, new Simbolo(nombreVar, val, valor.linea, valor.columna,
                         var.tipo.tipo, Simbolo.Rol.VARIABLE));
                 }
@@ -182,25 +183,25 @@ namespace Server.AST.Expresiones
 
         LinkedList<Comas> parametrosLista = new LinkedList<Comas>();
 
-        public String crearFirmaParas(Entorno entorno, ErrorImpresion listas)
+        public String crearFirmaParas(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             String firmaFuncion = "";
             firmaFuncion += idFuncion;
             if (parametros != null)
             {
-                object v = parametros.getValue(entorno, listas);
+                object v = parametros.getValue(entorno, listas, management);
                 if (v is LinkedList<Comas>)
                 {
                     parametrosLista = (LinkedList<Comas>)v;
                     foreach (Expresion parametro in parametrosLista)
                     {
-                        tipoDato tipoPara = parametro.getType(entorno, listas);
+                        tipoDato tipoPara = parametro.getType(entorno, listas, management);
                         firmaFuncion += "_" + Convert.ToString(tipoPara);
                     }
                 }
                 else
                 {
-                    tipoDato tipoPara = parametros.getType(entorno, listas);
+                    tipoDato tipoPara = parametros.getType(entorno, listas, management);
                     firmaFuncion += "_" + Convert.ToString(tipoPara);
                 }
             }

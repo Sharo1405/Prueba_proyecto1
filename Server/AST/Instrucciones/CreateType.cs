@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using static Server.AST.Expresiones.Operacion;
 
@@ -40,7 +41,7 @@ namespace Server.AST.Instrucciones
             this.ifnotexists = ifnotexists;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {

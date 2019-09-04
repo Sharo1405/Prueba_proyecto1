@@ -1,5 +1,6 @@
 ﻿using Irony.Parsing;
 using Server.AST;
+using Server.AST.BaseDatos;
 using Server.AST.Ciclos;
 using Server.AST.Expresiones;
 using Server.AST.Expresiones.Aritmeticas;
@@ -64,139 +65,240 @@ namespace Server.GenerarAST
         }
 
 
-            public NodoAST Sentencia(ParseTreeNode nodo)
+        public NodoAST Sentencia(ParseTreeNode nodo)
         {
-                switch (nodo.ChildNodes.ElementAt(0).ToString())
-                {
-                    case "ACCESOASIGNACION":
-                        return accesoAsignacion(nodo.ChildNodes.ElementAt(0));
+            //String h = nodo.ChildNodes.ElementAt(0).ToString();
+            switch (nodo.ChildNodes.ElementAt(0).ToString())
+            {
+                case "ACCESOASIGNACION":
+                    return accesoAsignacion(nodo.ChildNodes.ElementAt(0));
 
-                    case "CREATETYPE":
-                        return CrearType(nodo.ChildNodes.ElementAt(0));
+                case "CREATETYPE":
+                    return CrearType(nodo.ChildNodes.ElementAt(0));
 
-                    case "DECLARATODO":
-                        return new Declarcion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)) , 
-                        ListaVariables(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)));
+                case "DECLARATODO":
+                    return new Declarcion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)),
+                    ListaVariables(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)));
 
-                    case "DECLAASGINACION":
-                    return new DeclaracionAsignacion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)), 
-                        ListaVariables(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)), 
+                case "DECLAASGINACION":
+                    return new DeclaracionAsignacion(Tipos(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0)),
+                        ListaVariables(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)),
                         expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(3)));
 
-                    case "ALTERTYPE": //no aplica
-                        break;
+                case "ALTERTYPE": //no aplica
+                    break;
 
-                    case "ELIMINARUSERTYPE": //no aplica
-                        break;
+                case "ELIMINARUSERTYPE": //no aplica
+                    break;
 
-                    case "CREARDATABASE":
-                        break;
+                case "CREARDATABASE":
+                    return crearDB(nodo.ChildNodes.ElementAt(0));
 
-                    case "USEE":
-                        break;
+                case "USE":
+                    return usse(nodo.ChildNodes.ElementAt(0));
 
-                    case " DROPDATABASE":
-                        break;
+                case "DROPDATABASE":
+                    return dropDB(nodo.ChildNodes.ElementAt(0));
 
-                    case "CREARTABLA":
-                        break;
+                case "CREARTABLA":
+                    return creartabla(nodo.ChildNodes.ElementAt(0));
 
-                    case "ALTERTABLE":
-                        break;
+                case "ALTERTABLE":
+                    break;
 
-                    case "DROPTABLE":
-                        break;
+                case "DROPTABLE":
+                    break;
 
-                    case "TRUNCATEE":
-                        break;
+                case "TRUNCATEE":
+                    break;
 
-                    case "COMMITT":
-                        break;
+                case "COMMITT":
+                    break;
 
-                    case "ROLLBACKK":
-                        break;
+                case "ROLLBACKK":
+                    break;
 
-                    case "CREATEUSER":
-                        break;
+                case "CREATEUSER":
+                    break;
 
-                    case "GRANT":
-                        break;
+                case "GRANT":
+                    break;
 
-                    case "REVOKEE":
-                        break;
+                case "REVOKEE":
+                    break;
 
-                    case "TODOCONSULTAS":
-                        break;
+                case "TODOCONSULTAS":
+                    break;
 
-                    case "BATCHH":
-                        break;
+                case "BATCHH":
+                    break;
 
-                    case "FUNCIONAGREGACION":
-                        break;
+                case "FUNCIONAGREGACION":
+                    break;
 
-                    case "IFSTATEMENT":
-                        return ifStatement(nodo.ChildNodes.ElementAt(0));
+                case "IFSTATEMENT":
+                    return ifStatement(nodo.ChildNodes.ElementAt(0));
 
-                    case "SWITCHSTATEMENT":
-                        return SwitchSatement(nodo.ChildNodes.ElementAt(0));
+                case "SWITCHSTATEMENT":
+                    return SwitchSatement(nodo.ChildNodes.ElementAt(0));
 
-                    case "WHILEE":
-                        return whilee(nodo.ChildNodes.ElementAt(0));
+                case "WHILEE":
+                    return whilee(nodo.ChildNodes.ElementAt(0));
 
-                    case "DOWHILE":
-                        return new DoWhile(bloque(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)),
-                            expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(4)),
-                            nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Location.Line,
-                            nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Location.Column);
+                case "DOWHILE":
+                    return new DoWhile(bloque(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(1)),
+                        expresiones(nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(4)),
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).ChildNodes.ElementAt(0).Token.Location.Column);
 
-                    case "AUMENTOSSOLOS":
-                        return AumentosSolos(nodo.ChildNodes.ElementAt(0));
+                case "AUMENTOSSOLOS":
+                    return AumentosSolos(nodo.ChildNodes.ElementAt(0));
 
-                    case "FORR":
-                        return forstatement(nodo.ChildNodes.ElementAt(0));
+                case "FORR":
+                    return forstatement(nodo.ChildNodes.ElementAt(0));
 
-                    case "MAPCOLLECTIONS":
+                case "MAPCOLLECTIONS":
                     //return MapCollectios(nodo.ChildNodes.ElementAt(0));
-                        break;
+                    break;
 
-                    case "LISTCOLLECTIONS":
-                        return ListCollectios(nodo.ChildNodes.ElementAt(0));
+                case "LISTCOLLECTIONS":
+                    return ListCollectios(nodo.ChildNodes.ElementAt(0));
 
-                    case "SETCOLLECTIONS":
-                        return SetCollections(nodo.ChildNodes.ElementAt(0));
+                case "SETCOLLECTIONS":
+                    return SetCollections(nodo.ChildNodes.ElementAt(0));
 
-                    case "FUNCIONESMETODOS":
-                        return FuncionesMetodos(nodo.ChildNodes.ElementAt(0));
+                case "FUNCIONESMETODOS":
+                    return FuncionesMetodos(nodo.ChildNodes.ElementAt(0));
 
-                    case "LLAMADASFUNCIONES":
-                        return llamadaaFuncion(nodo.ChildNodes.ElementAt(0));        
+                case "LLAMADASFUNCIONES":
+                    return llamadaaFuncion(nodo.ChildNodes.ElementAt(0));
 
-                    case "PROCEDIMIENTOS":
-                        return Procedimientos(nodo.ChildNodes.ElementAt(0));
+                case "PROCEDIMIENTOS":
+                    return Procedimientos(nodo.ChildNodes.ElementAt(0));
 
-                    case "LLAMADASPROCEDIMIENTOS":
-                        return llamadaProcedimientos(nodo.ChildNodes.ElementAt(0));
+                case "LLAMADASPROCEDIMIENTOS":
+                    return llamadaProcedimientos(nodo.ChildNodes.ElementAt(0));
 
-                    case "SENTENCIATRANSFERENCIA":
-                        return sentenciaTranferencia(nodo.ChildNodes.ElementAt(0));
+                case "SENTENCIATRANSFERENCIA":
+                    return sentenciaTranferencia(nodo.ChildNodes.ElementAt(0));
 
-                    case "CURSORES":
-                        break;
+                case "CURSORES":
+                    break;
 
-                    case "FOREACH_ACCESOCURSOR":
-                        break;
+                case "FOREACH_ACCESOCURSOR":
+                    break;
 
-                    case "LOG":
-                        return Log(nodo.ChildNodes.ElementAt(0));
+                case "LOG":
+                    return Log(nodo.ChildNodes.ElementAt(0));
 
                 case "EXCEPCIONES":
-                        break;
+                    break;
 
-                    case "TRYCATCHH":
-                        break;
-                }
-               return null;
+                case "TRYCATCHH":
+                    break;
             }
+            return null;
+        }
+
+
+        public NodoAST creartabla(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 9)
+            {
+                return new NodoCrearTabla(
+                    nodo.ChildNodes.ElementAt(5).Token.Text.ToLower(),
+                    hacerColumna(nodo.ChildNodes.ElementAt(7)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else
+            {
+                return new NodoCrearTabla(
+                    nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                    hacerColumna(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+        }
+
+        public LinkedList<NodoColumnas> hacerColumna(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 3)
+            {
+
+                LinkedList<NodoColumnas> columnasCreadas = hacerColumna(nodo.ChildNodes.ElementAt(0));
+                columnasCreadas.AddLast(columna(nodo.ChildNodes.ElementAt(2)));
+                return columnasCreadas;
+
+            }
+            else if (nodo.ChildNodes.Count == 1)
+            {
+                LinkedList<NodoColumnas> columnasCreadas = new LinkedList<NodoColumnas>();
+                columnasCreadas.AddLast(columna(nodo.ChildNodes.ElementAt(0)));
+                return columnasCreadas;
+            }
+            return null;
+        }
+
+
+        public NodoColumnas columna(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 4)
+            {
+                return new NodoColumnas(nodo.ChildNodes.ElementAt(0).Token.Text,
+                    Tipos(nodo.ChildNodes.ElementAt(1)),
+                    true,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 2)
+            {
+                return new NodoColumnas(nodo.ChildNodes.ElementAt(0).Token.Text,
+                    Tipos(nodo.ChildNodes.ElementAt(1)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else //(nodo.ChildNodes.Count == 5)
+            {
+                return new NodoColumnas(
+                    puntosIdsAccesos(nodo.ChildNodes.ElementAt(3)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+        }
+
+
+        public NodoAST dropDB(ParseTreeNode nodo)
+        {
+            return new DropDataBase(nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
+
+        public NodoAST usse(ParseTreeNode nodo)
+        {
+            return new Usee_DB(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
+
+
+        public NodoAST crearDB(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 6)
+            {
+                return new BaseDeDatos(nodo.ChildNodes.ElementAt(5).Token.Text.ToLower(),
+                    true,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else
+            {
+                return new BaseDeDatos(nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+        }
 
         
         public Expresion llamadaProcedimientos(ParseTreeNode nodo)
@@ -695,16 +797,16 @@ namespace Server.GenerarAST
             LinkedList<String> lista = new LinkedList<String>();
             foreach (ParseTreeNode ite in nodo.ChildNodes)
             {
-                String i = acceso(ite);
+                String i = ite.Token.Text.ToLower();
                 lista.AddLast(i);
             }
             return lista;
         }
 
-        public String acceso(ParseTreeNode nodo)
+        /*public String acceso(ParseTreeNode nodo)
         {
             return nodo.ChildNodes.ElementAt(1).Token.Text.ToLower();
-        }
+        }*/
 
         public NodoAST sentenciaTranferencia(ParseTreeNode nodo)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 
 namespace Server.AST.Instrucciones
@@ -18,7 +19,7 @@ namespace Server.AST.Instrucciones
             this.listaSentencias = listaSentencias;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             throw new NotImplementedException();
         }

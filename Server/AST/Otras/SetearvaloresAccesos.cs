@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Expresiones.TipoDato;
 using Server.AST.Instrucciones;
@@ -46,7 +47,7 @@ namespace Server.AST.Otras
             this.columna = columna;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             
             foreach (Puntos exp in idExp.ExpSeparadasPuntos)
@@ -69,7 +70,7 @@ namespace Server.AST.Otras
             Object ob = new object();
             if (idVarInicio.Equals("")) {
                 Puntos puntos = ListaExpresionesPuntos.ElementAt(contador);
-                ob = puntos.expresion1.getValue(entorno, listas);
+                ob = puntos.expresion1.getValue(entorno, listas, management);
             }
             else
             {
@@ -104,7 +105,7 @@ namespace Server.AST.Otras
                                     if (otroitem != null)
                                     {
                                         contador++;
-                                        object tipoDevuelto = tipoType(entorno, listas, otroitem, contador);                                        
+                                        object tipoDevuelto = tipoType(entorno, listas, otroitem, contador, management);                                        
                                     }
                                     else
                                     {
@@ -145,10 +146,10 @@ namespace Server.AST.Otras
                                                 auxParaFunciones = ll.listaValores;
                                                 tvtvtv = ll.tipoValor;
                                             }
-                                            FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas);
+                                            FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas, management);
                                             if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                                             {
-                                                devuleveFuncionCollection(funcion, entorno, listas, tvtvtv);
+                                                devuleveFuncionCollection(funcion, entorno, listas, tvtvtv, management);
                                             }
                                             else
                                             {
@@ -164,7 +165,7 @@ namespace Server.AST.Otras
                                             {
                                                 CreateType type2 = (CreateType)auxParaFunciones;
                                                 //contador++;
-                                                auxParaFunciones = tipoType(entorno, listas, type2, contador);
+                                                auxParaFunciones = tipoType(entorno, listas, type2, contador, management);
                                                 return auxParaFunciones;
                                             }
                                             else
@@ -239,10 +240,10 @@ namespace Server.AST.Otras
                         Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
                         if (puntos2.expresion1 is FuncionesCollections)
                         {
-                            FuncionesCollections funcion = (FuncionesCollections)puntos2.expresion1.getValue(entorno, listas);
+                            FuncionesCollections funcion = (FuncionesCollections)puntos2.expresion1.getValue(entorno, listas, management);
                             if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                             {
-                                devuleveFuncionCollection(funcion, entorno, listas, tvlista);
+                                devuleveFuncionCollection(funcion, entorno, listas, tvlista, management);
                             }
                             else
                             {
@@ -258,7 +259,7 @@ namespace Server.AST.Otras
                             {
                                 CreateType type = (CreateType)auxParaFunciones;
                                 contador++;
-                                auxParaFunciones = tipoType(entorno, listas, type, contador);
+                                auxParaFunciones = tipoType(entorno, listas, type, contador, management);
                                 return auxParaFunciones;
                             }
                             else
@@ -289,7 +290,7 @@ namespace Server.AST.Otras
         }
 
         public object devuleveFuncionCollection(FuncionesCollections funcion, Entorno entorno,
-            ErrorImpresion listas, tipoDato tipoValor)
+            ErrorImpresion listas, tipoDato tipoValor, Administrador management)
         {
             try
             {
@@ -311,8 +312,8 @@ namespace Server.AST.Otras
                             {
                                 contaPos1++;
                             }
-                            object valorPos = funcion.exp1.getValue(entorno, listas);
-                            tipoDato tipovalorPos = funcion.exp1.getType(entorno, listas);
+                            object valorPos = funcion.exp1.getValue(entorno, listas, management);
+                            tipoDato tipovalorPos = funcion.exp1.getType(entorno, listas, management);
 
                             if (tipovalorPos != tipoDato.entero)
                             {
@@ -354,7 +355,7 @@ namespace Server.AST.Otras
         }
 
 
-        public object tipoType(Entorno entorno, ErrorImpresion listas, CreateType claseType, int contador)
+        public object tipoType(Entorno entorno, ErrorImpresion listas, CreateType claseType, int contador, Administrador  management)
         {
 
             Puntos punto = ListaExpresionesPuntos.ElementAt(contador);
@@ -378,7 +379,7 @@ namespace Server.AST.Otras
                             if (otroitem != null)
                             {
                                 contador++;
-                                object tipoDevuelto = tipoType(entorno, listas, otroitem, contador);
+                                object tipoDevuelto = tipoType(entorno, listas, otroitem, contador, management);
                                 auxParaFunciones = tipoDevuelto;
                                 return tipoDevuelto;
                             }
@@ -433,10 +434,10 @@ namespace Server.AST.Otras
                                 punto = ListaExpresionesPuntos.ElementAt(contador);
                                 if (punto.expresion1 is FuncionesCollections)
                                 {
-                                    FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas);
+                                    FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas, management);
                                     if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                                     {
-                                        devuleveFuncionCollection(funcion, entorno, listas, tvtvtv);
+                                        devuleveFuncionCollection(funcion, entorno, listas, tvtvtv, management);
                                     }
                                     else
                                     {
@@ -452,7 +453,7 @@ namespace Server.AST.Otras
                                     {
                                         CreateType type = (CreateType)auxParaFunciones;
                                         //contador++;
-                                        auxParaFunciones = tipoType(entorno, listas, type, contador);
+                                        auxParaFunciones = tipoType(entorno, listas, type, contador, management);
                                         return auxParaFunciones;
                                     }
                                     else

@@ -1,6 +1,7 @@
 ﻿using Irony.Parsing;
 using Server.Analizador;
 using Server.AST;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Instrucciones;
@@ -42,6 +43,7 @@ namespace Server.GenerarAST
 
                 Entorno global = new Entorno();
                 ErrorImpresion listas = new ErrorImpresion();
+                Administrador management = new Administrador();
 
                 foreach (var item in ASTClases)
                 {
@@ -49,13 +51,13 @@ namespace Server.GenerarAST
                     {
                         Instruccion ins = (Instruccion)item;
                         if (ins is CreateType) {
-                            ins.ejecutar(global, listas);
+                            ins.ejecutar(global, listas, management);
                         }else if (ins is DeclaracionAsignacion || ins is Declarcion ||
                                  ins is DeclaraListNew || ins is DeclaraListValores ||
                                  ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
                                  ins is DeclaracionMapNew || ins is DeclaracionMapValores)
                         {
-                            ins.ejecutar(global, listas);
+                            ins.ejecutar(global, listas, management);
                         }
                     }
                     else
@@ -63,7 +65,7 @@ namespace Server.GenerarAST
                         Expresion exp = (Expresion)item;
                         if (exp is Funciones || 
                             exp is Procedimientos) {
-                            exp.getValue(global, listas);
+                            exp.getValue(global, listas, management);
                         }
                         //aqui faltan los procedimientos
                     }
@@ -82,7 +84,7 @@ namespace Server.GenerarAST
                                  ins is DeclaraListNew || ins is DeclaraListValores ||
                                  ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
                                  ins is DeclaracionMapNew || ins is DeclaracionMapValores)) {
-                            ins.ejecutar(next, listas);
+                            ins.ejecutar(next, listas, management);
                         }
                     }
                     else
@@ -90,7 +92,7 @@ namespace Server.GenerarAST
                         Expresion exp = (Expresion)item;
                         if (!(exp is Funciones || exp is Procedimientos))
                         {
-                            exp.getValue(next, listas);
+                            exp.getValue(next, listas, management);
                         }
                     }
                 }

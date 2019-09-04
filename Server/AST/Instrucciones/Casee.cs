@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,11 @@ namespace Server.AST.Instrucciones
             this.col = col;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                return valorCase.getType(entorno, listas);
+                return valorCase.getType(entorno, listas, management);
             }
             catch (Exception e)
             {
@@ -36,11 +37,11 @@ namespace Server.AST.Instrucciones
             return tipoDato.ok;
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                return valorCase.getValue(entorno, listas);
+                return valorCase.getValue(entorno, listas, management);
             }
             catch (Exception e)
             {

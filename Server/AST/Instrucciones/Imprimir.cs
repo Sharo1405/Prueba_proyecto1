@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using System;
 using System.Collections.Generic;
@@ -23,11 +24,11 @@ namespace Server.AST.Instrucciones
             this.col = col;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                object valor = expImpre.getValue(entorno, listas);
+                object valor = expImpre.getValue(entorno, listas, management);
                 if (valor is Simbolo)
                 {
                     Simbolo ss = (Simbolo)valor;

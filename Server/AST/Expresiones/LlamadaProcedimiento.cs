@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
 using Server.AST.Otras;
@@ -38,31 +39,31 @@ namespace Server.AST.Expresiones
             this.col = col;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return Operacion.tipoDato.list;
         }
 
 
-        public String crearFirmaParas(Entorno entorno, ErrorImpresion listas)
+        public String crearFirmaParas(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             String firmaFuncion = "";
             firmaFuncion += idProc;
             if (parametros != null)
             {
-                object v = parametros.getValue(entorno, listas);
+                object v = parametros.getValue(entorno, listas, management);
                 if (v is LinkedList<Comas>)
                 {
                     parametrosLista = (LinkedList<Comas>)v;
                     foreach (Expresion parametro in parametrosLista)
                     {
-                        tipoDato tipoPara = parametro.getType(entorno, listas);
+                        tipoDato tipoPara = parametro.getType(entorno, listas, management);
                         firmaFuncion += "_" + Convert.ToString(tipoPara);
                     }
                 }
                 else
                 {
-                    tipoDato tipoPara = parametros.getType(entorno, listas);
+                    tipoDato tipoPara = parametros.getType(entorno, listas, management);
                     firmaFuncion += "_" + Convert.ToString(tipoPara);
                 }
             }
@@ -72,7 +73,7 @@ namespace Server.AST.Expresiones
 
 
         public void declararParametros(Entorno lista, ErrorImpresion impresion,
-            LinkedList<Parametros> parametros, LinkedList<Comas> valoresParametros)
+            LinkedList<Parametros> parametros, LinkedList<Comas> valoresParametros, Administrador management)
         {
             int cantidad = parametros.Count;
             for (int i = 0; i < cantidad; i++)
@@ -86,25 +87,25 @@ namespace Server.AST.Expresiones
 
                 if (value is LlamadaFuncion)//llamada a funcion en el parametro
                 {
-                    Object val = value.getValue(lista.padreANTERIOR, impresion);
+                    Object val = value.getValue(lista.padreANTERIOR, impresion, management);
                     lista.setSimbolo(nombreVar, new Simbolo(nombreVar, val, valor.linea, valor.columna,
                         var.tipo.tipo, Simbolo.Rol.VARIABLE));
                 }
                 else
                 {
-                    Object val = value.getValue(lista, impresion);
+                    Object val = value.getValue(lista, impresion, management);
                     lista.setSimbolo(nombreVar, new Simbolo(nombreVar, val, valor.linea, valor.columna,
                         var.tipo.tipo, Simbolo.Rol.VARIABLE));
                 }
             }            
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
                 //AQUI TODA LA EJECUCION
-                String firmaFun = crearFirmaParas(entorno, listas);
+                String firmaFun = crearFirmaParas(entorno, listas, management);
                 Simbolo buscado = entorno.get(firmaFun, entorno, Simbolo.Rol.PROCEDIMIENTO);
                 if (buscado != null && buscado.rol == Simbolo.Rol.PROCEDIMIENTO)
                 {
@@ -118,13 +119,13 @@ namespace Server.AST.Expresiones
                         //object v = parametros.getValue(actual, listas);
                         if (parametrosLista.Count > 0)
                         {
-                            declararParametros(actual, listas, buscado.parametros, parametrosLista);
+                            declararParametros(actual, listas, buscado.parametros, parametrosLista, management);
                         }
                         else
                         {
                             LinkedList<Comas> listaparas = new LinkedList<Comas>();
                             listaparas.AddLast(new Comas(linea, col, parametros));
-                            declararParametros(actual, listas, buscado.parametros, listaparas);
+                            declararParametros(actual, listas, buscado.parametros, listaparas, management);
                         }
                     }
                     else
@@ -137,7 +138,7 @@ namespace Server.AST.Expresiones
                         if (sentencia is Instruccion)
                         {
                             Instruccion ins = (Instruccion)sentencia;
-                            Object reto = ins.ejecutar(actual, listas);
+                            Object reto = ins.ejecutar(actual, listas, management);
                             if (ins is Breakk)
                             {
                                 return ins;
@@ -156,17 +157,17 @@ namespace Server.AST.Expresiones
                                 {
                                     
                                     Corchetes haciendoLista = new Corchetes(rr.retorno, rr.linea, rr.col);
-                                    List<Object> listRetornada = (List<Object>)haciendoLista.getValue(entorno, listas);
-                                    tipoDato t = rr.getType(entorno, listas);
+                                    List<Object> listRetornada = (List<Object>)haciendoLista.getValue(entorno, listas, management);
+                                    tipoDato t = rr.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
                                 }
                                 else
                                 {
                                     List<Object> listRetornada = new List<object>();
-                                    Object ob = rr.getValue(entorno, listas);
+                                    Object ob = rr.getValue(entorno, listas, management);
                                     listRetornada.Add(ob);
-                                    tipoDato t = rr.getType(entorno, listas);
+                                    tipoDato t = rr.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
                                 }                                                               
@@ -184,24 +185,24 @@ namespace Server.AST.Expresiones
                                 {
 
                                     Corchetes haciendoLista = new Corchetes(rr.retorno, rr.linea, rr.col);
-                                    List<Object> listRetornada = (List<Object>)haciendoLista.getValue(entorno, listas);
-                                    tipoDato t = haciendoLista.getType(entorno, listas);
+                                    List<Object> listRetornada = (List<Object>)haciendoLista.getValue(entorno, listas, management);
+                                    tipoDato t = haciendoLista.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
                                 }
                                 else
                                 {
                                     List<Object> listRetornada = new List<object>();
-                                    Object ob = rr.getValue(entorno, listas);
+                                    Object ob = rr.getValue(entorno, listas, management);
                                     listRetornada.Add(ob);
-                                    tipoDato t = rr.getType(entorno, listas);
+                                    tipoDato t = rr.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
                                 }
                             }
                             else
                             {
-                                exp.getValue(actual, listas);
+                                exp.getValue(actual, listas, management);
                             }
                         }
                     }

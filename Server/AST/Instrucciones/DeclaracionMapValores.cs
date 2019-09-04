@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Otras;
@@ -34,23 +35,23 @@ namespace Server.AST.Instrucciones
         HashSet<ClaveValor> hashParaSimbolo = new HashSet<ClaveValor>();
         int contador = 0;
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
                                            
-                Object dev = ListaExpresiones.getValue(entorno, listas);
+                Object dev = ListaExpresiones.getValue(entorno, listas, management);
                 if (dev is LinkedList<Comas>)
                 {
                     LinkedList<Comas> listaComas = (LinkedList<Comas>)dev;                    
                     foreach (Comas cv in listaComas)
                     {
                         Comas cv2 = (Comas)cv;
-                        Object valor = cv2.getValue(entorno, listas);
+                        Object valor = cv2.getValue(entorno, listas, management);
                         if (valor is DosPuntos)
                         {
                             DosPuntos val = (DosPuntos)valor;
-                            Object valorClave = val.getValue(entorno, listas);
+                            Object valorClave = val.getValue(entorno, listas, management);
                             if (valorClave is ClaveValor)
                             {
                                 ClaveValor a = (ClaveValor)valorClave;
@@ -59,20 +60,22 @@ namespace Server.AST.Instrucciones
                                     contador++;
                                     Expresion clave = (Expresion)a.clave;
                                     Expresion value = (Expresion)a.valor;
-                                    tipoClave = clave.getType(entorno, listas);
-                                    tipoValor = value.getType(entorno, listas);
+                                    tipoClave = clave.getType(entorno, listas, management);
+                                    tipoValor = value.getType(entorno, listas, management);
                                     if (contador == 1)
                                     {
                                         tipoClaveAnterior = tipoClave;
                                         tipoValorAnterior = tipoValor;
-                                        ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                                        ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), 
+                                            value.getValue(entorno, listas, management));
                                         hashParaSimbolo.Add(paraGuardar);
                                     }
                                     else
                                     {
                                         if ((tipoClave == tipoClaveAnterior) && (tipoValor == tipoValorAnterior))
                                         {
-                                            ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));                                            
+                                            ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), 
+                                                value.getValue(entorno, listas, management));                                            
                                             hashParaSimbolo.Add(paraGuardar);
                                         }
                                         else
@@ -93,7 +96,7 @@ namespace Server.AST.Instrucciones
                         else if (valor is LinkedList<Comas>)
                         {
                             LinkedList<Comas> listComas = (LinkedList<Comas>)valor;
-                            paraComas(listComas, entorno, listas);
+                            paraComas(listComas, entorno, listas, management);
                         }
                         else if (valor is ClaveValor)
                         {
@@ -103,20 +106,20 @@ namespace Server.AST.Instrucciones
                                 contador++;
                                 Expresion clave = (Expresion)a.clave;
                                 Expresion value = (Expresion)a.valor;
-                                tipoClave = clave.getType(entorno, listas);
-                                tipoValor = value.getType(entorno, listas);
+                                tipoClave = clave.getType(entorno, listas, management);
+                                tipoValor = value.getType(entorno, listas, management);
                                 if (contador == 1)
                                 {
                                     tipoClaveAnterior = tipoClave;
                                     tipoValorAnterior = tipoValor;
-                                    ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                                    ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), value.getValue(entorno, listas, management));
                                     hashParaSimbolo.Add(paraGuardar);
                                 }
                                 else
                                 {
                                     if ((tipoClave == tipoClaveAnterior) && (tipoValor == tipoValorAnterior))
                                     {
-                                        ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                                        ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), value.getValue(entorno, listas, management));
                                         hashParaSimbolo.Add(paraGuardar);
                                     }
                                     else
@@ -149,20 +152,20 @@ namespace Server.AST.Instrucciones
                         contador++;
                         Expresion clave = (Expresion)a.clave;
                         Expresion value = (Expresion)a.valor;
-                        tipoClave = clave.getType(entorno, listas);
-                        tipoValor = value.getType(entorno, listas);
+                        tipoClave = clave.getType(entorno, listas, management);
+                        tipoValor = value.getType(entorno, listas, management);
                         if (contador == 1)
                         {
                             tipoClaveAnterior = tipoClave;
                             tipoValorAnterior = tipoValor;
-                            ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                            ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), value.getValue(entorno, listas, management));
                             hashParaSimbolo.Add(paraGuardar);
                         }
                         else
                         {
                             if ((tipoClave == tipoClaveAnterior) && (tipoValor == tipoValorAnterior))
                             {
-                                ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                                ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), value.getValue(entorno, listas, management));
                                 hashParaSimbolo.Add(paraGuardar);
                             }
                             else
@@ -193,16 +196,16 @@ namespace Server.AST.Instrucciones
             return tipoDato.ok;
         }
 
-        public void paraComas(LinkedList<Comas> listComas, Entorno entorno, ErrorImpresion listas)
+        public void paraComas(LinkedList<Comas> listComas, Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             foreach (Comas cv in listComas)
             {
                 Comas cv2 = (Comas)cv;
-                Object valor = cv2.getValue(entorno, listas);
+                Object valor = cv2.getValue(entorno, listas, management);
                 if (valor is DosPuntos)
                 {
                     DosPuntos val = (DosPuntos)valor;
-                    Object valorClave = val.getValue(entorno, listas);
+                    Object valorClave = val.getValue(entorno, listas, management);
                     if (valorClave is ClaveValor)
                     {
                         ClaveValor a = (ClaveValor)valorClave;
@@ -211,20 +214,20 @@ namespace Server.AST.Instrucciones
                             contador++;
                             Expresion clave = (Expresion)a.clave;
                             Expresion value = (Expresion)a.valor;
-                            tipoClave = clave.getType(entorno, listas);
-                            tipoValor = value.getType(entorno, listas);
+                            tipoClave = clave.getType(entorno, listas, management);
+                            tipoValor = value.getType(entorno, listas, management);
                             if (contador == 1)
                             {
                                 tipoClaveAnterior = tipoClave;
                                 tipoValorAnterior = tipoValor;
-                                ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                                ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), value.getValue(entorno, listas, management));
                                 hashParaSimbolo.Add(paraGuardar);
                             }
                             else
                             {
                                 if ((tipoClave == tipoClaveAnterior) && (tipoValor == tipoValorAnterior))
                                 {
-                                    ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                                    ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), value.getValue(entorno, listas, management));
                                     hashParaSimbolo.Add(paraGuardar);
                                 }
                                 else
@@ -243,7 +246,7 @@ namespace Server.AST.Instrucciones
                 else if (valor is Comas)
                 {
                     LinkedList<Comas> listaaComas = (LinkedList<Comas>)valor;
-                    paraComas(listaaComas, entorno, listas);
+                    paraComas(listaaComas, entorno, listas, management);
                 }
                 else if (valor is ClaveValor)
                 {
@@ -253,20 +256,20 @@ namespace Server.AST.Instrucciones
                         contador++;
                         Expresion clave = (Expresion)a.clave;
                         Expresion value = (Expresion)a.valor;
-                        tipoClave = clave.getType(entorno, listas);
-                        tipoValor = value.getType(entorno, listas);
+                        tipoClave = clave.getType(entorno, listas, management);
+                        tipoValor = value.getType(entorno, listas, management);
                         if (contador == 1)
                         {
                             tipoClaveAnterior = tipoClave;
                             tipoValorAnterior = tipoValor;
-                            ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                            ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), value.getValue(entorno, listas, management));
                             hashParaSimbolo.Add(paraGuardar);
                         }
                         else
                         {
                             if ((tipoClave == tipoClaveAnterior) && (tipoValor == tipoValorAnterior))
                             {
-                                ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas), value.getValue(entorno, listas));
+                                ClaveValor paraGuardar = new ClaveValor(clave.getValue(entorno, listas, management), value.getValue(entorno, listas, management));
                                 hashParaSimbolo.Add(paraGuardar);
                             }
                             else

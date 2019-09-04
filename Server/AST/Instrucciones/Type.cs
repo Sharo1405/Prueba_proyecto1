@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Otras;
 using System;
@@ -34,12 +35,12 @@ namespace Server.AST.Instrucciones
             this.id = id;            
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return valor;
         }
 
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return tipo.tipo;
         }       

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 
 namespace Server.AST.Expresiones
@@ -28,12 +29,12 @@ namespace Server.AST.Expresiones
             ExpSeparadasComas.AddLast(new Comas(linea, columna, izq));
             ExpSeparadasComas.AddLast(new Comas(linea, columna, der));
         }
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return Operacion.tipoDato.list; //likedlist nada que ver con el proyecto
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             foreach (Comas exp in ExpSeparadasComas)
             {

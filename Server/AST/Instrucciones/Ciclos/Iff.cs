@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using static Server.AST.Expresiones.Operacion;
@@ -26,15 +27,15 @@ namespace Server.AST.Instrucciones.Ciclos
             this.col = col;
         }
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
                 entro = false;
                 foreach (IfLista ifLista in ejecutarIFS)
                 {
-                    Object ob = ifLista.condicion.getValue(entorno, listas);
-                    tipoDato tipo = ifLista.condicion.getType(entorno, listas);
+                    Object ob = ifLista.condicion.getValue(entorno, listas, management);
+                    tipoDato tipo = ifLista.condicion.getType(entorno, listas, management);
                     if (tipo == tipoDato.booleano)
                     {
                         Boolean prueba = (Boolean)ob;
@@ -60,7 +61,7 @@ namespace Server.AST.Instrucciones.Ciclos
                                     }
                                     else
                                     {
-                                        ins.ejecutar(entorno, listas);
+                                        ins.ejecutar(entorno, listas, management);
                                     }
                                 }
                                 else
@@ -72,7 +73,7 @@ namespace Server.AST.Instrucciones.Ciclos
                                     }
                                     else
                                     {
-                                        exp.getValue(entorno, listas);
+                                        exp.getValue(entorno, listas, management);
                                     }
                                 }
                             }
@@ -91,7 +92,7 @@ namespace Server.AST.Instrucciones.Ciclos
                 if (entro == false && ejecutarELSE != null)
                 {
 
-                    Object reto = ejecutarELSE.ejecutar(entorno, listas);
+                    Object reto = ejecutarELSE.ejecutar(entorno, listas, management);
 
                     if (reto is Breakk)
                     {

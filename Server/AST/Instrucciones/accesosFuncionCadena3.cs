@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using static Server.AST.Expresiones.Operacion;
@@ -30,7 +31,7 @@ namespace Server.AST.Instrucciones
         object auxFuncion = new object();
         int contador = 0;
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
@@ -43,8 +44,8 @@ namespace Server.AST.Instrucciones
                         while (contador < funciones.Count)
                         {
                             FuncionesNativasCadenas puntos2 = funciones.ElementAt(contador);                            
-                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.getValue(entorno, listas);
-                            auxFuncion = devuelveFunconEjecutada(funcion, entorno, listas);                            
+                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.getValue(entorno, listas, management);
+                            auxFuncion = devuelveFunconEjecutada(funcion, entorno, listas, management);                            
                             contador++;
                         }
                         return auxFuncion;
@@ -74,7 +75,7 @@ namespace Server.AST.Instrucciones
         }
 
 
-        public object devuelveFunconEjecutada(FuncionesNativasCadenas funcion, Entorno entorno, ErrorImpresion listas)
+        public object devuelveFunconEjecutada(FuncionesNativasCadenas funcion, Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             switch (funcion.nativa)
             {
@@ -88,38 +89,38 @@ namespace Server.AST.Instrucciones
                     return Convert.ToString(auxFuncion).ToLower();
 
                 case "startswith":
-                    tipoDato es = funcion.exp1.getType(entorno, listas);
+                    tipoDato es = funcion.exp1.getType(entorno, listas, management);
                     if (es != tipoDato.cadena)
                     {
                         listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                     "El parametro de inicio para la funcion StartsWith no es de tipo cadena"));
                         return tipoDato.errorSemantico;
                     }
-                    Object cadena = funcion.exp1.getValue(entorno, listas);
+                    Object cadena = funcion.exp1.getValue(entorno, listas, management);
                     return Convert.ToString(auxFuncion).StartsWith(Convert.ToString(cadena));
 
                 case "endswith":
-                    tipoDato ess = funcion.exp1.getType(entorno, listas);
+                    tipoDato ess = funcion.exp1.getType(entorno, listas, management);
                     if (ess != tipoDato.cadena)
                     {
                         listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                     "El parametro de inicio para la funcion endsWith no es de tipo cadena"));
                         return tipoDato.errorSemantico;
                     }
-                    Object cadena2 = funcion.exp1.getValue(entorno, listas);
+                    Object cadena2 = funcion.exp1.getValue(entorno, listas, management);
                     return Convert.ToString(auxFuncion).StartsWith(Convert.ToString(cadena2));
 
                 case "substring":
-                    tipoDato esss = funcion.exp1.getType(entorno, listas);
-                    tipoDato essss = funcion.exp1.getType(entorno, listas);
+                    tipoDato esss = funcion.exp1.getType(entorno, listas, management);
+                    tipoDato essss = funcion.exp1.getType(entorno, listas, management);
                     if (esss != tipoDato.entero && essss != tipoDato.entero)
                     {
                         listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                     "El parametro de inicio para la funcion endsWith no es de tipo cadena"));
                         return tipoDato.errorSemantico;
                     }
-                    Object inicio = funcion.exp1.getValue(entorno, listas);
-                    Object final = funcion.exp2.getValue(entorno, listas);
+                    Object inicio = funcion.exp1.getValue(entorno, listas, management);
+                    Object final = funcion.exp2.getValue(entorno, listas, management);
                     return Convert.ToString(auxFuncion).Substring(Int32.Parse(Convert.ToString(inicio)),
                         Int32.Parse(Convert.ToString(final)));
 

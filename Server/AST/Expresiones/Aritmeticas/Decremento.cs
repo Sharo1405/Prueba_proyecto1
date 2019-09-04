@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
@@ -41,19 +42,19 @@ namespace Server.AST.Expresiones.Aritmeticas
 
         tipoDato tipoOpcion1 = tipoDato.errorSemantico;
         tipoDato tipoOpcion2 = tipoDato.errorSemantico;
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             if (idExp != null)
             {
-                return idExp.getType(entorno, listas);
+                return idExp.getType(entorno, listas, management);
             }
             else {
                 ArrobaId ididid = new ArrobaId(id, linea, columna);
-                return ididid.getType(entorno, listas);
+                return ididid.getType(entorno, listas, management);
             }
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
@@ -65,8 +66,8 @@ namespace Server.AST.Expresiones.Aritmeticas
                         {
                             ListaPuntos a = (ListaPuntos)idExp;
                             ListaPuntos sett = new ListaPuntos(id, a.ExpSeparadasPuntos, this.linea, this.columna);
-                            object valorExp1 = sett.getValue(entorno, listas);
-                            tipoDato tipoExp1 = sett.getType(entorno, listas);
+                            object valorExp1 = sett.getValue(entorno, listas, management);
+                            tipoDato tipoExp1 = sett.getType(entorno, listas, management);
                             tipoOpcion1 = tipoExp1;
 
                             if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
@@ -91,7 +92,7 @@ namespace Server.AST.Expresiones.Aritmeticas
                             }
 
                             SetearvaloresAccesos setear = new SetearvaloresAccesos(id, a, valorExp1, this.linea, this.columna, tipoExp1);
-                            setear.ejecutar(entorno, listas);
+                            setear.ejecutar(entorno, listas, management);
                             return valorExp1;
                         }
                         else
@@ -100,8 +101,8 @@ namespace Server.AST.Expresiones.Aritmeticas
                             Expresion exp = (Expresion)a;
                             ListaPuntos b = new ListaPuntos(exp, idExp, this.linea, this.columna);
 
-                            object valorExp1 = b.getValue(entorno, listas);
-                            tipoDato tipoExp1 = b.getType(entorno, listas);
+                            object valorExp1 = b.getValue(entorno, listas, management);
+                            tipoDato tipoExp1 = b.getType(entorno, listas, management);
                             tipoOpcion2 = tipoExp1;
 
                             if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
@@ -126,7 +127,7 @@ namespace Server.AST.Expresiones.Aritmeticas
                             }
 
                             SetearvaloresAccesos setear = new SetearvaloresAccesos(b, valorExp1, this.linea, this.columna, tipoExp1);
-                            setear.ejecutar(entorno, listas);
+                            setear.ejecutar(entorno, listas, management);
                             return valorExp1;
                         }
 
@@ -134,7 +135,7 @@ namespace Server.AST.Expresiones.Aritmeticas
                     else if (idExp is ArrobaId)
                     {
                         ArrobaId id2 = (ArrobaId)idExp;
-                        tipoDato tipovar = idExp.getType(entorno, listas);
+                        tipoDato tipovar = idExp.getType(entorno, listas, management);
                         Simbolo variable = entorno.get(id2.id, entorno, Simbolo.Rol.VARIABLE);
                         if (tipovar == tipoDato.entero)
                         {
@@ -157,8 +158,8 @@ namespace Server.AST.Expresiones.Aritmeticas
                     }
                     else if (idExp is ListaPuntos)
                     {
-                        object valorExpid = idExp.getValue(entorno, listas);
-                        tipoDato tipoExpId = idExp.getType(entorno, listas);
+                        object valorExpid = idExp.getValue(entorno, listas, management);
+                        tipoDato tipoExpId = idExp.getType(entorno, listas, management);
                         if (tipoExpId != tipoDato.entero && tipoExpId != tipoDato.decimall)
                         {
                             listas.errores.AddLast(new NodoError(linea, columna,
@@ -176,7 +177,7 @@ namespace Server.AST.Expresiones.Aritmeticas
                         }
                         ListaPuntos l = (ListaPuntos)idExp;
                         SetearvaloresAccesos setear = new SetearvaloresAccesos(l, valorExpid, this.linea, this.columna, tipoExpId);
-                        setear.ejecutar(entorno, listas);
+                        setear.ejecutar(entorno, listas, management);
                         return valorExpid;
                     }
                     else
@@ -189,7 +190,7 @@ namespace Server.AST.Expresiones.Aritmeticas
                 else
                 {
                     ArrobaId ididid = new ArrobaId(id, linea, columna);
-                    tipoDato tipovar = ididid.getType(entorno, listas);
+                    tipoDato tipovar = ididid.getType(entorno, listas, management);
                     Simbolo variable = entorno.get(id, entorno, Simbolo.Rol.VARIABLE);
                     if (tipovar == tipoDato.entero)
                     {

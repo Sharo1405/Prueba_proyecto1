@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,10 @@ namespace Server.AST.Ciclos
             : base(linea, columna, expresion1, expresion2)
         { }
 
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            if (((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano) &&
-                ((tipoDato)expresion2.getType(entorno, listas) == tipoDato.booleano))
+            if (((tipoDato)expresion1.getType(entorno, listas, management) == tipoDato.booleano) &&
+                ((tipoDato)expresion2.getType(entorno, listas, management) == tipoDato.booleano))
             {
                 return tipoDato.booleano;
             }
@@ -27,13 +28,13 @@ namespace Server.AST.Ciclos
             }
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            object exp = expresion1.getValue(entorno, listas);
-            object exp2 = expresion2.getValue(entorno, listas);
+            object exp = expresion1.getValue(entorno, listas, management);
+            object exp2 = expresion2.getValue(entorno, listas, management);
 
-            if (((tipoDato)expresion1.getType(entorno, listas) == tipoDato.booleano) &&
-                ((tipoDato)expresion2.getType(entorno, listas) == tipoDato.booleano))
+            if (((tipoDato)expresion1.getType(entorno, listas, management) == tipoDato.booleano) &&
+                ((tipoDato)expresion2.getType(entorno, listas, management) == tipoDato.booleano))
             {
                 
                 if (expresion1 is ArrobaId)
@@ -51,7 +52,8 @@ namespace Server.AST.Ciclos
             else
             {
                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "Tipo de dato para operador \"||\" no valido Tipos: " +
-                    Convert.ToString(expresion1.getType(entorno, listas)) + " y " + Convert.ToString(expresion2.getType(entorno, listas)) + " y se esperaba boolean"));
+                    Convert.ToString(expresion1.getType(entorno, listas, management)) + " y " + 
+                    Convert.ToString(expresion2.getType(entorno, listas, management)) + " y se esperaba boolean"));
                 return tipoDato.errorSemantico;
             }
         }

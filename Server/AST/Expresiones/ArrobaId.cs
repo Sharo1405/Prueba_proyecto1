@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using static Server.AST.Expresiones.Operacion;
 
@@ -22,7 +23,7 @@ namespace Server.AST.Expresiones
         }
 
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             Simbolo encontrado = get(id, entorno, Simbolo.Rol.VARIABLE);
             if (encontrado != null)
@@ -35,7 +36,7 @@ namespace Server.AST.Expresiones
             }
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             Simbolo encontrado = get(id, entorno, Simbolo.Rol.VARIABLE);
             if (encontrado != null)

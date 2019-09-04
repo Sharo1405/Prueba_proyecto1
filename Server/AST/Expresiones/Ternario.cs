@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using static Server.AST.Expresiones.Operacion;
 
@@ -26,24 +27,24 @@ namespace Server.AST.Expresiones
         }
 
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
 
-            Object cndicion = condicion.getValue(entorno, listas);
+            Object cndicion = condicion.getValue(entorno, listas, management);
             if (cndicion != null)
             {
-                tipoDato tipoo = condicion.getType(entorno, listas);
+                tipoDato tipoo = condicion.getType(entorno, listas, management);
                 if (tipoo == tipoDato.booleano)
                 {
                     if ((Boolean)cndicion)
                     {
-                        valorVerdadero.getValue(entorno, listas);
-                        return valorVerdadero.getType(entorno, listas);
+                        valorVerdadero.getValue(entorno, listas, management);
+                        return valorVerdadero.getType(entorno, listas, management);
                     }
                     else
                     {
-                        valorFalso.getValue(entorno, listas);
-                        return valorFalso.getType(entorno, listas);
+                        valorFalso.getValue(entorno, listas, management);
+                        return valorFalso.getType(entorno, listas, management);
                     }
                 }
                 else
@@ -57,23 +58,23 @@ namespace Server.AST.Expresiones
             return tipoDato.errorSemantico;
         }
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                Object cndicion = condicion.getValue(entorno, listas);
+                Object cndicion = condicion.getValue(entorno, listas, management);
                 if (cndicion != null)
                 {
-                    tipoDato tipoo = condicion.getType(entorno, listas);
+                    tipoDato tipoo = condicion.getType(entorno, listas, management);
                     if (tipoo == tipoDato.booleano)
                     {
                         if ((Boolean)cndicion)
                         {
-                            return valorVerdadero.getValue(entorno, listas);
+                            return valorVerdadero.getValue(entorno, listas, management);
                         }
                         else
                         {
-                            return valorFalso.getValue(entorno, listas);
+                            return valorFalso.getValue(entorno, listas, management);
                         }
                     }
                     else

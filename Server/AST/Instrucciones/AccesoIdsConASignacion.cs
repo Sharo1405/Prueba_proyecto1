@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Otras;
@@ -29,7 +30,7 @@ namespace Server.AST.Instrucciones
             this.columna = columna;
         }        
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
@@ -41,8 +42,8 @@ namespace Server.AST.Instrucciones
                     {
                         ListaPuntos a = (ListaPuntos)accesos;
 
-                        object value = valor.getValue(entorno, listas);
-                        tipoDato tipoValor = valor.getType(entorno, listas);
+                        object value = valor.getValue(entorno, listas, management);
+                        tipoDato tipoValor = valor.getType(entorno, listas, management);
 
                         if (value is Simbolo)
                         {
@@ -65,7 +66,7 @@ namespace Server.AST.Instrucciones
                             }
 
                             SetearvaloresAccesos sett = new SetearvaloresAccesos(variable, a, listaGuardar, this.linea, this.columna, tipoDato.list);
-                            sett.ejecutar(entorno, listas);
+                            sett.ejecutar(entorno, listas, management);
                         }
                         else if (valor is Llaves) //set
                         {
@@ -81,12 +82,12 @@ namespace Server.AST.Instrucciones
                                 listaGuardar = new Lista("", lista, tipoDato.set, tipoValor, linea, columna);
                             }
                             SetearvaloresAccesos sett = new SetearvaloresAccesos(variable, a, listaGuardar, this.linea, this.columna, tipoDato.set);
-                            sett.ejecutar(entorno, listas);
+                            sett.ejecutar(entorno, listas, management);
                         }
                         else
                         {
                             SetearvaloresAccesos sett = new SetearvaloresAccesos(variable, a, value, this.linea, this.columna, tipoValor);
-                            sett.ejecutar(entorno, listas);
+                            sett.ejecutar(entorno, listas, management);
                         }
                     }
                     else
@@ -95,8 +96,8 @@ namespace Server.AST.Instrucciones
                         Expresion exp = (Expresion)a;
                         ListaPuntos b = new ListaPuntos(exp, accesos, this.linea, this.columna);
 
-                        object value = valor.getValue(entorno, listas);
-                        tipoDato tipoValor = valor.getType(entorno, listas);
+                        object value = valor.getValue(entorno, listas, management);
+                        tipoDato tipoValor = valor.getType(entorno, listas, management);
 
 
                         if (value is Simbolo)
@@ -120,7 +121,7 @@ namespace Server.AST.Instrucciones
                             }
 
                             SetearvaloresAccesos sett = new SetearvaloresAccesos(b, listaGuardar, this.linea, this.columna, tipoValor);
-                            sett.ejecutar(entorno, listas);
+                            sett.ejecutar(entorno, listas, management);
                         }
                         else if (valor is Llaves) //set
                         {
@@ -136,12 +137,12 @@ namespace Server.AST.Instrucciones
                                 listaGuardar = new Lista("", lista, tipoDato.set, tipoValor, linea, columna);
                             }
                             SetearvaloresAccesos sett = new SetearvaloresAccesos(b, listaGuardar, this.linea, this.columna, tipoValor);
-                            sett.ejecutar(entorno, listas);
+                            sett.ejecutar(entorno, listas, management);
                         }
                         else
                         {
                             SetearvaloresAccesos sett = new SetearvaloresAccesos(b, value, this.linea, this.columna, tipoValor);
-                            sett.ejecutar(entorno, listas);
+                            sett.ejecutar(entorno, listas, management);
                         }
                     }
                 }
@@ -162,7 +163,7 @@ namespace Server.AST.Instrucciones
             return tipoDato.id;
         }
 
-        public tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             return tipoDato.ok;
         }

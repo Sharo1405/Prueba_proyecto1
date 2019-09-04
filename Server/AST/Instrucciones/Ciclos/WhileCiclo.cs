@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using Server.AST.Instrucciones;
 using System;
@@ -30,17 +31,17 @@ namespace Server.AST.Ciclos
             this.sentencias = sentencias;
         }
 
-        public Object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public Object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
-                Object valor = condicion.getValue(entorno, listas);
-                tipoDato tipo = condicion.getType(entorno, listas);
+                Object valor = condicion.getValue(entorno, listas, management);
+                tipoDato tipo = condicion.getType(entorno, listas, management);
                 if (tipoDato.booleano == tipo)
                 {
                     while ((Boolean)valor)
                     {
-                        Object retorno = sentencias.ejecutar(entorno, listas);
+                        Object retorno = sentencias.ejecutar(entorno, listas, management);
 
                         if (retorno is Breakk)
                         {
@@ -55,7 +56,7 @@ namespace Server.AST.Ciclos
                             return retorno;
                         }
 
-                        valor = condicion.getValue(entorno, listas);
+                        valor = condicion.getValue(entorno, listas, management);
                     }
                 }
                 else

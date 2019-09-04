@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Expresiones;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Server.AST.Instrucciones
         }
 
 
-        public object ejecutar(Entorno entorno, ErrorImpresion listas)
+        public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
             {
@@ -42,7 +43,7 @@ namespace Server.AST.Instrucciones
                         }*/
                         else
                         {
-                            ins.ejecutar(entorno, listas);
+                            ins.ejecutar(entorno, listas, management);
                         }
                     }
                     else
@@ -55,7 +56,7 @@ namespace Server.AST.Instrucciones
                         }
                         else
                         {
-                            exp.getValue(entorno, listas);
+                            exp.getValue(entorno, listas, management);
                         }
                     }
                 }

@@ -1,4 +1,5 @@
-﻿using Server.AST.Entornos;
+﻿using Server.AST.BaseDatos;
+using Server.AST.Entornos;
 using Server.AST.Expresiones.TipoDato;
 using Server.AST.Instrucciones;
 using Server.AST.Otras;
@@ -39,13 +40,13 @@ namespace Server.AST.Expresiones
             this.columna = columna;
         }
 
-        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas)
+        public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             ListaExpresionesPuntos = new LinkedList<Puntos>();
             ListaExpresionesPuntos.Clear();
             auxParaFunciones = new object();
             contador = 0;
-            getValue(entorno, listas);            
+            getValue(entorno, listas, management);            
             auxParaFunciones = new object();
             ListaExpresionesPuntos = new LinkedList<Puntos>();
             tipoDato tipoFinal2 = tipoFinal;
@@ -54,7 +55,7 @@ namespace Server.AST.Expresiones
 
         tipoDato tipoFinal;
 
-        public object getValue(Entorno entorno, ErrorImpresion listas)
+        public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             //int contador = 0;
             foreach (Puntos exp in ExpSeparadasPuntos)
@@ -80,7 +81,7 @@ namespace Server.AST.Expresiones
             if (idvariable.Equals(""))
             {
                 Puntos puntos = ListaExpresionesPuntos.ElementAt(contador);
-                ob = puntos.expresion1.getValue(entorno, listas);
+                ob = puntos.expresion1.getValue(entorno, listas, management);
             }
             else
             {
@@ -110,7 +111,7 @@ namespace Server.AST.Expresiones
                                     if (otroitem != null)
                                     {
                                         contador++;
-                                        object tipoDevuelto = tipoType(entorno, listas, otroitem, contador);
+                                        object tipoDevuelto = tipoType(entorno, listas, otroitem, contador, management);
                                         auxParaFunciones = tipoDevuelto;
                                         return tipoDevuelto;
                                     }
@@ -143,10 +144,10 @@ namespace Server.AST.Expresiones
                                                 auxParaFunciones = ll.listaValores;
                                                 tvtvtv = ll.tipoValor;
                                             }
-                                            FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas);
+                                            FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas, management);
                                             if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                                             {
-                                                devuleveFuncionCollection(funcion, entorno, listas, tvtvtv);
+                                                devuleveFuncionCollection(funcion, entorno, listas, tvtvtv, management);
                                             }
                                             else
                                             {
@@ -160,14 +161,14 @@ namespace Server.AST.Expresiones
                                         {
                                             if (tipoFinal != tipoDato.list && tipoFinal != tipoDato.set && tipoFinal != tipoDato.id)
                                             {
-                                                FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas);
+                                                FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas, management);
                                                 if (tipoFinal != tipoDato.cadena)
                                                 {
                                                     listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                                                     "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
                                                     return tipoDato.errorSemantico;
                                                 }
-                                                auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                                                auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
                                             }
                                             else
                                             {
@@ -182,7 +183,7 @@ namespace Server.AST.Expresiones
                                             {
                                                 CreateType type2 = (CreateType)auxParaFunciones;
                                                 //contador++;
-                                                auxParaFunciones = tipoType(entorno, listas, type2, contador);
+                                                auxParaFunciones = tipoType(entorno, listas, type2, contador, management);
                                                 return auxParaFunciones;
                                             }
                                             else
@@ -212,14 +213,14 @@ namespace Server.AST.Expresiones
                                         Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
                                         if (puntos2.expresion1 is FuncionesNativasCadenas)
                                         {
-                                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas, management);
                                             if (tipoFinal != tipoDato.cadena)
                                             {
                                                 listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                                                 "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
                                                 return tipoDato.errorSemantico;
                                             }
-                                            auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                                            auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
                                         }
                                         else
                                         {
@@ -238,7 +239,7 @@ namespace Server.AST.Expresiones
                     }
                     else if (punto.expresion1 is FuncionesNativasCadenas)
                     {
-                        FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas);
+                        FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas, management);
                         if (tipoFinal != tipoDato.cadena)
                         {
                             listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
@@ -246,7 +247,7 @@ namespace Server.AST.Expresiones
                             return tipoDato.errorSemantico;
                         }
 
-                        return devuelveFunconEjecutada(funcion, entorno, listas);
+                        return devuelveFunconEjecutada(funcion, entorno, listas, management);
                     }
                 }
                 else if (s.tipo == tipoDato.list || s.tipo == tipoDato.set)
@@ -271,10 +272,10 @@ namespace Server.AST.Expresiones
                         Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
                         if (puntos2.expresion1 is FuncionesCollections)
                         {
-                            FuncionesCollections funcion = (FuncionesCollections)puntos2.expresion1.getValue(entorno, listas);
+                            FuncionesCollections funcion = (FuncionesCollections)puntos2.expresion1.getValue(entorno, listas, management);
                             if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                             {
-                                devuleveFuncionCollection(funcion, entorno, listas, tvlista);
+                                devuleveFuncionCollection(funcion, entorno, listas, tvlista, management);
                             }
                             else
                             {
@@ -288,14 +289,14 @@ namespace Server.AST.Expresiones
                         {
                             if (tipoFinal != tipoDato.list && tipoFinal != tipoDato.set && tipoFinal != tipoDato.id)
                             {
-                                FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                                FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas, management);
                                 if (tipoFinal != tipoDato.cadena)
                                 {
                                     listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                                     "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
                                     return tipoDato.errorSemantico;
                                 }
-                                auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                                auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
                             }
                             else
                             {
@@ -309,7 +310,7 @@ namespace Server.AST.Expresiones
                             if (auxParaFunciones is CreateType) {
                                 CreateType type = (CreateType)auxParaFunciones;
                                 //contador++;
-                                auxParaFunciones = tipoType(entorno, listas, type, contador);
+                                auxParaFunciones = tipoType(entorno, listas, type, contador, management);
                                 return auxParaFunciones;
                             }
                             else
@@ -339,14 +340,14 @@ namespace Server.AST.Expresiones
                         Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
                         if (puntos2.expresion1 is FuncionesNativasCadenas)
                         {
-                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas, management);
                             if (tipoFinal != tipoDato.cadena)
                             {
                                 listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                                 "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
                                 return tipoDato.errorSemantico;
                             }
-                            auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                            auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
                         }
                         else
                         {
@@ -372,7 +373,7 @@ namespace Server.AST.Expresiones
 
 
         public object devuleveFuncionCollection(FuncionesCollections funcion, Entorno entorno, 
-            ErrorImpresion listas, tipoDato tipoValor)
+            ErrorImpresion listas, tipoDato tipoValor, Administrador management)
         {
             try
             {
@@ -384,8 +385,8 @@ namespace Server.AST.Expresiones
                         case "insert":
                             if (funcion.exp2 == null)
                             {
-                                Object itemAsignar = funcion.exp1.getValue(entorno, listas);
-                                tipoDato tipoAsignar = funcion.exp1.getType(entorno, listas);
+                                Object itemAsignar = funcion.exp1.getValue(entorno, listas, management);
+                                tipoDato tipoAsignar = funcion.exp1.getType(entorno, listas, management);
                                 if (tipoValor == tipoAsignar)
                                 {
                                     auxlista.Add(itemAsignar);
@@ -417,8 +418,8 @@ namespace Server.AST.Expresiones
                             {
                                 contaPos1++;
                             }
-                            object valorPos = funcion.exp1.getValue(entorno, listas);
-                            tipoDato tipovalorPos = funcion.exp1.getType(entorno, listas);
+                            object valorPos = funcion.exp1.getValue(entorno, listas, management);
+                            tipoDato tipovalorPos = funcion.exp1.getType(entorno, listas, management);
 
                             if (tipovalorPos != tipoDato.entero)
                             {
@@ -454,8 +455,8 @@ namespace Server.AST.Expresiones
                                 contaPos++;
                             }
 
-                            Object pos = funcion.exp1.getValue(entorno, listas);
-                            tipoDato tipoP = funcion.exp1.getType(entorno, listas);
+                            Object pos = funcion.exp1.getValue(entorno, listas, management);
+                            tipoDato tipoP = funcion.exp1.getType(entorno, listas, management);
                             if (tipoP == tipoDato.entero)
                             {
                                 int p = Int32.Parse(Convert.ToString(pos));
@@ -467,8 +468,8 @@ namespace Server.AST.Expresiones
                                     return tipoDato.errorSemantico;
                                 }
 
-                                Object itemAsignar = funcion.exp2.getValue(entorno, listas);
-                                tipoDato tipoAsignar = funcion.exp2.getType(entorno, listas);
+                                Object itemAsignar = funcion.exp2.getValue(entorno, listas, management);
+                                tipoDato tipoAsignar = funcion.exp2.getType(entorno, listas, management);
                                 if (tipoValor == tipoAsignar)
                                 {
                                     auxlista.RemoveAt(p);
@@ -495,8 +496,8 @@ namespace Server.AST.Expresiones
                                 auxParaFunciones = tipoDato.errorSemantico;
                                 return tipoDato.errorSemantico;
                             }
-                            object posicion = funcion.exp1.getValue(entorno, listas);
-                            tipoDato tipoPos = funcion.exp1.getType(entorno, listas);
+                            object posicion = funcion.exp1.getValue(entorno, listas, management);
+                            tipoDato tipoPos = funcion.exp1.getType(entorno, listas, management);
                             if (tipoPos == tipoDato.entero)
                             {
                                 auxlista.RemoveAt(Int32.Parse(Convert.ToString(posicion)));
@@ -526,8 +527,8 @@ namespace Server.AST.Expresiones
                             return auxParaFunciones;
 
                         case "contains":
-                            object posicion2 = funcion.exp1.getValue(entorno, listas);
-                            tipoDato tipoPos2 = funcion.exp1.getType(entorno, listas);
+                            object posicion2 = funcion.exp1.getValue(entorno, listas, management);
+                            tipoDato tipoPos2 = funcion.exp1.getType(entorno, listas, management);
                             if (tipoPos2 == tipoValor) {
                                 tipoFinal = tipoDato.booleano;
                                 auxParaFunciones = auxlista.Contains(posicion2);
@@ -554,7 +555,7 @@ namespace Server.AST.Expresiones
         }
 
 
-        public object devuelveFunconEjecutada(FuncionesNativasCadenas funcion, Entorno entorno, ErrorImpresion listas)
+        public object devuelveFunconEjecutada(FuncionesNativasCadenas funcion, Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             switch (funcion.nativa)
             {
@@ -568,38 +569,38 @@ namespace Server.AST.Expresiones
                     return Convert.ToString(auxParaFunciones).ToLower();
 
                 case "startswith":
-                    tipoDato es = funcion.exp1.getType(entorno, listas);
+                    tipoDato es = funcion.exp1.getType(entorno, listas, management);
                     if (es != tipoDato.cadena)
                     {
                         listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                     "El parametro de inicio para la funcion StartsWith no es de tipo cadena"));
                         return tipoDato.errorSemantico;
                     }
-                    Object cadena = funcion.exp1.getValue(entorno, listas);
+                    Object cadena = funcion.exp1.getValue(entorno, listas, management);
                     return Convert.ToString(auxParaFunciones).StartsWith(Convert.ToString(cadena));
 
                 case "endswith":
-                    tipoDato ess = funcion.exp1.getType(entorno, listas);
+                    tipoDato ess = funcion.exp1.getType(entorno, listas, management);
                     if (ess != tipoDato.cadena)
                     {
                         listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                     "El parametro de inicio para la funcion endsWith no es de tipo cadena"));
                         return tipoDato.errorSemantico;
                     }
-                    Object cadena2 = funcion.exp1.getValue(entorno, listas);
+                    Object cadena2 = funcion.exp1.getValue(entorno, listas, management);
                     return Convert.ToString(auxParaFunciones).StartsWith(Convert.ToString(cadena2));
 
                 case "substring":
-                    tipoDato esss = funcion.exp1.getType(entorno, listas);
-                    tipoDato essss = funcion.exp1.getType(entorno, listas);
+                    tipoDato esss = funcion.exp1.getType(entorno, listas, management);
+                    tipoDato essss = funcion.exp1.getType(entorno, listas, management);
                     if (esss != tipoDato.entero && essss != tipoDato.entero)
                     {
                         listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                     "El parametro de inicio para la funcion endsWith no es de tipo cadena"));
                         return tipoDato.errorSemantico;
                     }
-                    Object inicio = funcion.exp1.getValue(entorno, listas);
-                    Object final = funcion.exp2.getValue(entorno, listas);
+                    Object inicio = funcion.exp1.getValue(entorno, listas, management);
+                    Object final = funcion.exp2.getValue(entorno, listas, management);
                     return Convert.ToString(auxParaFunciones).Substring(Int32.Parse(Convert.ToString(inicio)),
                         Int32.Parse(Convert.ToString(final)));
 
@@ -628,7 +629,7 @@ namespace Server.AST.Expresiones
         }
        
 
-        public object tipoType(Entorno entorno, ErrorImpresion listas, CreateType claseType, int contador)
+        public object tipoType(Entorno entorno, ErrorImpresion listas, CreateType claseType, int contador, Administrador management)
         {
 
             Puntos punto = ListaExpresionesPuntos.ElementAt(contador);
@@ -648,7 +649,7 @@ namespace Server.AST.Expresiones
                                 if (otroitem != null)
                                 {
                                     contador++;
-                                    object tipoDevuelto = tipoType(entorno, listas, otroitem, contador);
+                                    object tipoDevuelto = tipoType(entorno, listas, otroitem, contador, management);
                                     auxParaFunciones = tipoDevuelto;
                                     return tipoDevuelto;
                                 }
@@ -685,10 +686,10 @@ namespace Server.AST.Expresiones
                                 punto = ListaExpresionesPuntos.ElementAt(contador);
                                 if (punto.expresion1 is FuncionesCollections)
                                 {
-                                    FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas);
+                                    FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas, management);
                                     if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
                                     {
-                                        devuleveFuncionCollection(funcion, entorno, listas, tvtvtv);
+                                        devuleveFuncionCollection(funcion, entorno, listas, tvtvtv, management);
                                     }
                                     else
                                     {
@@ -702,14 +703,14 @@ namespace Server.AST.Expresiones
                                 {
                                     if (tipoFinal != tipoDato.list && tipoFinal != tipoDato.set && tipoFinal != tipoDato.id)
                                     {
-                                        FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas);
+                                        FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas, management);
                                         if (tipoFinal != tipoDato.cadena)
                                         {
                                             listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                                             "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
                                             return tipoDato.errorSemantico;
                                         }
-                                        auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                                        auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
                                     }
                                     else
                                     {
@@ -724,7 +725,7 @@ namespace Server.AST.Expresiones
                                     {
                                         CreateType type = (CreateType)auxParaFunciones;
                                         //contador++;
-                                        auxParaFunciones = tipoType(entorno, listas, type, contador);
+                                        auxParaFunciones = tipoType(entorno, listas, type, contador, management);
                                         return auxParaFunciones;
                                     }
                                     else
@@ -754,14 +755,14 @@ namespace Server.AST.Expresiones
                                 Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
                                 if (puntos2.expresion1 is FuncionesNativasCadenas)
                                 {
-                                    FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                                    FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas, management);
                                     if (tipoFinal != tipoDato.cadena)
                                     {
                                         listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                                         "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
                                         return tipoDato.errorSemantico;
                                     }
-                                    auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas);
+                                    auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
                                 }
                                 else
                                 {
@@ -786,14 +787,14 @@ namespace Server.AST.Expresiones
                     Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
                     if (puntos2.expresion1 is FuncionesNativasCadenas)
                     {
-                        FuncionesNativasCadenas funcion2 = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas);
+                        FuncionesNativasCadenas funcion2 = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas, management);
                         if (tipoFinal != tipoDato.cadena)
                         {
                             listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                             "La variable a la que se quiere aplicar : " + funcion2.nativa + "no es de tipo String"));
                             return tipoDato.errorSemantico;
                         }
-                        auxParaFunciones = devuelveFunconEjecutada(funcion2, entorno, listas);
+                        auxParaFunciones = devuelveFunconEjecutada(funcion2, entorno, listas, management);
                     }
                     else
                     {
