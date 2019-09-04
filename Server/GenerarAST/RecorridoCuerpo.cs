@@ -104,7 +104,7 @@ namespace Server.GenerarAST
                     return creartabla(nodo.ChildNodes.ElementAt(0));
 
                 case "ALTERTABLE":
-                    break;
+                    return altertabla(nodo.ChildNodes.ElementAt(0));
 
                 case "DROPTABLE":
                     break;
@@ -196,6 +196,29 @@ namespace Server.GenerarAST
 
                 case "TRYCATCHH":
                     break;
+            }
+            return null;
+        }
+
+
+        public NodoAST altertabla(ParseTreeNode nodo)
+        {
+            String opcion = nodo.ChildNodes.ElementAt(3).Token.Text;
+            switch (opcion)
+            {
+                case "add":
+                    return new AlterAddTable(
+                        nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                        itemTypes(nodo.ChildNodes.ElementAt(4)),
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                case "drop":
+                    return new AlterDropTable(
+                        nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                        puntosIdsAccesos(nodo.ChildNodes.ElementAt(4)),
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                        nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
             return null;
         }

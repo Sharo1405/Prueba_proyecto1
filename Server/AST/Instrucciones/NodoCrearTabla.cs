@@ -41,6 +41,8 @@ namespace Server.AST.Instrucciones
                     //hacer cada nodo para cada columna
                     Tabla nuevaTabla = new Tabla();
                     LinkedList<String> llavePrimaria = new LinkedList<string>();
+                    int contador = 0;
+                    Boolean esCounter = false;
                     foreach (NodoColumnas nodoCol in Columnas)
                     {
                         Columna colParaGuardar = new Columna();
@@ -50,18 +52,33 @@ namespace Server.AST.Instrucciones
                             {
                                 if (nodoCol.tipo.tipoValor != null)
                                 {
-                                    colParaGuardar = new Columna(nodoCol.idColumna, nodoCol.tipo.tipo, nodoCol.tipo.tipoValor.tipo, null, nodoCol.primaryKey);
+                                    colParaGuardar = new Columna(nodoCol.idColumna, nodoCol.tipo.tipo, nodoCol.tipo.tipoValor.tipo, nodoCol.primaryKey);                                    
                                 }
                                 else
                                 {
-                                    colParaGuardar = new Columna(nodoCol.idColumna, nodoCol.tipo.tipo, tipoDato.errorSemantico, null, nodoCol.primaryKey);
+                                    colParaGuardar = new Columna(nodoCol.idColumna, nodoCol.tipo.tipo, tipoDato.errorSemantico, nodoCol.primaryKey);
                                 }
 
                                 if (nodoCol.primaryKey == true)
                                 {
                                     llavePrimaria.AddLast(nodoCol.idColumna);
+
+
+                                    if (nodoCol.tipo.tipo == tipoDato.counter && esCounter == false)
+                                    {
+                                        esCounter = true;
+                                    }
+
+                                    if (esCounter == true && nodoCol.tipo.tipo != tipoDato.counter)
+                                    {
+                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                            "Una de las 2 llaves primarias es de tipoCounter y otra deberia serlo, pero es: " +
+                                            Convert.ToString(nodoCol.tipo.tipo) + "NO SE DECLARO LA TABLA: " + this.idTabla));
+                                        return tipoDato.errorSemantico;
+                                    }                                    
                                 }
 
+                                contador++;
                                 nuevaTabla.columnasTabla.Add(nodoCol.idColumna, colParaGuardar);
                             }
                             catch (ArgumentException e)
@@ -70,7 +87,6 @@ namespace Server.AST.Instrucciones
                                 {
                                     listas.impresiones.AddLast("WARNNING!! ESA COLUMNA YA EXISTE: " + nodoCol.idColumna);
                                 }
-                                return tipoDato.errorSemantico;
                             }
                         }                        
                     }
@@ -79,7 +95,38 @@ namespace Server.AST.Instrucciones
                     {
                         if (nodoCol.listaIdColumnasPK.Count > 0)
                         {
-                            if (llavePrimaria.Count == 0) {
+                            if (llavePrimaria.Count == 0)
+                            {
+
+                                esCounter = false;
+                                contador = 0;
+
+                                foreach (String idCol in nodoCol.listaIdColumnasPK)
+                                {
+                                    Columna encontrado = new Columna();
+                                    if (nuevaTabla.columnasTabla.TryGetValue(idCol, out encontrado))
+                                    {
+                                        encontrado.primaryKey = true;
+                                        if (encontrado.tipo == tipoDato.counter && esCounter == false)
+                                        {
+                                            esCounter = true;
+                                        }
+
+                                        if (esCounter == true && encontrado.tipo != tipoDato.counter)
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                "Una de las llaves primarias es de tipoCounter y otra deberia serlo, pero es: " +
+                                                Convert.ToString(nodoCol.tipo.tipo) + "NO SE DECLARO LA TABLA: " + this.idTabla));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                            "La columna con el id: " + idCol + " No fue encontrada en la tabla " + this.idTabla));
+                                        return tipoDato.errorSemantico;
+                                    }
+                                }
                                 llavePrimaria = nodoCol.listaIdColumnasPK;
                             }
                             else
@@ -91,6 +138,29 @@ namespace Server.AST.Instrucciones
                         }
                     }
 
+                    foreach (NodoColumnas nodoCol in Columnas)
+                    {
+                        Columna encontrado = new Columna();
+                        if (nuevaTabla.columnasTabla.TryGetValue(nodoCol.idColumna.ToLower(), out encontrado))
+                        {
+                            if (encontrado.tipo == tipoDato.counter && encontrado.primaryKey == false)
+                            {
+                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                    "No puede existir un campo tipo counter que no sea llave primaria: tabla: " + nuevaTabla.idTabla
+                                    + " en la base de datos: " + basee.idbase));
+                                return tipoDato.errorSemantico;
+                            }                            
+                        }
+                    }
+
+
+                    if (llavePrimaria.Count == 0)
+                    {
+                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                    "Esta tabla " + idTabla + " NO tiene Llave Primaria"));
+                        return tipoDato.errorSemantico;
+                    }
+
                     nuevaTabla.idTabla = this.idTabla;
                     nuevaTabla.llavePrimaria = llavePrimaria;
                     basee.Tabla.Add(nuevaTabla.idTabla, nuevaTabla);
@@ -98,10 +168,10 @@ namespace Server.AST.Instrucciones
                 }
                 else
                 {
-                    if (!ifnotexists) {
-                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                    "La base de datos EN USO no fue encontrada"));
-                    }
+
+                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                "La base de datos EN USO no fue encontrada"));
+                    
                     return tipoDato.errorSemantico;
                 }
             }

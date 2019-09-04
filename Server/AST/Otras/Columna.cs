@@ -20,7 +20,16 @@ namespace Server.AST.Otras
 
         }
 
-        public Columna(String idCol, tipoDato tipo, tipoDato tipoValor, LinkedList<object> valorColumna, 
+        public Columna(String idCol, tipoDato tipo, tipoDato tipoValor, 
+            Boolean pk)
+        {
+            this.idColumna = idCol;
+            this.tipo = tipo;
+            this.valorColumna = new LinkedList<object>();
+            this.primaryKey = pk;
+        }
+
+        public Columna(String idCol, tipoDato tipo, tipoDato tipoValor, LinkedList<object> valorColumna,
             Boolean pk)
         {
             this.idColumna = idCol;

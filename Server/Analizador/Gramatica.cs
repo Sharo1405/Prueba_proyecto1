@@ -737,7 +737,7 @@ namespace Server.Analizador
             ROLLBACKK.Rule = rollback;
 
             ALTERTABLE.Rule = alter + table + id + add + ITEMCREATETYPE
-                            | alter + table + id + drop + ITEMCREATETYPE;
+                            | alter + table + id + drop + LISTAID;
 
             DROPTABLE.Rule = drop + table + iff + exists + id
                            | drop + table + id;
@@ -772,8 +772,8 @@ namespace Server.Analizador
                                 | OPCIONESITEMCREATETYPES;
 
 
-            OPCIONESITEMCREATETYPES.Rule = id + TIPOS
-                                         | TIPOS + id;
+            OPCIONESITEMCREATETYPES.Rule = id + TIPOS;
+                                         //| TIPOS + id;
 
 
             DECLARATODO.Rule = TIPOS + LISTAVARIABLES;
