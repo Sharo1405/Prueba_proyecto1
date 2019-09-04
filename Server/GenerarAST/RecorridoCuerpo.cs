@@ -107,7 +107,7 @@ namespace Server.GenerarAST
                     return altertabla(nodo.ChildNodes.ElementAt(0));
 
                 case "DROPTABLE":
-                    break;
+                    return droptabla(nodo.ChildNodes.ElementAt(0));
 
                 case "TRUNCATEE":
                     break;
@@ -200,6 +200,22 @@ namespace Server.GenerarAST
             return null;
         }
 
+
+        public NodoAST droptabla(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 5)
+            {
+                return new DropTable(true, nodo.ChildNodes.ElementAt(4).Token.Text.ToLower(),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else
+            {
+                return new DropTable(nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+        }
 
         public NodoAST altertabla(ParseTreeNode nodo)
         {

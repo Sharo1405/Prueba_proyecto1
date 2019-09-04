@@ -97,6 +97,7 @@
     <Compile Include="AST\Instrucciones\DeclaraListValores.cs" />
     <Compile Include="AST\Instrucciones\Defaultt.cs" />
     <Compile Include="AST\Instrucciones\DropDataBase.cs" />
+    <Compile Include="AST\Instrucciones\DropTable.cs" />
     <Compile Include="AST\Instrucciones\NodoCrearTabla.cs" />
     <Compile Include="AST\Instrucciones\Retorno.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlock.cs" />
