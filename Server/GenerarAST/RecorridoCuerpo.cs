@@ -110,7 +110,7 @@ namespace Server.GenerarAST
                     return droptabla(nodo.ChildNodes.ElementAt(0));
 
                 case "TRUNCATEE":
-                    break;
+                    return truncatetable(nodo.ChildNodes.ElementAt(0));
 
                 case "COMMITT":
                     break;
@@ -198,6 +198,15 @@ namespace Server.GenerarAST
                     break;
             }
             return null;
+        }
+
+
+        public NodoAST truncatetable(ParseTreeNode nodo)
+        {
+            return new truncateTabla(
+                nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
         }
 
 
