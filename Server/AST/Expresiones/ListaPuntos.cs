@@ -57,6 +57,10 @@ namespace Server.AST.Expresiones
 
         public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
+            ListaExpresionesPuntos = new LinkedList<Puntos>();
+            contador = 0;
+            auxParaFunciones = new object();
+
             //int contador = 0;
             foreach (Puntos exp in ExpSeparadasPuntos)
             {

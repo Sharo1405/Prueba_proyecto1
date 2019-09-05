@@ -49,7 +49,10 @@ namespace Server.AST.Otras
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            
+            ListaExpresionesPuntos = new LinkedList<Puntos>();
+            contador = 0;
+            auxParaFunciones = new object();
+
             foreach (Puntos exp in idExp.ExpSeparadasPuntos)
             {
                 Puntos exp2 = exp;

@@ -35,6 +35,8 @@ namespace Server.AST.Instrucciones
         {
             try
             {
+                auxFuncion = new object();
+                contador = 0;
                 Simbolo s = entorno.get(variable, entorno, Simbolo.Rol.VARIABLE);
                 if (s != null)
                 {
