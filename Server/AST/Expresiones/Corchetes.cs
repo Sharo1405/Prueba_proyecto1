@@ -95,6 +95,9 @@ namespace Server.AST.Expresiones
         {
             try
             {
+                contador = 0;
+                listaRetorno.Clear();
+                listaRetorno = new List<object>();
                 if (expresion is ListaExpresiones)
                 {
                     LinkedList<Comas> objeto = (LinkedList<Comas>)expresion.getValue(entorno, listas, management); //Lista comas

@@ -43,6 +43,7 @@ namespace Server.AST.Instrucciones
                     LinkedList<String> llavePrimaria = new LinkedList<string>();
                     int contador = 0;
                     Boolean esCounter = false;
+                    Boolean entroAlCatch = false;
                     foreach (NodoColumnas nodoCol in Columnas)
                     {
                         Columna colParaGuardar = new Columna();
@@ -52,7 +53,11 @@ namespace Server.AST.Instrucciones
                             {
                                 if (nodoCol.tipo.tipoValor != null)
                                 {
-                                    colParaGuardar = new Columna(nodoCol.idColumna, nodoCol.tipo.tipo, nodoCol.tipo.tipoValor.tipo, nodoCol.primaryKey);                                    
+                                    colParaGuardar = new Columna(nodoCol.idColumna, nodoCol.tipo.tipo, nodoCol.tipo.tipoValor.tipo, nodoCol.primaryKey);
+                                }
+                                else if (nodoCol.tipo.tipo == tipoDato.id)
+                                {
+                                    colParaGuardar = new Columna(nodoCol.idColumna, nodoCol.tipo.tipo, nodoCol.tipo.id, tipoDato.errorSemantico, nodoCol.primaryKey);
                                 }
                                 else
                                 {
@@ -85,10 +90,18 @@ namespace Server.AST.Instrucciones
                             {
                                 if (ifnotexists is false)
                                 {
+                                    entroAlCatch = true;
                                     listas.impresiones.AddLast("WARNNING!! ESA COLUMNA YA EXISTE: " + nodoCol.idColumna);
                                 }
                             }
                         }                        
+                    }
+
+                    if (entroAlCatch == true)
+                    {
+                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                      "No se guardo la tabla por tener columnas repeditdas"));
+                        return tipoDato.errorSemantico;
                     }
 
                     foreach (NodoColumnas nodoCol in Columnas)

@@ -36,6 +36,9 @@ namespace Server.AST.Expresiones
 
         public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
+            listaComas.Clear();
+            listaComas = new LinkedList<Comas>();           
+            contador = 0;
             foreach (Comas exp in ExpSeparadasComas)
             {
                 if (exp.expresion1 is ListaExpresiones)

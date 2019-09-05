@@ -89,7 +89,8 @@ namespace Server.AST.Expresiones
         public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
-            {
+            { 
+                contador = 0;
                 Simbolo s = entorno.get(tipoTypeUser.ToLower(), entorno, Simbolo.Rol.VARIABLE);
                 if (s != null)
                 {

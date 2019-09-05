@@ -70,11 +70,11 @@ namespace Server.AST.Instrucciones
                             //validar que las llaves primarias no esten repetidas y no insertar por gusto                            
 
                             contador = 0;
-                            foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
-                            {
-                                Columna iterador = (Columna)kvp.Value;
-                                foreach (String idCol in listaIds)
+                            foreach (String idCol in listaIds)
+                            {                                
+                                foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                                 {
+                                    Columna iterador = (Columna)kvp.Value;
                                     List<object> lista = new List<object>();
                                     Lista listaGuardar = new Lista();
                                     
@@ -95,12 +95,153 @@ namespace Server.AST.Instrucciones
                                         tipoDato tipoComa = ((Comas)listaExpresiones.ElementAt(contador)).getType(entorno, listas, management);
 
                                         if (((Comas)listaExpresiones.ElementAt(contador)).expresion1 is Corchetes)
-                                        {                                            
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.list, tipoComa, linea, col);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.list, tipoComa, linea, col);
+                                            }
                                             tipoComa = tipoDato.list;
+                                            valorComa = listaGuardar;
                                         }
                                         else if (((Comas)listaExpresiones.ElementAt(contador)).expresion1 is Llaves)
-                                        {                                            
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.set, tipoComa, linea, col);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.set, tipoComa, linea, col);
+                                            }
                                             tipoComa = tipoDato.set;
+                                            valorComa = listaGuardar;
+                                        }
+
+                                        if (valorComa is Simbolo)
+                                        {
+                                            valorComa = ((Simbolo)valorComa).valor;
+                                        }
+
+
+                                        if (tipoComa == tipoDato.id)
+                                        {
+                                            if (iterador.tipo == tipoComa)
+                                            {
+                                                if (iterador.idTipo != ((CreateType)valorComa).idType)
+                                                {
+                                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                        "Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)valorComa).idType) + 
+                                                        " en la tabla: " + idTabla));
+                                                    return tipoDato.errorSemantico;
+                                                }
+                                            }
+                                        }
+                                        else if (tipoComa == tipoDato.list || tipoComa == tipoDato.set)
+                                        {
+                                            if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
+                                            {
+                                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                        "Los tipos de los valores del set/list" +
+                                                        "no son iguales: " + Convert.ToString(((Lista)valorComa).tipoValor) +
+                                                        " en la tabla: " + idTabla));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                        }
+                                        else if (tipoComa != kvp.Value.tipo)
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                        "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
+                                                        " en la tabla: " + idTabla));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                        else
+                                        {
+                                            if (iterador.primaryKey == true)
+                                            {
+                                                Boolean yaexiste = existe_llave_primaria(valorComa, iterador.valorColumna, tipoComa);
+                                                if (yaexiste)
+                                                {
+                                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                        "La llave primaria a ingresar ya existe: " + Convert.ToString(valorComa) +
+                                                        " en la tabla: " + idTabla));
+                                                    return tipoDato.errorSemantico;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    }                                    
+                                }
+
+                                if (existeColumna == false)// && iterador.tipo != tipoDato.counter)
+                                {
+                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                        "La Columna con el id: " + idCol + "No existe, en la tabla: " + idTabla));
+                                    return tipoDato.errorSemantico;
+                                }/*else if (iterador.tipo == tipoDato.counter)
+                                {
+                                    contador--;
+                                }*/
+                                existeColumna = false;
+                                contador++;
+                            }
+
+
+
+
+
+                            contador = 0;
+                            foreach (String idCol in listaIds)
+                            {
+                                foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
+                                {
+                                    Columna iterador = (Columna)kvp.Value;
+                                   if (kvp.Value.idColumna.ToLower().Equals(idCol.ToLower()))
+                                    {
+                                        existeColumna = true;
+                                        List<object> lista = new List<object>();
+                                        Lista listaGuardar = new Lista();
+                                        object valorComa = ((Comas)listaExpresiones.ElementAt(contador)).getValue(entorno, listas, management);
+                                        tipoDato tipoComa = ((Comas)listaExpresiones.ElementAt(contador)).getType(entorno, listas, management);
+
+
+
+                                        if (((Comas)listaExpresiones.ElementAt(contador)).expresion1 is Corchetes)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.list, tipoComa, linea, col);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.list, tipoComa, linea, col);
+                                            }
+                                            tipoComa = tipoDato.list;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (((Comas)listaExpresiones.ElementAt(contador)).expresion1 is Llaves)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.set, tipoComa, linea, col);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.set, tipoComa, linea, col);
+                                            }
+                                            tipoComa = tipoDato.set;
+                                            valorComa = listaGuardar;
                                         }
 
                                         if (valorComa is Simbolo)
@@ -127,141 +268,97 @@ namespace Server.AST.Instrucciones
                                                         " en la tabla: " + idTabla));
                                                     return tipoDato.errorSemantico;
                                                 }
+                                                else
+                                                {
+                                                    iterador.valorColumna.AddLast(valorComa);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (iterador.tipo == tipoComa)
+                                                {
+
+                                                    if (tipoComa == tipoDato.id)
+                                                    {
+                                                        if (iterador.tipo == tipoComa)
+                                                        {
+                                                            if (iterador.idTipo == ((CreateType)valorComa).idType)
+                                                            {
+                                                                iterador.valorColumna.AddLast(valorComa);
+                                                            }
+                                                            else
+                                                            {
+                                                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                                    "Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)valorComa).idType) +
+                                                                    " en la tabla: " + idTabla));
+                                                                return tipoDato.errorSemantico;
+                                                            }
+                                                        }
+                                                    }
+                                                    else if (tipoComa == tipoDato.list || tipoComa == tipoDato.set)
+                                                    {
+                                                        if (iterador.tipoValor == ((Lista)valorComa).tipoValor)
+                                                        {
+                                                            iterador.valorColumna.AddLast(valorComa);
+                                                        }
+                                                        else
+                                                        {
+                                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                                    "Los tipos de los valores del set/list" +
+                                                                    "no son iguales: " + Convert.ToString(((Lista)valorComa).tipoValor) +
+                                                                    " en la tabla: " + idTabla));
+                                                            return tipoDato.errorSemantico;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        iterador.valorColumna.AddLast(valorComa);
+                                                    }
+                                                }
+                                                break;
                                             }
                                         }
-                                        break;
-                                    }                                    
-                                }
-
-                                if (existeColumna == false && iterador.tipo != tipoDato.counter)
-                                {
-                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                        "La Columna con el id: " + iterador.idColumna + "No existe, en la tabla: " + idTabla));
-                                    return tipoDato.errorSemantico;
-                                }else if (iterador.tipo == tipoDato.counter)
-                                {
-                                    contador--;
-                                }
+                                    }
+                                }                                    
+                                
                                 existeColumna = false;
                                 contador++;
                             }
 
-
-
-
-
-                            contador = 0;
+                            existeColumna = false;
                             foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                             {
-                                Columna iterador = (Columna)kvp.Value;
-                                if (iterador.tipo == tipoDato.counter)
-                                {
-                                    LinkedList<object> sts = (LinkedList<object>)iterador.valorColumna;
-                                    int x = sts.Count() - 1;
-                                    
-                                    if (iterador.valorColumna.Count == 0)
-                                    {
-                                        iterador.valorColumna.AddLast(0);
-                                    }
-                                    else
-                                    {
-                                        object incrementable = sts.ElementAt(x);
-                                        iterador.valorColumna.AddLast(Convert.ToInt32(Convert.ToInt32(incrementable) + 1));
-                                    }
-                                }
-                                else
-                                {
-                                    foreach (String idCol in listaIds)
-                                    {
-                                        
-                                        if (kvp.Value.idColumna.ToLower().Equals(idCol.ToLower()))
-                                        {
-                                            existeColumna = true;
-                                            List<object> lista = new List<object>();
-                                            Lista listaGuardar = new Lista();
-                                            object valorComa = ((Comas)listaExpresiones.ElementAt(contador)).getValue(entorno, listas, management);
-                                            tipoDato tipoComa = ((Comas)listaExpresiones.ElementAt(contador)).getType(entorno, listas, management);
-
-                                            if (((Comas)listaExpresiones.ElementAt(contador)).expresion1 is Corchetes)
-                                            {
-                                                if (valorComa is List<object>)
-                                                {
-                                                    lista = (List<object>)valorComa;
-                                                    listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.list, tipoComa, linea, col);
-                                                }
-                                                else
-                                                {
-                                                    lista.Add(valorComa);
-                                                    listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.list, tipoComa, linea, col);
-                                                }
-                                                tipoComa = tipoDato.list;
-                                                valorComa = listaGuardar;
-                                            }
-                                            else if (((Comas)listaExpresiones.ElementAt(contador)).expresion1 is Llaves)
-                                            {
-                                                if (valorComa is List<object>)
-                                                {
-                                                    lista = (List<object>)valorComa;
-                                                    listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.set, tipoComa, linea, col);
-                                                }
-                                                else
-                                                {
-                                                    lista.Add(valorComa);
-                                                    listaGuardar = new Lista(iterador.idColumna.ToLower(), lista, tipoDato.set, tipoComa, linea, col);
-                                                }
-                                                tipoComa = tipoDato.set;
-                                                valorComa = listaGuardar;
-                                            }
-
-                                            if (valorComa is Simbolo)
-                                            {
-                                                valorComa = ((Simbolo)valorComa).valor;
-                                            }
-
-                                            if (tipoComa != kvp.Value.tipo)
-                                            {
-                                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                            "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
-                                                            " en la tabla: " + idTabla));
-                                                return tipoDato.errorSemantico;
-                                            }
-                                            else
-                                            {
-                                                if (iterador.primaryKey == true)
-                                                {
-                                                    Boolean yaexiste = existe_llave_primaria(valorComa, iterador.valorColumna, tipoComa);
-                                                    if (yaexiste)
-                                                    {
-                                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                            "La llave primaria a ingresar ya existe: " + Convert.ToString(valorComa) +
-                                                            " en la tabla: " + idTabla));
-                                                        return tipoDato.errorSemantico;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (iterador.tipo == tipoComa) {
-                                                        iterador.valorColumna.AddLast(valorComa);
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }                                    
-                                }
-
-                                if (existeColumna == false && iterador.tipo != tipoDato.counter)
-                                {
-                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                        "La Columna con el id: " + iterador.idColumna + "No existe, en la tabla: " + idTabla));
-                                    return tipoDato.errorSemantico;
-                                }
-                                else if (iterador.tipo == tipoDato.counter)
-                                {
-                                    contador--;
-                                }
                                 existeColumna = false;
-                                contador++;
+                                foreach (String idCol in listaIds)
+                                {
+                                    if (kvp.Value.idColumna.ToLower().Equals(idCol.ToLower()))
+                                    {
+                                        existeColumna = true;
+                                        break;
+                                    }
+                                }
+
+                                if (existeColumna == false )// kvp.Value.tipo != tipoDato.counter)
+                                {
+                                    kvp.Value.valorColumna.AddLast(llenadoautomatico(kvp.Value.tipo));
+                                    if (kvp.Value.tipo == tipoDato.counter)
+                                    {
+                                        LinkedList<object> sts = (LinkedList<object>)kvp.Value.valorColumna;
+                                        int x = sts.Count() - 1;
+
+                                        if (kvp.Value.valorColumna.Count == 0)
+                                        {
+                                            kvp.Value.valorColumna.AddLast(0);
+                                            kvp.Value.ultimovalorincrementable = 0;
+                                        }
+                                        else
+                                        {
+                                            object incrementable = sts.ElementAt(x);
+                                            kvp.Value.valorColumna.AddLast(Convert.ToInt32(Convert.ToInt32(incrementable) + 1));
+                                            kvp.Value.ultimovalorincrementable = Convert.ToInt32(Convert.ToInt32(incrementable) + 1);
+                                        }                                        
+                                    }
+                                }
                             }
 
                         }
@@ -297,6 +394,26 @@ namespace Server.AST.Instrucciones
             return tipoDato.ok;
         }
 
+
+        public object llenadoautomatico(tipoDato tipoComa)
+        {
+            if (tipoComa == tipoDato.entero)
+            {
+                return 0;
+            }
+            else if (tipoComa == tipoDato.decimall)
+            {
+                return 0.0;
+            }
+            else if (tipoComa == tipoDato.booleano)
+            {
+                return false;
+            }
+            else //if (tipoComa == tipoDato.)
+            {
+                return null;
+            }
+        }
 
 
         public Boolean existe_llave_primaria(object valor, LinkedList<object> listaValores, tipoDato tipoComa)

@@ -12,8 +12,10 @@ namespace Server.AST.Otras
         public String idColumna { get; set; }
         public tipoDato tipo { get; set; }
         public tipoDato tipoValor { get; set; } //por si hay listas o sets
+        public String idTipo { get; set; }
         public LinkedList<object> valorColumna = new LinkedList<object>();
         public Boolean primaryKey = false;
+        public int ultimovalorincrementable = 0;
 
         public Columna()
         {
@@ -25,15 +27,29 @@ namespace Server.AST.Otras
         {
             this.idColumna = idCol;
             this.tipo = tipo;
+            this.tipoValor = tipoValor;
             this.valorColumna = new LinkedList<object>();
             this.primaryKey = pk;
         }
+
+
+        public Columna(String idCol, tipoDato tipo, String idTypeUser, tipoDato tipoValor, Boolean pk)
+        {
+            this.idColumna = idCol;
+            this.tipo = tipo;
+            this.idTipo = idTypeUser;
+            this.tipoValor = tipoValor;
+            this.valorColumna = new LinkedList<object>();
+            this.primaryKey = pk;
+        }
+
 
         public Columna(String idCol, tipoDato tipo, tipoDato tipoValor, LinkedList<object> valorColumna,
             Boolean pk)
         {
             this.idColumna = idCol;
             this.tipo = tipo;
+            this.tipoValor = tipoValor;
             this.valorColumna = valorColumna;
             this.primaryKey = pk;
         }

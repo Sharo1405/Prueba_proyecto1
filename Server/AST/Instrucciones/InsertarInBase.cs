@@ -125,11 +125,11 @@ namespace Server.AST.Instrucciones
                                     }
                                     else
                                     {
-                                        if (((Comas)listaExpresiones.ElementAt(contador)).expresion1 is Corchetes)
+                                        if (expresion is Corchetes)
                                         {
                                             tipoexp = tipoDato.list;
                                         }
-                                        else if (((Comas)listaExpresiones.ElementAt(contador)).expresion1 is Llaves)
+                                        else if (expresion is Llaves)
                                         {
                                             tipoexp = tipoDato.set;
                                         }

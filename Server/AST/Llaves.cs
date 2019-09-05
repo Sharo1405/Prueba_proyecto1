@@ -93,6 +93,7 @@ namespace Server.AST
         {
             try
             {
+                contador = 0;
                 if (expresion is ListaExpresiones)
                 {
                     LinkedList<Comas> objeto = (LinkedList<Comas>)expresion.getValue(entorno, listas, management); //Lista comas
