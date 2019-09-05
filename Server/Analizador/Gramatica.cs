@@ -845,7 +845,7 @@ namespace Server.Analizador
                 | arroba + id
                 | id
                 | id + acorchete + E + ccorchete //tallas[0]
-                | numero
+                | numero               
                 | tstring
                 | tdatetime
                 | falso

@@ -128,7 +128,7 @@ namespace Server.GenerarAST
                     break;
 
                 case "TODOCONSULTAS":
-                    break;
+                    return todoOperacionesBase(nodo.ChildNodes.ElementAt(0));
 
                 case "BATCHH":
                     break;
@@ -200,6 +200,49 @@ namespace Server.GenerarAST
             return null;
         }
 
+
+        public NodoAST todoOperacionesBase(ParseTreeNode nodo)
+        {
+            string s = nodo.ChildNodes.ElementAt(0).Term.ToString().ToLower();
+            switch (s)
+            {
+                case "insertarr":
+                    return insertarInBase(nodo.ChildNodes.ElementAt(0));
+
+                case "updatee":
+                    break;
+
+                case "deletee":
+                    break;
+
+                case "selectt":
+                    break;
+            }
+            return null;
+        }
+
+
+        public NodoAST insertarInBase(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 5)
+            {
+                return new InsertarInBase(
+                    nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else
+            {
+                return new InsertarInBaseEspecial(
+                    nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(7)),
+                    puntosIdsAccesos(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            return null;
+        }
 
         public NodoAST truncatetable(ParseTreeNode nodo)
         {
