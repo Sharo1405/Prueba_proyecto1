@@ -71,13 +71,13 @@ namespace Server.AST.Instrucciones
 
                             contador = 0;
                             foreach (String idCol in listaIds)
-                            {                                
+                            {
                                 foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                                 {
                                     Columna iterador = (Columna)kvp.Value;
                                     List<object> lista = new List<object>();
                                     Lista listaGuardar = new Lista();
-                                    
+
                                     if (kvp.Value.idColumna.ToLower().Equals(idCol.ToLower()))
                                     {
                                         existeColumna = true;
@@ -138,7 +138,7 @@ namespace Server.AST.Instrucciones
                                                 if (iterador.idTipo != ((CreateType)valorComa).idType)
                                                 {
                                                     listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                        "Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)valorComa).idType) + 
+                                                        "Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)valorComa).idType) +
                                                         " en la tabla: " + idTabla));
                                                     return tipoDato.errorSemantico;
                                                 }
@@ -166,6 +166,13 @@ namespace Server.AST.Instrucciones
                                         {
                                             if (iterador.primaryKey == true)
                                             {
+                                                if (iterador.tipo != tipoComa)
+                                                {
+                                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                        "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
+                                                        " en la tabla: " + idTabla));
+                                                    return tipoDato.errorSemantico;
+                                                }
                                                 Boolean yaexiste = existe_llave_primaria(valorComa, iterador.valorColumna, tipoComa);
                                                 if (yaexiste)
                                                 {
@@ -175,22 +182,32 @@ namespace Server.AST.Instrucciones
                                                     return tipoDato.errorSemantico;
                                                 }
                                             }
+                                            else
+                                            {
+                                                if (iterador.tipo != tipoComa)
+                                                {
+                                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                        "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
+                                                        " en la tabla: " + idTabla));
+                                                    return tipoDato.errorSemantico;
+                                                }
+                                            }
+                                            break;
                                         }
-                                        break;
-                                    }                                    
-                                }
+                                    }
 
-                                if (existeColumna == false)// && iterador.tipo != tipoDato.counter)
-                                {
-                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                        "La Columna con el id: " + idCol + "No existe, en la tabla: " + idTabla));
-                                    return tipoDato.errorSemantico;
-                                }/*else if (iterador.tipo == tipoDato.counter)
+                                    if (existeColumna == false)// && iterador.tipo != tipoDato.counter)
+                                    {
+                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                            "La Columna con el id: " + idCol + "No existe, en la tabla: " + idTabla));
+                                        return tipoDato.errorSemantico;
+                                    }/*else if (iterador.tipo == tipoDato.counter)
                                 {
                                     contador--;
                                 }*/
-                                existeColumna = false;
-                                contador++;
+                                    existeColumna = false;
+                                    contador++;
+                                }
                             }
 
 
@@ -198,12 +215,12 @@ namespace Server.AST.Instrucciones
 
 
                             contador = 0;
-                            foreach (String idCol in listaIds)
+                            foreach (String idCol2 in listaIds)
                             {
                                 foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                                 {
                                     Columna iterador = (Columna)kvp.Value;
-                                   if (kvp.Value.idColumna.ToLower().Equals(idCol.ToLower()))
+                                    if (kvp.Value.idColumna.ToLower().Equals(idCol2.ToLower()))
                                     {
                                         existeColumna = true;
                                         List<object> lista = new List<object>();
@@ -270,7 +287,10 @@ namespace Server.AST.Instrucciones
                                                 }
                                                 else
                                                 {
-                                                    iterador.valorColumna.AddLast(valorComa);
+                                                    if (iterador.tipo == tipoComa)
+                                                    {
+                                                        iterador.valorColumna.AddLast(valorComa);
+                                                    }
                                                 }
                                             }
                                             else
@@ -319,8 +339,7 @@ namespace Server.AST.Instrucciones
                                             }
                                         }
                                     }
-                                }                                    
-                                
+                                }
                                 existeColumna = false;
                                 contador++;
                             }
@@ -329,16 +348,16 @@ namespace Server.AST.Instrucciones
                             foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                             {
                                 existeColumna = false;
-                                foreach (String idCol in listaIds)
+                                foreach (String idCol2 in listaIds)
                                 {
-                                    if (kvp.Value.idColumna.ToLower().Equals(idCol.ToLower()))
+                                    if (kvp.Value.idColumna.ToLower().Equals(idCol2.ToLower()))
                                     {
                                         existeColumna = true;
                                         break;
                                     }
                                 }
 
-                                if (existeColumna == false )// kvp.Value.tipo != tipoDato.counter)
+                                if (existeColumna == false)// kvp.Value.tipo != tipoDato.counter)
                                 {
                                     kvp.Value.valorColumna.AddLast(llenadoautomatico(kvp.Value.tipo));
                                     if (kvp.Value.tipo == tipoDato.counter)
@@ -356,11 +375,11 @@ namespace Server.AST.Instrucciones
                                             object incrementable = sts.ElementAt(x);
                                             kvp.Value.valorColumna.AddLast(Convert.ToInt32(Convert.ToInt32(incrementable) + 1));
                                             kvp.Value.ultimovalorincrementable = Convert.ToInt32(Convert.ToInt32(incrementable) + 1);
-                                        }                                        
+                                        }
                                     }
                                 }
-                            }
 
+                            }                            
                         }
                         else
                         {
