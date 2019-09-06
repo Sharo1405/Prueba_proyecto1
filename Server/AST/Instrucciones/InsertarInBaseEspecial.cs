@@ -367,14 +367,16 @@ namespace Server.AST.Instrucciones
 
                                         if (kvp.Value.valorColumna.Count == 0)
                                         {
-                                            kvp.Value.valorColumna.AddLast(0);
-                                            kvp.Value.ultimovalorincrementable = 0;
+                                            kvp.Value.valorColumna.AddLast(kvp.Value.ultimovalorincrementable + 1);
+                                            kvp.Value.ultimovalorincrementable = kvp.Value.ultimovalorincrementable + 1;
                                         }
                                         else
                                         {
-                                            object incrementable = sts.ElementAt(x);
-                                            kvp.Value.valorColumna.AddLast(Convert.ToInt32(Convert.ToInt32(incrementable) + 1));
-                                            kvp.Value.ultimovalorincrementable = Convert.ToInt32(Convert.ToInt32(incrementable) + 1);
+                                            //object incrementable = sts.ElementAt(x);
+                                            //kvp.Value.valorColumna.AddLast(Convert.ToInt32(Convert.ToInt32(incrementable) + 1));
+                                            //kvp.Value.ultimovalorincrementable = Convert.ToInt32(Convert.ToInt32(incrementable) + 1);
+                                            kvp.Value.valorColumna.AddLast(kvp.Value.ultimovalorincrementable + 1);
+                                            kvp.Value.ultimovalorincrementable = kvp.Value.ultimovalorincrementable + 1;
                                         }
                                     }
                                 }
@@ -407,7 +409,7 @@ namespace Server.AST.Instrucciones
             catch (Exception e)
             {
                 listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                "No se puede realizar el TRUNCATE de la tabla" + idTabla));
+                                "No se puede realizar el INSERTAR ESPECIAL de la tabla" + idTabla));
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;

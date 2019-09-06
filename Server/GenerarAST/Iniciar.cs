@@ -46,28 +46,30 @@ namespace Server.GenerarAST
                 Administrador management = new Administrador();
 
                 foreach (var item in ASTClases)
-                {
-                    if (item is Instruccion)
-                    {
-                        Instruccion ins = (Instruccion)item;
-                        if (ins is CreateType) {
-                            ins.ejecutar(global, listas, management);
-                        }else if (ins is DeclaracionAsignacion || ins is Declarcion ||
-                                 ins is DeclaraListNew || ins is DeclaraListValores ||
-                                 ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
-                                 ins is DeclaracionMapNew || ins is DeclaracionMapValores)
+                { 
+                    if (item != null) {
+                        if (item is Instruccion)
                         {
-                            ins.ejecutar(global, listas, management);
+                            Instruccion ins = (Instruccion)item;
+                            if (ins is CreateType) {
+                                ins.ejecutar(global, listas, management);
+                            } else if (ins is DeclaracionAsignacion || ins is Declarcion ||
+                                      ins is DeclaraListNew || ins is DeclaraListValores ||
+                                      ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
+                                      ins is DeclaracionMapNew || ins is DeclaracionMapValores)
+                            {
+                                ins.ejecutar(global, listas, management);
+                            }
                         }
-                    }
-                    else
-                    {//funciones 
-                        Expresion exp = (Expresion)item;
-                        if (exp is Funciones || 
-                            exp is Procedimientos) {
-                            exp.getValue(global, listas, management);
+                        else
+                        {//funciones 
+                            Expresion exp = (Expresion)item;
+                            if (exp is Funciones ||
+                                exp is Procedimientos) {
+                                exp.getValue(global, listas, management);
+                            }
+                            //aqui faltan los procedimientos
                         }
-                        //aqui faltan los procedimientos
                     }
                 }
 
@@ -76,23 +78,27 @@ namespace Server.GenerarAST
                 Entorno next = new Entorno(global);
 
                 foreach (var item in ASTClases)
-                {
-                    if (item is Instruccion)
+                { 
+                    if (item != null)
                     {
-                        Instruccion ins = (Instruccion)item;
-                        if (!(ins is CreateType) && !(ins is DeclaracionAsignacion || ins is Declarcion ||
-                                 ins is DeclaraListNew || ins is DeclaraListValores ||
-                                 ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
-                                 ins is DeclaracionMapNew || ins is DeclaracionMapValores)) {
-                            ins.ejecutar(next, listas, management);
-                        }
-                    }
-                    else
-                    {//funciones 
-                        Expresion exp = (Expresion)item;
-                        if (!(exp is Funciones || exp is Procedimientos))
+                        if (item is Instruccion)
                         {
-                            exp.getValue(next, listas, management);
+                            Instruccion ins = (Instruccion)item;
+                            if (!(ins is CreateType) && !(ins is DeclaracionAsignacion || ins is Declarcion ||
+                                     ins is DeclaraListNew || ins is DeclaraListValores ||
+                                     ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
+                                     ins is DeclaracionMapNew || ins is DeclaracionMapValores))
+                            {
+                                ins.ejecutar(next, listas, management);
+                            }
+                        }
+                        else
+                        {//funciones 
+                            Expresion exp = (Expresion)item;
+                            if (!(exp is Funciones || exp is Procedimientos))
+                            {
+                                exp.getValue(next, listas, management);
+                            }
                         }
                     }
                 }

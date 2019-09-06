@@ -150,7 +150,7 @@ namespace Server.AST.Instrucciones
                                                         }
                                                     }
                                                 }
-                                                else if (tipoexp == tipoDato.list || tipoexp == tipoDato.set)
+                                                else if (tipoComa == tipoDato.list || tipoComa == tipoDato.set)
                                                 {
                                                     if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
                                                     {
@@ -177,7 +177,7 @@ namespace Server.AST.Instrucciones
                                                         }
                                                     }
                                                 }
-                                                else if (tipoexp == tipoDato.list || tipoexp == tipoDato.set)
+                                                else if (tipoComa == tipoDato.list || tipoComa == tipoDato.set)
                                                 {
                                                     if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
                                                     {                                                    

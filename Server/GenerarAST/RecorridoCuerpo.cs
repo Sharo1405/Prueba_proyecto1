@@ -216,7 +216,58 @@ namespace Server.GenerarAST
                     break;
 
                 case "selectt":
-                    break;
+                    return selectInBase(nodo.ChildNodes.ElementAt(0));
+            }
+            return null;
+        }
+
+
+        public NodoAST selectInBase(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 9)
+            {
+                return null;
+            }
+            else if (nodo.ChildNodes.Count == 8)
+            {
+                return null;
+            }
+            else if (nodo.ChildNodes.Count == 7)
+            {
+                return null;
+            }
+            else if (nodo.ChildNodes.Count ==6)
+            {
+                //aqui
+                return null;
+            }
+            else if (nodo.ChildNodes.Count == 5)
+            {
+                return null;
+            }
+            else
+            {
+                return new Select4(
+                    opcionSelect(nodo.ChildNodes.ElementAt(1)),
+                    nodo.ChildNodes.ElementAt(3).Token.Text.ToLower(),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column
+                    );
+            }
+        }
+
+
+        public object opcionSelect(ParseTreeNode nodo)
+        {
+            //return nodo.ChildNodes.ElementAt(0);
+            String s = nodo.ChildNodes.ElementAt(0).Term.Name;
+            switch (s)
+            {
+                case "E":
+                    return expresiones(nodo.ChildNodes.ElementAt(0));
+
+                case "*":
+                    return "*";
             }
             return null;
         }

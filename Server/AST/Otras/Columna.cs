@@ -15,7 +15,7 @@ namespace Server.AST.Otras
         public String idTipo { get; set; }
         public LinkedList<object> valorColumna = new LinkedList<object>();
         public Boolean primaryKey = false;
-        public int ultimovalorincrementable = 0;
+        public int ultimovalorincrementable = -1;
 
         public Columna()
         {
