@@ -12,19 +12,20 @@ using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Expresiones
 {
-    class Select4 : Expresion
+    class Select6 : Expresion
     {
-
         public object OpcionSelect { get; set; } //puede ser E o un *
         public String idTabla { get; set; }
+        public Expresion delWhere { get; set; }
         public int linea { get; set; }
         public int columna { get; set; }
 
-        public Select4(object OpcionSelect, String idTabla,
+        public Select6(object OpcionSelect, String idTabla, Expresion exp,
             int linea, int columna)
         {
             this.OpcionSelect = OpcionSelect;
             this.idTabla = idTabla;
+            this.delWhere = exp;
             this.linea = linea;
             this.columna = columna;
         }
@@ -48,6 +49,7 @@ namespace Server.AST.Expresiones
                         Tabla encontrado2 = new Tabla();
                         if (basee.Tabla.TryGetValue(idTabla.ToLower(), out encontrado2))
                         {
+                            Entorno actual = new Entorno(entorno);
                             String asterisco = "";
                             Tabla paraRetorno = new Tabla();
                             if (OpcionSelect is Expresion)
@@ -56,7 +58,7 @@ namespace Server.AST.Expresiones
                                 {
                                     ListaExpresiones lexp = (ListaExpresiones)OpcionSelect;
                                     LinkedList<String> listacampos = new LinkedList<string>();
-                                    LinkedList<Comas> lcomas = (LinkedList<Comas>) lexp.getValue(entorno, listas, management);
+                                    LinkedList<Comas> lcomas = (LinkedList<Comas>)lexp.getValue(entorno, listas, management);
 
                                     foreach (Comas coma in lcomas)
                                     {
@@ -114,8 +116,10 @@ namespace Server.AST.Expresiones
                                                 CreateType extract = new CreateType();
                                                 foreach (CreateType type in colNuevita.valorColumna)
                                                 {
-                                                    foreach (itemType t in type.itemTypee) {
-                                                        if (t.id.ToLower().Equals(idItemUserType.ToLower())) {
+                                                    foreach (itemType t in type.itemTypee)
+                                                    {
+                                                        if (t.id.ToLower().Equals(idItemUserType.ToLower()))
+                                                        {
                                                             //LinkedList<itemType> ite = new LinkedList<itemType>();
                                                             //ite.AddLast(t);
                                                             //CreateType n = new CreateType(idColumnaPunto.ToLower(),ite, type.linea, type.columna);
@@ -131,7 +135,7 @@ namespace Server.AST.Expresiones
                                             else
                                             {
                                                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                                    "El id de la columna no existe en la tabla " + idTabla ));
+                                                    "El id de la columna no existe en la tabla " + idTabla));
                                                 return tipoDato.errorSemantico;
                                             }
 
@@ -139,7 +143,7 @@ namespace Server.AST.Expresiones
                                     }
 
                                     //aqui deberia empezar el select
-                                                                        
+
                                     paraRetorno.idTabla = encontrado2.idTabla;
                                     //paraRetorno.llavePrimaria = encontrado2.llavePrimaria;                                    
 
@@ -204,7 +208,7 @@ namespace Server.AST.Expresiones
 
                                     return paraRetorno;
                                 }
-                                else if(OpcionSelect is Identificador)
+                                else if (OpcionSelect is Identificador)
                                 {
                                     Identificador ii = (Identificador)OpcionSelect;
                                     foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
@@ -223,7 +227,77 @@ namespace Server.AST.Expresiones
                             else
                             {
                                 asterisco = "*";
-                                return encontrado2;
+
+                                
+                                //declarar todas las variables 
+                                foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
+                                {
+                                    //necesito nombre columna y tipo columna
+                                    LinkedList<String> ids = new LinkedList<string>();
+                                    ids.AddLast(kvp.Value.idColumna.ToLower());
+                                    Tipo tipoids = new Tipo(); 
+                                    tipoids = new Tipo(kvp.Value.tipo, this.linea, this.columna);                                                                         
+                                    Declarcion decla = new Declarcion(tipoids,ids);
+                                    decla.ejecutar(actual, listas, management);
+                                }
+
+                                int contador = 0;
+                                Columna c = new Columna();
+
+                                int cantValoresXcolumna = 1;
+                                while (contador<= cantValoresXcolumna-1)
+                                {
+                                    foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
+                                    {
+                                        String idsvar = kvp.Value.idColumna.ToLower();
+                                        object valor = kvp.Value.valorColumna.ElementAt(contador);
+                                        Expresion exp = devueleExpresionTipo(kvp.Value.tipo, valor);
+                                        Asignacion asigna = new Asignacion(idsvar, exp, this.linea, this.columna);
+                                        asigna.getValue(actual, listas, management);
+
+                                        if (contador == 0)
+                                        {
+                                            cantValoresXcolumna = kvp.Value.valorColumna.Count;
+                                            Columna cccc = new Columna();
+                                            cccc.idColumna = kvp.Value.idColumna.ToLower();
+                                            cccc.idTipo = kvp.Value.idTipo.ToLower();
+                                            cccc.tipo = kvp.Value.tipo;
+                                            cccc.tipoValor = kvp.Value.tipoValor;
+                                            cccc.ultimovalorincrementable = kvp.Value.ultimovalorincrementable;
+                                            paraRetorno.columnasTabla.Add(kvp.Value.idColumna.ToLower(), cccc);
+                                        }
+                                        //hasta aqui ya estan los valores en la tabla de simbolos
+                                        //ahora necesito ver el where si devuelve true debo guardar 
+                                    }
+
+                                    object resultado = delWhere.getValue(actual, listas, management);
+                                    tipoDato tipoResultado = delWhere.getType(actual, listas, management);
+                                    if (tipoResultado == tipoDato.booleano)
+                                    {
+                                        if ((Boolean)resultado)//si entra el where es el exxito
+                                        {
+
+                                            foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
+                                            {
+                                                Columna paraAsignar = new Columna();
+                                                if (paraRetorno.columnasTabla.TryGetValue(kvp.Value.idColumna.ToLower(), out paraAsignar))
+                                                {
+                                                    paraAsignar.valorColumna.AddLast(kvp.Value.valorColumna.ElementAt(contador));
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                            "Las operaciones del where no es de tipo Booleano en el select a la tabla: " + idTabla));
+                                        return tipoDato.errorSemantico;
+                                    }
+                                    contador++;
+                                }
+
+                                return paraRetorno;
                             }
 
                         }
@@ -255,6 +329,46 @@ namespace Server.AST.Expresiones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
+        }
+
+
+        public Expresion devueleExpresionTipo(tipoDato tipo, object valor)
+        {
+            switch (tipo)
+            {
+                case tipoDato.booleano:
+                    return new Booleano(valor, tipo, this.linea, this.columna);
+
+                case tipoDato.cadena:
+                    return new cadena(valor, tipo, this.linea, this.columna);
+
+                case tipoDato.date:
+                    return new Date(valor, tipo, this.linea, this.columna);
+
+                case tipoDato.decimall:
+                    return new Numero(valor, tipo, this.linea, this.columna);
+
+                case tipoDato.entero:
+                    return new Numero(valor, tipo, this.linea, this.columna);
+
+                case tipoDato.id:
+                    //return new Identificador(Convert.ToString(valor),this.linea, this.columna);
+                    return new TypeBase(valor, this.linea, this.columna);
+
+                case tipoDato.nulo:
+                    return new Nulo(valor, tipo, this.linea, this.columna);
+
+                case tipoDato.time:
+                    return new Time(valor, tipo, this.linea, this.columna);
+
+                case tipoDato.set:
+                    return new SetBase(valor, this.linea, this.columna);
+
+                case tipoDato.list:
+                    return new ListsBase(valor, this.linea, this.columna);
+            }
+
+            return null;
         }
     }
 }

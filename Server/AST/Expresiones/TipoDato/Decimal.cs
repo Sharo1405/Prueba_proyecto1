@@ -9,18 +9,18 @@ using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Expresiones.TipoDato
 {
-    class Decimal: Expresion
+    class Decimall: Expresion
     {
         public Object valor { get; set; }
         public tipoDato tipo { get; set; }
         public int linea { get; set; }
         public int columna { get; set; }
 
-        public Decimal()
+        public Decimall()
         {
         }
 
-        public Decimal(Object valor, tipoDato tipo, int linea, int columna)
+        public Decimall(Object valor, tipoDato tipo, int linea, int columna)
         {
             this.valor = valor;
             this.tipo = tipo;

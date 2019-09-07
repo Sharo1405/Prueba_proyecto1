@@ -239,6 +239,16 @@ namespace Server.GenerarAST
             else if (nodo.ChildNodes.Count ==6)
             {
                 //aqui
+                String s = nodo.ChildNodes.ElementAt(4).Term.Name;
+                switch(s){
+                    case "where":
+                        return new Select6(
+                            opcionSelect(nodo.ChildNodes.ElementAt(1)),
+                            nodo.ChildNodes.ElementAt(3).Token.Text.ToLower(),
+                            expresiones(nodo.ChildNodes.ElementAt(5)),
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+                }
                 return null;
             }
             else if (nodo.ChildNodes.Count == 5)

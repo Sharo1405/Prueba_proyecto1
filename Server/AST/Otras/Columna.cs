@@ -12,7 +12,7 @@ namespace Server.AST.Otras
         public String idColumna { get; set; }
         public tipoDato tipo { get; set; }
         public tipoDato tipoValor { get; set; } //por si hay listas o sets
-        public String idTipo { get; set; }
+        public String idTipo = "";
         public LinkedList<object> valorColumna = new LinkedList<object>();
         public Boolean primaryKey = false;
         public int ultimovalorincrementable = -1;

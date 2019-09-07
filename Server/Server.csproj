@@ -75,7 +75,11 @@
     <Compile Include="AST\Expresiones\Procedimientos.cs" />
     <Compile Include="AST\Expresiones\Puntos.cs" />
     <Compile Include="AST\Expresiones\Select4.cs" />
+    <Compile Include="AST\Expresiones\Select6.cs" />
     <Compile Include="AST\Expresiones\Ternario.cs" />
+    <Compile Include="AST\Expresiones\TipoDato\ListsBase.cs" />
+    <Compile Include="AST\Expresiones\TipoDato\SetBase.cs" />
+    <Compile Include="AST\Expresiones\TipoDato\TypeBase.cs" />
     <Compile Include="AST\Instrucciones\AccesoIdsConASignacion.cs" />
     <Compile Include="AST\Instrucciones\accesosFuncionCadena3.cs" />
     <Compile Include="AST\Instrucciones\AlterAddTable.cs" />

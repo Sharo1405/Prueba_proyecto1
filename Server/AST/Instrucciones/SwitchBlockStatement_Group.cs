@@ -21,7 +21,7 @@ namespace Server.AST.Instrucciones
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
