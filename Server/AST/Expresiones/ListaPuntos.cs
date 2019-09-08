@@ -366,6 +366,247 @@ namespace Server.AST.Expresiones
                 }
                 return auxParaFunciones;
             }
+            else if (ob is CreateType)
+            {
+
+                CreateType type = (CreateType)ob;
+                contador++;
+                Puntos punto = ListaExpresionesPuntos.ElementAt(contador);
+                if (punto.expresion1 is Identificador)
+                {
+                    Identificador identi = (Identificador)punto.expresion1;
+                    foreach (itemType itType in type.itemTypee)
+                    {
+                        if (itType.id.ToLower().Equals(identi.id.ToLower()))
+                        {
+                            if (itType.tipo.tipo == tipoDato.id)
+                            {
+                                CreateType otroitem = (CreateType)itType.valor;
+                                if (otroitem != null)
+                                {
+                                    contador++;
+                                    object tipoDevuelto = tipoType(entorno, listas, otroitem, contador, management);
+                                    auxParaFunciones = tipoDevuelto;
+                                    return tipoDevuelto;
+                                }
+                                else
+                                {
+                                    listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                        "La variable \"" + identi.id + "\" no esta Instanciada para el acceso"));
+                                    return tipoDato.errorSemantico;
+                                }
+                            }
+                            else if (itType.tipo.tipo == tipoDato.list || itType.tipo.tipo == tipoDato.set)
+                            {
+                                contador++;
+                                tipoFinal = itType.tipo.tipo;
+                                Lista l = (Lista)itType.valor;
+                                auxParaFunciones = null;
+                                auxParaFunciones = l.listaValores;
+                                tipoDato tvtvtv = l.tipoValor;
+
+                                while (contador < ListaExpresionesPuntos.Count)
+                                {
+                                    punto = ListaExpresionesPuntos.ElementAt(contador);
+                                    if (punto.expresion1 is FuncionesCollections)
+                                    {
+                                        Lista ll = new Lista();
+                                        if (auxParaFunciones is Lista)
+                                        {
+                                            ll = (Lista)auxParaFunciones;
+                                            auxParaFunciones = null;
+                                            auxParaFunciones = ll.listaValores;
+                                            tvtvtv = ll.tipoValor;
+                                        }
+                                        FuncionesCollections funcion = (FuncionesCollections)punto.expresion1.getValue(entorno, listas, management);
+                                        if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
+                                        {
+                                            devuleveFuncionCollection(funcion, entorno, listas, tvtvtv, management);
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                                "La variable a la que se quiere aplicar : " + funcion.funcionCollections + "no es de tipo List"));
+                                            return tipoDato.errorSemantico;
+                                        }
+
+                                    }
+                                    else if (punto.expresion1 is FuncionesNativasCadenas)
+                                    {
+                                        if (tipoFinal != tipoDato.list && tipoFinal != tipoDato.set && tipoFinal != tipoDato.id)
+                                        {
+                                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas, management);
+                                            if (tipoFinal != tipoDato.cadena)
+                                            {
+                                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                                "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                            auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                        "La variable a la que se quiere aplicar una funcion nativa de cadenas no es de tipo String"));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                    else if (punto.expresion1 is Identificador)
+                                    {
+                                        if (auxParaFunciones is CreateType)
+                                        {
+                                            CreateType type2 = (CreateType)auxParaFunciones;
+                                            //contador++;
+                                            auxParaFunciones = tipoType(entorno, listas, type2, contador, management);
+                                            return auxParaFunciones;
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                   "Acceso no valido para una lista/ Set"));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                        "Acceso no valido para una lista/ Set"));
+                                        return tipoDato.errorSemantico;
+                                    }
+
+                                    contador++;
+                                }
+                            }
+                            else
+                            {
+                                tipoFinal = itType.tipo.tipo;
+                                auxParaFunciones = itType.valor;
+                                contador++;
+                                while (contador < ListaExpresionesPuntos.Count)
+                                {
+                                    Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
+                                    if (puntos2.expresion1 is FuncionesNativasCadenas)
+                                    {
+                                        FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas, management);
+                                        if (tipoFinal != tipoDato.cadena)
+                                        {
+                                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                            "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                        auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                            "El acceso no es valido porque es una variable normal"));
+                                        return tipoDato.errorSemantico;
+                                    }
+
+                                    contador++;
+                                }
+                                return auxParaFunciones;
+
+                            }
+                        }
+                    }
+                }
+                else if (punto.expresion1 is FuncionesNativasCadenas)
+                {
+                    FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)punto.expresion1.getValue(entorno, listas, management);
+                    if (tipoFinal != tipoDato.cadena)
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                        "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
+                        return tipoDato.errorSemantico;
+                    }
+
+                    return devuelveFunconEjecutada(funcion, entorno, listas, management);
+                }
+
+            }
+            else if (ob is Lista)
+            {
+                tipoFinal = ((Lista)ob).tipoGeneral;
+                contador++;
+                //Lista l = ((Lista)ob).v;
+                auxParaFunciones = null;
+                auxParaFunciones = ((Lista)ob).listaValores;
+                tipoDato tvlista = ((Lista)ob).tipoValor;
+
+                while (contador < ListaExpresionesPuntos.Count)
+                {
+                    Lista ll = new Lista();
+                    if (auxParaFunciones is Lista)
+                    {
+                        ll = (Lista)auxParaFunciones;
+                        auxParaFunciones = null;
+                        auxParaFunciones = ll.listaValores;
+                        tvlista = ll.tipoValor;
+                    }
+                    Puntos puntos2 = ListaExpresionesPuntos.ElementAt(contador);
+                    if (puntos2.expresion1 is FuncionesCollections)
+                    {
+                        FuncionesCollections funcion = (FuncionesCollections)puntos2.expresion1.getValue(entorno, listas, management);
+                        if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
+                        {
+                            devuleveFuncionCollection(funcion, entorno, listas, tvlista, management);
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "La variable a la que se quiere aplicar : " + funcion.funcionCollections + "no es de tipo List"));
+                            return tipoDato.errorSemantico;
+                        }
+
+                    }
+                    else if (puntos2.expresion1 is FuncionesNativasCadenas)
+                    {
+                        if (tipoFinal != tipoDato.list && tipoFinal != tipoDato.set && tipoFinal != tipoDato.id)
+                        {
+                            FuncionesNativasCadenas funcion = (FuncionesNativasCadenas)puntos2.expresion1.getValue(entorno, listas, management);
+                            if (tipoFinal != tipoDato.cadena)
+                            {
+                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                                "La variable a la que se quiere aplicar : " + funcion.nativa + "no es de tipo String"));
+                                return tipoDato.errorSemantico;
+                            }
+                            auxParaFunciones = devuelveFunconEjecutada(funcion, entorno, listas, management);
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                        "La variable a la que se quiere aplicar una funcion nativa de cadenas no es de tipo String"));
+                            return tipoDato.errorSemantico;
+                        }
+                    }
+                    else if (puntos2.expresion1 is Identificador)
+                    {
+                        if (auxParaFunciones is CreateType)
+                        {
+                            CreateType type = (CreateType)auxParaFunciones;
+                            //contador++;
+                            auxParaFunciones = tipoType(entorno, listas, type, contador, management);
+                            return auxParaFunciones;
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                   "Acceso no valido para una lista/ Set"));
+                            return tipoDato.errorSemantico;
+                        }
+                    }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                        "Acceso no valido para una lista/ Set"));
+                        return tipoDato.errorSemantico;
+                    }
+
+                    contador++;
+                }
+                return auxParaFunciones;
+            }
             else
             {
                 listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,

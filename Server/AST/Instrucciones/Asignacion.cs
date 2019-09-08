@@ -268,7 +268,20 @@ namespace Server.AST.Instrucciones
                     }
                     else if (variable.tipo == tipoValor)
                     {
-                        variable.valor = value;
+                        if (value is CreateType)
+                        {
+                            variable.valor = value;
+                            variable.idTipo = ((CreateType)value).idType;
+                        }
+                        if (value is Lista)
+                        {
+                            variable.valor = value;
+                            variable.tipoValor = ((Lista)value).tipoValor;
+                        }
+                        else
+                        {
+                            variable.valor = value;
+                        }
                     }
                     else
                     {

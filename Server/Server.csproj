@@ -115,6 +115,7 @@
     <Compile Include="AST\Llaves.cs" />
     <Compile Include="AST\Otras\Auxiliar.cs" />
     <Compile Include="AST\Otras\ClaveValor.cs" />
+    <Compile Include="AST\Otras\ColAccesoSelect6.cs" />
     <Compile Include="AST\Otras\Columna.cs" />
     <Compile Include="AST\Otras\Lista.cs" />
     <Compile Include="AST\Otras\NodoColumnas.cs" />

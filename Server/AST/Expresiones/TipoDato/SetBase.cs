@@ -27,7 +27,7 @@ namespace Server.AST.Expresiones.TipoDato
         {
             if (valor is Lista)
             {
-                return ((Lista)valor).tipoValor;
+                return ((Lista)valor).tipoGeneral;
             }
             return tipoDato.errorSemantico;
         }

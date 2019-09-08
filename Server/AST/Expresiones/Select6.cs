@@ -56,28 +56,45 @@ namespace Server.AST.Expresiones
                             {
                                 if (OpcionSelect is ListaExpresiones)
                                 {
+
+                                    //declarar todas las variables 
+                                    foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
+                                    {
+                                        //necesito nombre columna y tipo columna
+                                        LinkedList<String> ids = new LinkedList<string>();
+                                        ids.AddLast(kvp.Value.idColumna.ToLower());
+                                        Tipo tipoids = new Tipo();
+                                        tipoids = new Tipo(kvp.Value.tipo, this.linea, this.columna);
+                                        Declarcion decla = new Declarcion(tipoids, ids);
+                                        decla.ejecutar(actual, listas, management);
+                                    }
+
+
+
                                     ListaExpresiones lexp = (ListaExpresiones)OpcionSelect;
-                                    LinkedList<String> listacampos = new LinkedList<string>();
+                                    LinkedList<ColAccesoSelect6> listacampos = new LinkedList<ColAccesoSelect6>();
                                     LinkedList<Comas> lcomas = (LinkedList<Comas>)lexp.getValue(entorno, listas, management);
 
                                     foreach (Comas coma in lcomas)
                                     {
-
+                                        Columna unaVacia = new Columna();
                                         if (coma.expresion1 is Identificador)
                                         {
                                             Identificador idd = (Identificador)coma.expresion1;
-                                            //listacampos.AddLast(idd.id);
-
                                             foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                                             {
                                                 Columna col = kvp.Value;
                                                 if (col.idColumna.ToLower().Equals(idd.id.ToLower()))
                                                 {
-                                                    paraRetorno.columnasTabla.Add(idd.id.ToLower(), col);
+                                                    unaVacia.idColumna = col.idColumna;
+                                                    unaVacia.idTipo = col.idTipo;
+                                                    unaVacia.tipo = col.tipo;
+                                                    unaVacia.tipoValor = col.tipoValor;
+                                                    paraRetorno.columnasTabla.Add(idd.id.ToLower(), unaVacia);
+                                                    listacampos.AddLast(new ColAccesoSelect6(idd.id.ToLower(), ""));
                                                     break;
                                                 }
                                             }
-
                                         }
                                         else if (coma.expresion1 is ListaPuntos)
                                         {
@@ -106,7 +123,6 @@ namespace Server.AST.Expresiones
                                                 count++;
                                             }
 
-
                                             //ya buscando en laas columnas
                                             Columna colNuevita = new Columna();
                                             LinkedList<object> listaItems = new LinkedList<object>();
@@ -114,22 +130,10 @@ namespace Server.AST.Expresiones
                                             if (encontrado2.columnasTabla.TryGetValue(idColumnaPunto.ToLower(), out colNuevita))
                                             {
                                                 CreateType extract = new CreateType();
-                                                foreach (CreateType type in colNuevita.valorColumna)
-                                                {
-                                                    foreach (itemType t in type.itemTypee)
-                                                    {
-                                                        if (t.id.ToLower().Equals(idItemUserType.ToLower()))
-                                                        {
-                                                            //LinkedList<itemType> ite = new LinkedList<itemType>();
-                                                            //ite.AddLast(t);
-                                                            //CreateType n = new CreateType(idColumnaPunto.ToLower(),ite, type.linea, type.columna);
-                                                            listaItems.AddLast(t);
-                                                        }
-                                                    }
-                                                }
                                                 colNuevita2.idColumna = colNuevita.idColumna + "." + idItemUserType;
                                                 colNuevita2.idTipo = colNuevita.idTipo;
                                                 colNuevita2.valorColumna = listaItems;
+                                                listacampos.AddLast(new ColAccesoSelect6(idColumnaPunto.ToLower(), idItemUserType.ToLower()));
                                                 paraRetorno.columnasTabla.Add(colNuevita2.idColumna, colNuevita2);
                                             }
                                             else
@@ -142,21 +146,120 @@ namespace Server.AST.Expresiones
                                         }
                                     }
 
-                                    //aqui deberia empezar el select
+                                    //aqui ya tengo las columnas guardadas
+                                    int contador = 0;
+                                    int cantValoresXcolumna = 1;
+                                    //Columna colNuevita = new Columna();
+                                    //LinkedList<object> listaItems = new LinkedList<object>();
+                                    //Columna colNuevita2 = new Columna();
+                                    while (contador <= cantValoresXcolumna - 1)
+                                    {
+                                        foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
+                                        {
+                                            String idsvar = kvp.Value.idColumna.ToLower();
+                                            object valor = kvp.Value.valorColumna.ElementAt(contador);
+                                            Expresion exp = devueleExpresionTipo(kvp.Value.tipo, valor);
+                                            Asignacion asigna = new Asignacion(idsvar, exp, this.linea, this.columna);
+                                            asigna.getValue(actual, listas, management);
+                                            //hasta aqui ya estan los valores en la tabla de simbolos
+                                            //ahora necesito ver el where si devuelve true debo guardar 
+                                            if (contador == 0)
+                                            {
+                                                cantValoresXcolumna = kvp.Value.valorColumna.Count;
+                                            }
+                                        }
+
+                                        object resultado = delWhere.getValue(actual, listas, management);
+                                        tipoDato tipoResultado = delWhere.getType(actual, listas, management);
+                                        if (tipoResultado == tipoDato.booleano)
+                                        {
+                                            if ((Boolean)resultado)//si entra el where es el exxito
+                                            {                                            
+                                                foreach (ColAccesoSelect6 cola in listacampos)
+                                                {
+                                                    ColAccesoSelect6 saca = (ColAccesoSelect6)cola;
+                                                    Columna colNuevita3 = new Columna();
+                                                    if (encontrado2.columnasTabla.TryGetValue(saca.columna.ToLower(), out colNuevita3))
+                                                    {
+                                                        if (saca.accesoCol.Equals(""))
+                                                        {
+                                                            object ojo = colNuevita3.valorColumna.ElementAt(contador);
+                                                            Columna colNuevita33 = new Columna();
+                                                            if (paraRetorno.columnasTabla.TryGetValue(saca.columna.ToLower(), out colNuevita33))
+                                                            {
+                                                                colNuevita33.valorColumna.AddLast(ojo);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            CreateType extract = new CreateType();
+                                                            extract = (CreateType)colNuevita3.valorColumna.ElementAt(contador);
+                                                            foreach (itemType t in extract.itemTypee)
+                                                            {
+                                                                if (t.id.ToLower().Equals(saca.accesoCol.ToLower()))
+                                                                {
+                                                                    Columna colNuevita33 = new Columna();
+                                                                    if (paraRetorno.columnasTabla.TryGetValue(saca.columna+ "." + saca.accesoCol, out colNuevita33))
+                                                                    {
+                                                                        colNuevita33.valorColumna.AddLast(t);
+                                                                    }
+                                                                    //paraRetorno.columnasTabla.ElementAt(0).Value.valorColumna.AddLast(t);
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                            "El id de la columna no existe en la tabla " + idTabla));
+                                                        return tipoDato.errorSemantico;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "Las operaciones del where no es de tipo Booleano en el select a la tabla: " + idTabla));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                        contador++;
+                                    }
+
+
+
+
 
                                     paraRetorno.idTabla = encontrado2.idTabla;
-                                    //paraRetorno.llavePrimaria = encontrado2.llavePrimaria;                                    
-
                                     return paraRetorno;
                                 }
                                 else if (OpcionSelect is ListaPuntos)
                                 {
+                                    //declarar todas las variables 
+                                    foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
+                                    {
+                                        //necesito nombre columna y tipo columna
+                                        LinkedList<String> ids = new LinkedList<string>();
+                                        ids.AddLast(kvp.Value.idColumna.ToLower());
+                                        Tipo tipoids = new Tipo();
+                                        tipoids = new Tipo(kvp.Value.tipo, this.linea, this.columna);
+                                        Declarcion decla = new Declarcion(tipoids, ids);
+                                        decla.ejecutar(actual, listas, management);
+                                    }
+
+
+                                    int contador = 0;
+                                    Columna c = new Columna();
+
+                                    int cantValoresXcolumna = 1;                                
                                     ListaPuntos lpuntos = (ListaPuntos)OpcionSelect;
                                     LinkedList<Puntos> ExpSeparadasPuntos = lpuntos.ExpSeparadasPuntos;
                                     //posicion 0 es la columna y pos 1 es el id de elemento del usertype
                                     String idColumnaPunto = "";
                                     String idItemUserType = "";
                                     int count = 0;
+
                                     foreach (Puntos punto in ExpSeparadasPuntos)
                                     {
                                         if (count == 0)
@@ -175,8 +278,6 @@ namespace Server.AST.Expresiones
                                         }
                                         count++;
                                     }
-
-
                                     //ya buscando en laas columnas
                                     Columna colNuevita = new Columna();
                                     LinkedList<object> listaItems = new LinkedList<object>();
@@ -184,16 +285,6 @@ namespace Server.AST.Expresiones
                                     if (encontrado2.columnasTabla.TryGetValue(idColumnaPunto.ToLower(), out colNuevita))
                                     {
                                         CreateType extract = new CreateType();
-                                        foreach (CreateType type in colNuevita.valorColumna)
-                                        {
-                                            foreach (itemType t in type.itemTypee)
-                                            {
-                                                if (t.id.ToLower().Equals(idItemUserType.ToLower()))
-                                                {
-                                                    listaItems.AddLast(t);
-                                                }
-                                            }
-                                        }
                                         colNuevita2.idColumna = colNuevita.idColumna + "." + idItemUserType;
                                         colNuevita2.idTipo = colNuevita.idTipo;
                                         colNuevita2.valorColumna = listaItems;
@@ -206,19 +297,155 @@ namespace Server.AST.Expresiones
                                         return tipoDato.errorSemantico;
                                     }
 
+                                    while (contador <= cantValoresXcolumna - 1)
+                                    {
+                                        foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
+                                        {
+                                            String idsvar = kvp.Value.idColumna.ToLower();
+                                            object valor = kvp.Value.valorColumna.ElementAt(contador);
+                                            Expresion exp = devueleExpresionTipo(kvp.Value.tipo, valor);
+                                            Asignacion asigna = new Asignacion(idsvar, exp, this.linea, this.columna);
+                                            asigna.getValue(actual, listas, management);
+                                            //hasta aqui ya estan los valores en la tabla de simbolos
+                                            //ahora necesito ver el where si devuelve true debo guardar 
+                                            if (contador == 0)
+                                            {
+                                                cantValoresXcolumna = kvp.Value.valorColumna.Count;
+                                            }
+                                        }
+
+                                        object resultado = delWhere.getValue(actual, listas, management);
+                                        tipoDato tipoResultado = delWhere.getType(actual, listas, management);
+                                        if (tipoResultado == tipoDato.booleano)
+                                        {
+                                            if ((Boolean)resultado)//si entra el where es el exxito
+                                            {
+                                                colNuevita = new Columna();
+                                                colNuevita2 = new Columna();
+                                                if (encontrado2.columnasTabla.TryGetValue(idColumnaPunto.ToLower(), out colNuevita))
+                                                {
+                                                    CreateType extract = new CreateType();
+                                                    extract = (CreateType)colNuevita.valorColumna.ElementAt(contador);
+                                                    foreach (itemType t in extract.itemTypee)
+                                                    {
+                                                        if (t.id.ToLower().Equals(idItemUserType.ToLower()))
+                                                        {
+                                                            paraRetorno.columnasTabla.ElementAt(0).Value.valorColumna.AddLast(t);
+                                                            break;
+                                                        }
+                                                    }                                                   
+                                                }
+                                                else
+                                                {
+                                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                        "El id de la columna no existe en la tabla " + idTabla));
+                                                    return tipoDato.errorSemantico;
+                                                }
+
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "Las operaciones del where no es de tipo Booleano en el select a la tabla: " + idTabla));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                        contador++;
+                                    }
+                                   
                                     return paraRetorno;
                                 }
                                 else if (OpcionSelect is Identificador)
                                 {
                                     Identificador ii = (Identificador)OpcionSelect;
+                                    //declarar todas las variables 
                                     foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                                     {
-                                        Columna col = kvp.Value;
-                                        if (col.idColumna.ToLower().Equals(ii.id.ToLower()))
+                                        //necesito nombre columna y tipo columna
+                                        LinkedList<String> ids = new LinkedList<string>();
+                                        ids.AddLast(kvp.Value.idColumna.ToLower());
+                                        Tipo tipoids = new Tipo();
+                                        tipoids = new Tipo(kvp.Value.tipo, this.linea, this.columna);
+                                        Declarcion decla = new Declarcion(tipoids, ids);
+                                        decla.ejecutar(actual, listas, management);
+                                    }
+
+                                    int contador = 0;
+                                    Columna c = new Columna();
+                                    int cantValoresXcolumna = 1;
+
+                                    Columna colNuevita = new Columna();
+                                    LinkedList<object> listaItems = new LinkedList<object>();
+                                    Columna colNuevita2 = new Columna();
+                                    if (encontrado2.columnasTabla.TryGetValue(ii.id.ToLower(), out colNuevita))
+                                    {
+                                        CreateType extract = new CreateType();
+                                        colNuevita2.idColumna = colNuevita.idColumna;
+                                        colNuevita2.idTipo = colNuevita.idTipo;
+                                        colNuevita2.valorColumna = listaItems;
+                                        paraRetorno.columnasTabla.Add(colNuevita2.idColumna, colNuevita2);
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                            "El id de la columna no existe en la tabla " + idTabla));
+                                        return tipoDato.errorSemantico;
+                                    }
+
+
+                                    while (contador <= cantValoresXcolumna - 1)
+                                    {
+                                        foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                                         {
-                                            paraRetorno.columnasTabla.Add(col.idColumna.ToLower(), col);
-                                            break;
+                                            String idsvar = kvp.Value.idColumna.ToLower();
+                                            object valor = kvp.Value.valorColumna.ElementAt(contador);
+                                            Expresion exp = devueleExpresionTipo(kvp.Value.tipo, valor);
+                                            Asignacion asigna = new Asignacion(idsvar, exp, this.linea, this.columna);
+                                            asigna.getValue(actual, listas, management);
+                                            //hasta aqui ya estan los valores en la tabla de simbolos
+                                            if (contador == 0)
+                                            {
+                                                cantValoresXcolumna = kvp.Value.valorColumna.Count;
+                                            }
                                         }
+                                        //ahora necesito ver el where si devuelve true debo guardar 
+                                        object resultado = delWhere.getValue(actual, listas, management);
+                                        tipoDato tipoResultado = delWhere.getType(actual, listas, management);
+                                        if (tipoResultado == tipoDato.booleano)
+                                        {
+                                            if ((Boolean)resultado)//si entra el where es el exxito
+                                            {
+                                                colNuevita = new Columna();
+                                                colNuevita2 = new Columna();
+                                                if (encontrado2.columnasTabla.TryGetValue(ii.id.ToLower(), out colNuevita))
+                                                {
+                                                    CreateType extract = new CreateType();
+                                                    extract = (CreateType)colNuevita.valorColumna.ElementAt(contador);
+                                                    foreach (itemType t in extract.itemTypee)
+                                                    {
+                                                        if (t.id.ToLower().Equals(ii.id.ToLower()))
+                                                        {
+                                                            paraRetorno.columnasTabla.ElementAt(0).Value.valorColumna.AddLast(t);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                        "El id de la columna no existe en la tabla " + idTabla));
+                                                    return tipoDato.errorSemantico;
+                                                }                                                
+                                            }
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "Las operaciones del where no es de tipo Booleano en el select a la tabla: " + idTabla));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                        contador++;
                                     }
                                     return paraRetorno;
                                 }
@@ -325,7 +552,7 @@ namespace Server.AST.Expresiones
             catch (Exception e)
             {
                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                "No se puede realizar el Select4 de la tabla" + idTabla));
+                                "No se puede realizar el Select6 de la tabla" + idTabla));
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
