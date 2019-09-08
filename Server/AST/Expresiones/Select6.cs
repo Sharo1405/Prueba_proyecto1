@@ -538,7 +538,7 @@ namespace Server.AST.Expresiones
                     catch (ArgumentException e)
                     {
                         listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                "NO se puede realizar el Select4 en la tabla: " + idTabla));
+                                "NO se puede realizar el Select6 en la tabla: " + idTabla));
                         return tipoDato.errorSemantico;
                     }
                 }

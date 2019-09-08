@@ -210,10 +210,10 @@ namespace Server.GenerarAST
                     return insertarInBase(nodo.ChildNodes.ElementAt(0));
 
                 case "updatee":
-                    break;
+                    return updateInBase(nodo.ChildNodes.ElementAt(0));
 
                 case "deletee":
-                    break;
+                    return eliminarInBase(nodo.ChildNodes.ElementAt(0));
 
                 case "selectt":
                     return selectInBase(nodo.ChildNodes.ElementAt(0));
@@ -221,6 +221,38 @@ namespace Server.GenerarAST
             return null;
         }
 
+        public NodoAST updateInBase(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 6)
+            {
+
+            }
+            else
+            {
+                return new update4(
+                    nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    itemasignacion(nodo.ChildNodes.ElementAt(3)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            return null;
+        }
+
+
+        public LinkedList<NodoAST> itemasignacion(ParseTreeNode nodo)
+        {
+            LinkedList<NodoAST> lasignacion = new LinkedList<NodoAST>();
+
+
+
+            return lasignacion;
+        }
+
+
+        public NodoAST eliminarInBase(ParseTreeNode nodo)
+        {
+            return null;
+        }
 
         public NodoAST selectInBase(ParseTreeNode nodo)
         {

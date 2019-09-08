@@ -716,11 +716,13 @@ namespace Server.Analizador
             UPDATEE.Rule = update + id + set + LISTAASIGNACION + where + E
                         | update + id + set + LISTAASIGNACION;
 
-            LISTAASIGNACION.Rule = MakePlusRule(LISTAASIGNACION , coma , ITEMASIGNACION);
+            LISTAASIGNACION.Rule = LISTAASIGNACION + coma + ITEMASIGNACION
+                                 | ITEMASIGNACION;
 
 
-            ITEMASIGNACION.Rule = E + igual + E
-                                | E;
+            ITEMASIGNACION.Rule = id + igual + E
+                                | id + punto + E + igual + E;
+                                //| E;
                                  //ACCESOASIGNACION
 
             INSERTARR.Rule = insert + into + id + values + E 
