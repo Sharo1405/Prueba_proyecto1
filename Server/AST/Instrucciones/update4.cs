@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Expresiones;
+using Server.AST.Expresiones.TipoDato;
 using Server.AST.Otras;
 using static Server.AST.Expresiones.Operacion;
 
@@ -44,9 +45,74 @@ namespace Server.AST.Instrucciones
                         if (basee.Tabla.TryGetValue(idTabla.ToLower(), out encontrado2))
                         {
 
+                            foreach (NodoAST asignar in asignaciones)
+                            {
+                                if (asignar is idigualEupdate)
+                                {
+                                    idigualEupdate asi = (idigualEupdate)asignar;
+                                    Columna coll = new Columna();
+                                    if (encontrado2.columnasTabla.TryGetValue(asi.idCol.ToLower(), out coll))
+                                    {
+                                        int cantidadDatos = coll.valorColumna.Count;
+                                        object valor = asi.igual.getValue(entorno, listas, management);
+                                        tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
+                                        if (tipoValor == coll.tipo) {
+                                            coll.valorColumna.Clear();
 
+                                            for (int i = 0; i < cantidadDatos; i++)
+                                            {
+                                                coll.valorColumna.AddLast(valor);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "El tipo del valor no es igual al tipo de la columna para actualizar, col:" + asi.idCol + 
+                                                "tipo valor: " + Convert.ToString(tipoValor)));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
 
+                                }
+                                else if (asignar is idpuntoEigualEupdate)
+                                {
 
+                                    idpuntoEigualEupdate asi = (idpuntoEigualEupdate)asignar;
+                                    Columna coll = new Columna();
+                                    if (encontrado2.columnasTabla.TryGetValue(asi.idCol.ToLower(), out coll))
+                                    {
+                                        object valor = asi.igual.getValue(entorno, listas, management);
+                                        tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
+                                        if (asi.acceso is ListaPuntos)
+                                        {
+                                            SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.acceso, valor, tipoValor, this.linea, this.columna);
+                                            svCol.ejecutar(entorno, listas, management);
+                                        }
+                                        else
+                                        {
+                                            if (asi.acceso is Identificador)
+                                            {
+                                                Identificador id = (Identificador)asi.acceso;
+                                                ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valor, tipoValor, this.linea, this.columna);
+                                                svCol.ejecutar(entorno, listas, management);
+                                            } 
+                                            else if (asi.acceso is listaAccesoTabla)
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                    "El acceso a la columna en la tabla con el id: " + idTabla + " No es permitido"));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                        }
+                                        
+                                    }
+
+                                }
+                            }
 
                         }
                         else

@@ -28,7 +28,60 @@ namespace Server.AST.Instrucciones
             this.linea = linea;
             this.col = col;
         }
-        
+
+
+        public CreateType CreaNuevoType(CreateType existente, Entorno entorno, ErrorImpresion listas)
+        {
+            CreateType nuevo = new CreateType();
+            nuevo.idType = existente.idType;
+            nuevo.ifnotexists = existente.ifnotexists;
+            nuevo.linea = existente.linea;
+            nuevo.columna = existente.columna;
+
+            foreach (itemType var in existente.itemTypee)
+            {
+                itemType i = new itemType();
+                i.id = var.id;
+                i.tipo = var.tipo;
+                i.valor = new Object();
+                if (var.tipo.tipo == tipoDato.id)
+                {
+                    Simbolo buscado2 = entorno.get(var.tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                    if (buscado2 != null)
+                    {
+                        //arreglar solo declarar sin el clonar
+                        //CreateType typeComoTipo =(CreateType) buscado2.valor;
+                        i.valor = null;//typeComoTipo.Clone();
+                    }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                            "El tipo de esa variable del Type User no existe: Tipo:" + var.tipo.id.ToLower()));
+                    }
+                }
+                else if (var.tipo.tipo == tipoDato.entero)
+                {
+                    var.valor = 0;
+                }
+                else if (var.tipo.tipo == tipoDato.decimall)
+                {
+                    var.valor = 0.0;
+                }
+                else if (var.tipo.tipo == tipoDato.booleano)
+                {
+                    var.valor = false;
+                }
+                else
+                {
+                    var.valor = null;
+                }
+
+                nuevo.itemTypee.AddLast(i);
+            }
+            return nuevo;
+        }
+
+
 
         public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
@@ -141,7 +194,17 @@ namespace Server.AST.Instrucciones
                                                 {
                                                     if (iterador.tipo == tipoComa)
                                                     {
-                                                        if (iterador.idTipo != ((CreateType)valorComa).idType)
+                                                        if (valorComa is Neww)
+                                                        {
+                                                            if (iterador.idTipo != ((Neww)valorComa).tipoNew.id)
+                                                            {
+                                                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.id) +
+                                                                " en la tabla: " + idTabla));
+                                                                return tipoDato.errorSemantico;
+                                                            }
+                                                        }
+                                                        else if (iterador.idTipo != ((CreateType)valorComa).idType)
                                                         {
                                                             listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
                                                                 "Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)exp).idType) +
@@ -152,11 +215,32 @@ namespace Server.AST.Instrucciones
                                                 }
                                                 else if (tipoComa == tipoDato.list || tipoComa == tipoDato.set)
                                                 {
-                                                    if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
+                                                    if (valorComa is Neww)
+                                                    {
+                                                        if (iterador.tipoValor != ((Neww)valorComa).tipoNew.tipoValor.tipo)
+                                                        {
+                                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                                "Los tipos de los valores del set/list" +
+                                                                "no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.tipoValor.tipo) +
+                                                                " en la tabla: " + idTabla));
+                                                            return tipoDato.errorSemantico;
+                                                        }
+                                                    }
+                                                    else if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
                                                     {
                                                         listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
                                                                 "Los tipos de los valores del set/list" +
                                                                 "no son iguales: " + Convert.ToString(((Lista)exp).tipoValor) +
+                                                                " en la tabla: " + idTabla));
+                                                        return tipoDato.errorSemantico;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (iterador.tipo != tipoComa)
+                                                    {
+                                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
                                                                 " en la tabla: " + idTabla));
                                                         return tipoDato.errorSemantico;
                                                     }
@@ -168,7 +252,17 @@ namespace Server.AST.Instrucciones
                                                 {
                                                     if (iterador.tipo == tipoComa)
                                                     {
-                                                        if (iterador.idTipo != ((CreateType)valorComa).idType)
+                                                        if (valorComa is Neww)
+                                                        {
+                                                            if (iterador.idTipo != ((Neww)valorComa).tipoNew.id)
+                                                            {
+                                                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.id) +
+                                                                " en la tabla: " + idTabla));
+                                                                return tipoDato.errorSemantico;
+                                                            }
+                                                        }
+                                                        else if (iterador.idTipo != ((CreateType)valorComa).idType)
                                                         {                                                                                                          
                                                             listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
                                                                 "Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)exp).idType) +
@@ -179,11 +273,32 @@ namespace Server.AST.Instrucciones
                                                 }
                                                 else if (tipoComa == tipoDato.list || tipoComa == tipoDato.set)
                                                 {
-                                                    if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
+                                                    if (valorComa is Neww)
+                                                    {
+                                                        if (iterador.tipoValor != ((Neww)valorComa).tipoNew.tipoValor.tipo)
+                                                        {
+                                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                                "Los tipos de los valores del set/list" +
+                                                                "no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.tipoValor.tipo) +
+                                                                " en la tabla: " + idTabla));
+                                                            return tipoDato.errorSemantico;
+                                                        }
+                                                    }
+                                                    else if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
                                                     {                                                    
                                                         listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
                                                                 "Los tipos de los valores del set/list" +
                                                                 "no son iguales: " + Convert.ToString(((Lista)exp).tipoValor) +
+                                                                " en la tabla: " + idTabla));
+                                                        return tipoDato.errorSemantico;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (iterador.tipo != tipoComa)
+                                                    {
+                                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
+                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
                                                                 " en la tabla: " + idTabla));
                                                         return tipoDato.errorSemantico;
                                                     }
@@ -282,7 +397,21 @@ namespace Server.AST.Instrucciones
                                                 {
                                                     if (iterador.tipo == tipoComa)
                                                     {
-                                                        if (iterador.idTipo == ((CreateType)valorComa).idType)
+                                                        if (valorComa is Neww)
+                                                        {
+                                                            Neww claseNeww = (Neww)valorComa;
+                                                            Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                                                            if (sim2 != null)
+                                                            {
+                                                                if (sim2.valor is CreateType)
+                                                                {
+                                                                    CreateType ss = (CreateType)sim2.valor;
+                                                                    CreateType lista2 = CreaNuevoType(ss, entorno, listas);
+                                                                    iterador.valorColumna.AddLast(lista2);
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (iterador.idTipo == ((CreateType)valorComa).idType)
                                                         {
                                                             iterador.valorColumna.AddLast(valorComa);
                                                         }
@@ -297,7 +426,13 @@ namespace Server.AST.Instrucciones
                                                 }
                                                 else if (tipoComa == tipoDato.list || tipoComa == tipoDato.set)
                                                 {
-                                                    if (iterador.tipoValor == ((Lista)valorComa).tipoValor)
+                                                    if (valorComa is Neww)
+                                                    {
+                                                        Neww v = (Neww)valorComa;
+                                                        listaGuardar = new Lista(iterador.idColumna.ToLower(), new List<Object>(), v.tipoNew.tipo, v.tipoNew.tipoValor.tipo, this.linea, this.col);
+                                                        iterador.valorColumna.AddLast(listaGuardar);
+                                                    }
+                                                    else if (iterador.tipoValor == ((Lista)valorComa).tipoValor)
                                                     {
                                                         iterador.valorColumna.AddLast(valorComa);
                                                     }
@@ -321,7 +456,21 @@ namespace Server.AST.Instrucciones
                                                 {
                                                     if (iterador.tipo == tipoComa)
                                                     {
-                                                        if (iterador.idTipo == ((CreateType)valorComa).idType)
+                                                        if (valorComa is Neww)
+                                                        {
+                                                            Neww claseNeww = (Neww)valorComa;
+                                                            Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                                                            if (sim2 != null)
+                                                            {
+                                                                if (sim2.valor is CreateType)
+                                                                {
+                                                                    CreateType ss = (CreateType)sim2.valor;
+                                                                    CreateType lista2 = CreaNuevoType(ss, entorno, listas);
+                                                                    iterador.valorColumna.AddLast(lista2);
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (iterador.idTipo == ((CreateType)valorComa).idType)
                                                         {
                                                             iterador.valorColumna.AddLast(valorComa);
                                                         }
@@ -336,7 +485,14 @@ namespace Server.AST.Instrucciones
                                                 }
                                                 else if (tipoComa == tipoDato.list || tipoComa == tipoDato.set)
                                                 {
-                                                    if (iterador.tipoValor == ((Lista)valorComa).tipoValor)
+                                                    if (valorComa is Neww)
+                                                    {
+                                                        Neww v = (Neww)valorComa;
+                                                        listaGuardar = new Lista(iterador.idColumna.ToLower(), new List<Object>(), v.tipoNew.tipo, v.tipoNew.tipoValor.tipo, this.linea, this.col);
+                                                        iterador.valorColumna.AddLast(listaGuardar);
+                                                        
+                                                    }
+                                                    else if (iterador.tipoValor == ((Lista)valorComa).tipoValor)
                                                     {
                                                         iterador.valorColumna.AddLast(valorComa);
                                                     }
@@ -392,6 +548,7 @@ namespace Server.AST.Instrucciones
             return tipoDato.ok;
         }
 
+        
 
 
         public Boolean existe_llave_primaria(object valor, LinkedList<object> listaValores, tipoDato tipoComa)

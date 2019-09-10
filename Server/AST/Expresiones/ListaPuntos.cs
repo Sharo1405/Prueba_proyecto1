@@ -31,6 +31,12 @@ namespace Server.AST.Expresiones
             ExpSeparadasPuntos.AddLast(new Puntos(linea, columna, der));
         }
 
+        public ListaPuntos(Expresion izq, int linea, int columna)
+        {
+            this.idvariable = "";
+            ExpSeparadasPuntos.AddLast(new Puntos(linea, columna, izq));
+        }
+
 
         public ListaPuntos(String id, LinkedList<Puntos> ExpSeparadasPuntos, int linea, int columna)
         {

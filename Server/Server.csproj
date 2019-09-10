@@ -63,6 +63,7 @@
     <Compile Include="AST\Expresiones\Funciones.cs" />
     <Compile Include="AST\Expresiones\FuncionesCollections.cs" />
     <Compile Include="AST\Expresiones\FuncionesNativasCadenas.cs" />
+    <Compile Include="AST\Expresiones\listaAccesoTabla.cs" />
     <Compile Include="AST\Expresiones\ListaErrorPrinter.cs" />
     <Compile Include="AST\Expresiones\ListaExpresiones.cs" />
     <Compile Include="AST\Expresiones\ListaPuntos.cs" />
@@ -103,10 +104,13 @@
     <Compile Include="AST\Instrucciones\Defaultt.cs" />
     <Compile Include="AST\Instrucciones\DropDataBase.cs" />
     <Compile Include="AST\Instrucciones\DropTable.cs" />
+    <Compile Include="AST\Instrucciones\idigualEupdate.cs" />
+    <Compile Include="AST\Instrucciones\idpuntoEigualEupdate.cs" />
     <Compile Include="AST\Instrucciones\InsertarInBase.cs" />
     <Compile Include="AST\Instrucciones\InsertarInBaseEspecial.cs" />
     <Compile Include="AST\Instrucciones\NodoCrearTabla.cs" />
     <Compile Include="AST\Instrucciones\Retorno.cs" />
+    <Compile Include="AST\Instrucciones\SetValorColumnaTabla.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlock.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlockStatement_Group.cs" />
     <Compile Include="AST\Instrucciones\truncateTabla.cs" />

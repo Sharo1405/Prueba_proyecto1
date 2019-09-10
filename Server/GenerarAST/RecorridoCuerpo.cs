@@ -240,12 +240,45 @@ namespace Server.GenerarAST
 
 
         public LinkedList<NodoAST> itemasignacion(ParseTreeNode nodo)
+        {            
+            if (nodo.ChildNodes.Count == 3)
+            {
+                LinkedList<NodoAST> nodoAST = itemasignacion(nodo.ChildNodes.ElementAt(0));
+                nodoAST.AddLast(itasig(nodo.ChildNodes.ElementAt(2)));
+                return nodoAST;
+
+            }
+            else //if (nodo.ChildNodes.Count == 1)
+            {
+                LinkedList<NodoAST> nodoAST = new LinkedList<NodoAST>();
+                nodoAST.AddLast(itasig(nodo.ChildNodes.ElementAt(0)));
+                return nodoAST;
+            }
+        }
+        
+
+        public NodoAST itasig(ParseTreeNode nodo)
         {
-            LinkedList<NodoAST> lasignacion = new LinkedList<NodoAST>();
+            if (nodo.ChildNodes.Count == 5)
+            {
+                return new idpuntoEigualEupdate(
+                    nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(4)),
+                    expresiones(nodo.ChildNodes.ElementAt(2)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column
+                    );
+            }
+            else //3
+            {
+                return new idigualEupdate(
+                   nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                   expresiones(nodo.ChildNodes.ElementAt(2)),
+                   nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                   nodo.ChildNodes.ElementAt(0).Token.Location.Column
+                   );
+            }
 
-
-
-            return lasignacion;
         }
 
 
@@ -1235,13 +1268,20 @@ namespace Server.GenerarAST
             }
             else if (nodo.ChildNodes.Count == 4)
             {
-                string operador = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
+                string operador = nodo.ChildNodes.ElementAt(0).Term.Name.ToLower();
                 switch (operador)
                 {                    
                     case "(": //CASTEOS
                         return new Casteos(
                             nodo.ChildNodes.ElementAt(1).ChildNodes.ElementAt(0).Token.Text.ToLower(),
                             expresiones(nodo.ChildNodes.ElementAt(3)),
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                    case "id":
+                        return new listaAccesoTabla(
+                            nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                            expresiones(nodo.ChildNodes.ElementAt(2)),
                             nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
                 }
