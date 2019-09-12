@@ -44,31 +44,202 @@ namespace Server.AST.Instrucciones
                         Tabla encontrado2 = new Tabla();
                         if (basee.Tabla.TryGetValue(idTabla.ToLower(), out encontrado2))
                         {
-
                             foreach (NodoAST asignar in asignaciones)
                             {
-                                if (asignar is idigualEupdate)
+
+                                if (asignar is listaAccesoTabla)
+                                {
+                                    //aqui
+                                    //lo de id[numero]
+                                    listaAccesoTabla asi = (listaAccesoTabla)asignar;
+                                    Columna coll = new Columna();
+                                    if (encontrado2.columnasTabla.TryGetValue(asi.idLista.ToLower(), out coll))
+                                    {
+                                        //--------------------------------------------------------------------------------
+                                        List<object> lista = new List<object>();
+                                        Lista listaGuardar = new Lista();
+                                        object index = asi.index.getValue(entorno, listas, management);
+                                        tipoDato tipoIndex = asi.index.getType(entorno, listas, management);
+
+                                        if (tipoIndex != tipoDato.entero)
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "El idice de la lista al que se desea acceder no es de tipo entero en la columna" + coll.idColumna));
+                                            return tipoDato.errorSemantico;
+                                        }
+
+                                        object valorComa = asi.igual.getValue(entorno, listas, management);
+                                        tipoDato tipoComa = asi.igual.getType(entorno, listas, management);
+                                        if (asi.igual is Corchetes)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista("", lista, tipoDato.list, tipoComa, this.linea, this.columna);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista("", lista, tipoDato.list, tipoComa, this.linea, this.columna);
+                                            }
+                                            tipoComa = tipoDato.list;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (asi.igual is Llaves)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista("", lista, tipoDato.set, tipoComa, this.linea, this.columna);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista("", lista, tipoDato.set, tipoComa, this.linea, this.columna);
+                                            }
+                                            tipoComa = tipoDato.set;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (valorComa is Neww)
+                                        {
+                                            Neww claseNeww = (Neww)valorComa;
+                                            if (claseNeww.tipoNew.tipo == tipoDato.id)
+                                            {
+                                                Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                                                if (sim2 != null)
+                                                {
+                                                    if (sim2.valor is CreateType)
+                                                    {
+                                                        CreateType ss = (CreateType)sim2.valor;
+                                                        CreateType lista2 = CreaNuevoType(ss, entorno, listas);
+                                                        valorComa = lista2;
+                                                    }
+                                                }
+                                            }
+                                            else if (claseNeww.tipoNew.tipo == tipoDato.list || claseNeww.tipoNew.tipo == tipoDato.set)
+                                            {
+                                                listaGuardar = new Lista("", new List<Object>(), claseNeww.tipoNew.tipo, claseNeww.tipoNew.tipoValor.tipo, this.linea, this.columna);
+                                                valorComa = listaGuardar;
+                                            }
+                                        }
+
+                                        //---------------------------------------------------------------------------------
+
+                                        if (coll.primaryKey == true)
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "La columa a actualizar es llave primaria: " + coll.idColumna));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                        int cantidadDatos = coll.valorColumna.Count;
+                                        //object valor = asi.igual.getValue(entorno, listas, management);
+                                        //tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
+                                        if (tipoComa == coll.tipoValor)
+                                        {
+                                            List<object> l = (List<object>)coll.valorColumna;
+                                            foreach (Lista lis in l)
+                                            {
+                                                lis.listaValores.RemoveAt(Convert.ToInt32(index));
+                                                lis.listaValores.Insert(Convert.ToInt32(index), valorComa);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "El tipo del valor no es igual al tipo de la columna para actualizar, col:" + asi.idLista +
+                                                "tipo valor: " + Convert.ToString(tipoComa)));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                }
+                                else if (asignar is idigualEupdate)
                                 {
                                     idigualEupdate asi = (idigualEupdate)asignar;
                                     Columna coll = new Columna();
                                     if (encontrado2.columnasTabla.TryGetValue(asi.idCol.ToLower(), out coll))
                                     {
+                                        //--------------------------------------------------------------------------------
+                                        List<object> lista = new List<object>();
+                                        Lista listaGuardar = new Lista();
+                                        object valorComa = asi.igual.getValue(entorno, listas, management);
+                                        tipoDato tipoComa = asi.igual.getType(entorno, listas, management);
+                                        if (asi.igual is Corchetes)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista("", lista, tipoDato.list, tipoComa, this.linea, this.columna);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista("", lista, tipoDato.list, tipoComa, this.linea, this.columna);
+                                            }
+                                            tipoComa = tipoDato.list;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (asi.igual is Llaves)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista("", lista, tipoDato.set, tipoComa, this.linea, this.columna);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista("", lista, tipoDato.set, tipoComa, this.linea, this.columna);
+                                            }
+                                            tipoComa = tipoDato.set;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (valorComa is Neww)
+                                        {
+                                            Neww claseNeww = (Neww)valorComa;
+                                            if (claseNeww.tipoNew.tipo == tipoDato.id)
+                                            {
+                                                Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                                                if (sim2 != null)
+                                                {
+                                                    if (sim2.valor is CreateType)
+                                                    {
+                                                        CreateType ss = (CreateType)sim2.valor;
+                                                        CreateType lista2 = CreaNuevoType(ss, entorno, listas);
+                                                        valorComa = lista2;
+                                                    }
+                                                }
+                                            }
+                                            else if (claseNeww.tipoNew.tipo == tipoDato.list || claseNeww.tipoNew.tipo == tipoDato.set)
+                                            {
+                                                listaGuardar = new Lista("", new List<Object>(), claseNeww.tipoNew.tipo, claseNeww.tipoNew.tipoValor.tipo, this.linea, this.columna);
+                                                valorComa = listaGuardar;
+                                            }
+                                        }
+
+                                        //---------------------------------------------------------------------------------
+
+                                        if (coll.primaryKey == true)
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "La columa a actualizar es llave primaria: "+ coll.idColumna));
+                                            return tipoDato.errorSemantico;
+                                        }
                                         int cantidadDatos = coll.valorColumna.Count;
-                                        object valor = asi.igual.getValue(entorno, listas, management);
-                                        tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
-                                        if (tipoValor == coll.tipo) {
+                                        //object valor = asi.igual.getValue(entorno, listas, management);
+                                        //tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
+                                        if (tipoComa == coll.tipo) {
                                             coll.valorColumna.Clear();
 
                                             for (int i = 0; i < cantidadDatos; i++)
                                             {
-                                                coll.valorColumna.AddLast(valor);
+                                                coll.valorColumna.Add(valorComa);
                                             }
                                         }
                                         else
                                         {
                                             listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
                                                 "El tipo del valor no es igual al tipo de la columna para actualizar, col:" + asi.idCol + 
-                                                "tipo valor: " + Convert.ToString(tipoValor)));
+                                                "tipo valor: " + Convert.ToString(tipoComa)));
                                             return tipoDato.errorSemantico;
                                         }
                                     }
@@ -81,11 +252,70 @@ namespace Server.AST.Instrucciones
                                     Columna coll = new Columna();
                                     if (encontrado2.columnasTabla.TryGetValue(asi.idCol.ToLower(), out coll))
                                     {
-                                        object valor = asi.igual.getValue(entorno, listas, management);
-                                        tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
+                                        //object valor = asi.igual.getValue(entorno, listas, management);
+                                        //tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
+
+                                        List<object> lista = new List<object>();
+                                        Lista listaGuardar = new Lista();
+                                        object valorComa = asi.igual.getValue(entorno, listas, management);
+                                        tipoDato tipoComa = asi.igual.getType(entorno, listas, management);
+                                        if (asi.igual is Corchetes)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista("", lista, tipoDato.list, tipoComa, this.linea, this.columna);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista("", lista, tipoDato.list, tipoComa, this.linea, this.columna);
+                                            }
+                                            tipoComa = tipoDato.list;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (asi.igual is Llaves)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista("", lista, tipoDato.set, tipoComa, this.linea, this.columna);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista("", lista, tipoDato.set, tipoComa, this.linea, this.columna);
+                                            }
+                                            tipoComa = tipoDato.set;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (valorComa is Neww)
+                                        {
+                                            Neww claseNeww = (Neww)valorComa;
+                                            if (claseNeww.tipoNew.tipo == tipoDato.id)
+                                            {
+                                                Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                                                if (sim2 != null)
+                                                {
+                                                    if (sim2.valor is CreateType)
+                                                    {
+                                                        CreateType ss = (CreateType)sim2.valor;
+                                                        CreateType lista2 = CreaNuevoType(ss, entorno, listas);
+                                                        valorComa = lista2;
+                                                    }
+                                                }
+                                            }
+                                            else if (claseNeww.tipoNew.tipo == tipoDato.list || claseNeww.tipoNew.tipo == tipoDato.set)
+                                            {
+                                                listaGuardar = new Lista("", new List<Object>(), claseNeww.tipoNew.tipo, claseNeww.tipoNew.tipoValor.tipo, this.linea, this.columna);
+                                                valorComa = listaGuardar;
+                                            }
+                                        }
+                                        //-------------------------------------------------------------------------------------------------------
+
                                         if (asi.acceso is ListaPuntos)
                                         {
-                                            SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.acceso, valor, tipoValor, this.linea, this.columna);
+                                            SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.acceso, valorComa, tipoComa, this.linea, this.columna);
                                             svCol.ejecutar(entorno, listas, management);
                                         }
                                         else
@@ -94,12 +324,15 @@ namespace Server.AST.Instrucciones
                                             {
                                                 Identificador id = (Identificador)asi.acceso;
                                                 ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
-                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valor, tipoValor, this.linea, this.columna);
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna);
                                                 svCol.ejecutar(entorno, listas, management);
                                             } 
                                             else if (asi.acceso is listaAccesoTabla)
                                             {
-
+                                                listaAccesoTabla id = (listaAccesoTabla)asi.acceso;
+                                                ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna);
+                                                svCol.ejecutar(entorno, listas, management);
                                             }
                                             else
                                             {
@@ -108,12 +341,9 @@ namespace Server.AST.Instrucciones
                                                 return tipoDato.errorSemantico;
                                             }
                                         }
-                                        
                                     }
-
                                 }
                             }
-
                         }
                         else
                         {
@@ -143,6 +373,58 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
+        }      
+
+
+        public CreateType CreaNuevoType(CreateType existente, Entorno entorno, ErrorImpresion listas)
+        {
+            CreateType nuevo = new CreateType();
+            nuevo.idType = existente.idType;
+            nuevo.ifnotexists = existente.ifnotexists;
+            nuevo.linea = existente.linea;
+            nuevo.columna = existente.columna;
+
+            foreach (itemType var in existente.itemTypee)
+            {
+                itemType i = new itemType();
+                i.id = var.id;
+                i.tipo = var.tipo;
+                i.valor = new Object();
+                if (var.tipo.tipo == tipoDato.id)
+                {
+                    Simbolo buscado2 = entorno.get(var.tipo.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                    if (buscado2 != null)
+                    {
+                        //arreglar solo declarar sin el clonar
+                        //CreateType typeComoTipo =(CreateType) buscado2.valor;
+                        i.valor = null;//typeComoTipo.Clone();
+                    }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                            "El tipo de esa variable del Type User no existe: Tipo:" + var.tipo.id.ToLower()));
+                    }
+                }
+                else if (var.tipo.tipo == tipoDato.entero)
+                {
+                    var.valor = 0;
+                }
+                else if (var.tipo.tipo == tipoDato.decimall)
+                {
+                    var.valor = 0.0;
+                }
+                else if (var.tipo.tipo == tipoDato.booleano)
+                {
+                    var.valor = false;
+                }
+                else
+                {
+                    var.valor = null;
+                }
+
+                nuevo.itemTypee.AddLast(i);
+            }
+            return nuevo;
         }
     }
 }

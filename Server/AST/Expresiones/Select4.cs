@@ -107,7 +107,7 @@ namespace Server.AST.Expresiones
 
                                             //ya buscando en laas columnas
                                             Columna colNuevita = new Columna();
-                                            LinkedList<object> listaItems = new LinkedList<object>();
+                                            List<object> listaItems = new List<object>();
                                             Columna colNuevita2 = new Columna();
                                             if (encontrado2.columnasTabla.TryGetValue(idColumnaPunto.ToLower(), out colNuevita))
                                             {
@@ -119,7 +119,7 @@ namespace Server.AST.Expresiones
                                                             //LinkedList<itemType> ite = new LinkedList<itemType>();
                                                             //ite.AddLast(t);
                                                             //CreateType n = new CreateType(idColumnaPunto.ToLower(),ite, type.linea, type.columna);
-                                                            listaItems.AddLast(t);
+                                                            listaItems.Add(t);
                                                         }
                                                     }
                                                 }
@@ -175,7 +175,7 @@ namespace Server.AST.Expresiones
 
                                     //ya buscando en laas columnas
                                     Columna colNuevita = new Columna();
-                                    LinkedList<object> listaItems = new LinkedList<object>();
+                                    List<object> listaItems = new List<object>();
                                     Columna colNuevita2 = new Columna();
                                     if (encontrado2.columnasTabla.TryGetValue(idColumnaPunto.ToLower(), out colNuevita))
                                     {
@@ -186,7 +186,7 @@ namespace Server.AST.Expresiones
                                             {
                                                 if (t.id.ToLower().Equals(idItemUserType.ToLower()))
                                                 {
-                                                    listaItems.AddLast(t);
+                                                    listaItems.Add(t);
                                                 }
                                             }
                                         }

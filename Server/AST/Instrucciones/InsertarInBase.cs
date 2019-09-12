@@ -407,13 +407,13 @@ namespace Server.AST.Instrucciones
                                                                 {
                                                                     CreateType ss = (CreateType)sim2.valor;
                                                                     CreateType lista2 = CreaNuevoType(ss, entorno, listas);
-                                                                    iterador.valorColumna.AddLast(lista2);
+                                                                    iterador.valorColumna.Add(lista2);
                                                                 }
                                                             }
                                                         }
                                                         else if (iterador.idTipo == ((CreateType)valorComa).idType)
                                                         {
-                                                            iterador.valorColumna.AddLast(valorComa);
+                                                            iterador.valorColumna.Add(valorComa);
                                                         }
                                                         else
                                                         {
@@ -430,11 +430,11 @@ namespace Server.AST.Instrucciones
                                                     {
                                                         Neww v = (Neww)valorComa;
                                                         listaGuardar = new Lista(iterador.idColumna.ToLower(), new List<Object>(), v.tipoNew.tipo, v.tipoNew.tipoValor.tipo, this.linea, this.col);
-                                                        iterador.valorColumna.AddLast(listaGuardar);
+                                                        iterador.valorColumna.Add(listaGuardar);
                                                     }
                                                     else if (iterador.tipoValor == ((Lista)valorComa).tipoValor)
                                                     {
-                                                        iterador.valorColumna.AddLast(valorComa);
+                                                        iterador.valorColumna.Add(valorComa);
                                                     }
                                                     else
                                                     {
@@ -447,7 +447,7 @@ namespace Server.AST.Instrucciones
                                                 }
                                                 else
                                                 {
-                                                    iterador.valorColumna.AddLast(valorComa);
+                                                    iterador.valorColumna.Add(valorComa);
                                                 }
                                             }
                                             else
@@ -466,13 +466,13 @@ namespace Server.AST.Instrucciones
                                                                 {
                                                                     CreateType ss = (CreateType)sim2.valor;
                                                                     CreateType lista2 = CreaNuevoType(ss, entorno, listas);
-                                                                    iterador.valorColumna.AddLast(lista2);
+                                                                    iterador.valorColumna.Add(lista2);
                                                                 }
                                                             }
                                                         }
                                                         else if (iterador.idTipo == ((CreateType)valorComa).idType)
                                                         {
-                                                            iterador.valorColumna.AddLast(valorComa);
+                                                            iterador.valorColumna.Add(valorComa);
                                                         }
                                                         else
                                                         {
@@ -489,12 +489,12 @@ namespace Server.AST.Instrucciones
                                                     {
                                                         Neww v = (Neww)valorComa;
                                                         listaGuardar = new Lista(iterador.idColumna.ToLower(), new List<Object>(), v.tipoNew.tipo, v.tipoNew.tipoValor.tipo, this.linea, this.col);
-                                                        iterador.valorColumna.AddLast(listaGuardar);
+                                                        iterador.valorColumna.Add(listaGuardar);
                                                         
                                                     }
                                                     else if (iterador.tipoValor == ((Lista)valorComa).tipoValor)
                                                     {
-                                                        iterador.valorColumna.AddLast(valorComa);
+                                                        iterador.valorColumna.Add(valorComa);
                                                     }
                                                     else
                                                     {
@@ -507,7 +507,7 @@ namespace Server.AST.Instrucciones
                                                 }
                                                 else
                                                 {
-                                                    iterador.valorColumna.AddLast(valorComa);
+                                                    iterador.valorColumna.Add(valorComa);
                                                 }
                                             }
                                         }
@@ -551,7 +551,7 @@ namespace Server.AST.Instrucciones
         
 
 
-        public Boolean existe_llave_primaria(object valor, LinkedList<object> listaValores, tipoDato tipoComa)
+        public Boolean existe_llave_primaria(object valor, List<object> listaValores, tipoDato tipoComa)
         {
 
             foreach (object guardado in listaValores)

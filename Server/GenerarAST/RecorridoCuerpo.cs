@@ -255,12 +255,22 @@ namespace Server.GenerarAST
                 return nodoAST;
             }
         }
-        
+
 
         public NodoAST itasig(ParseTreeNode nodo)
         {
-            if (nodo.ChildNodes.Count == 5)
+            if (nodo.ChildNodes.Count == 6)
             {
+                return new listaAccesoTabla(
+                    nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(2)),
+                    expresiones(nodo.ChildNodes.ElementAt(5)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+            }
+            else if (nodo.ChildNodes.Count == 5)
+            {
+
                 return new idpuntoEigualEupdate(
                     nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
                     expresiones(nodo.ChildNodes.ElementAt(4)),
@@ -268,6 +278,7 @@ namespace Server.GenerarAST
                     nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                     nodo.ChildNodes.ElementAt(0).Token.Location.Column
                     );
+            
             }
             else //3
             {

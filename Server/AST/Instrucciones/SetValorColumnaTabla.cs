@@ -38,7 +38,7 @@ namespace Server.AST.Instrucciones
             this.columna = colllll;
         }
 
-
+        //int contador2 = 0;
         public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             ListaExpresionesPuntos = new LinkedList<Puntos>();
@@ -62,16 +62,183 @@ namespace Server.AST.Instrucciones
             //----------------------------------------------------------------------------------------
 
 
-            Columna coll = new Columna();
+          
             int contador2 = 0;
 
             if (col.tipo == tipoDato.id)
             {
+                String iditemType = "";
+                Expresion posLista;
+                Puntos idItem = ListaExpresionesPuntos.ElementAt(contador2);//0
+                posLista = idItem;
+                if (idItem.expresion1 is Identificador)
+                {
+                    Identificador ident = (Identificador)idItem.expresion1;
+                    iditemType = ident.id;
+                }
+                else if (idItem.expresion1 is listaAccesoTabla)
+                {
+                    listaAccesoTabla lat = (listaAccesoTabla)idItem.expresion1;
+                    iditemType = lat.idLista;
+                    posLista = lat.index;
+                }
 
+                foreach (CreateType typeUser in col.valorColumna) {
+                    contador2 = 0;
+                    foreach (itemType item in typeUser.itemTypee)
+                    {
+                        if (item.id.ToLower().Equals(iditemType.ToLower()))
+                        {
+                            if (item.tipo.tipo == tipoDato.id)
+                            {
+                                //creattipe
+                                if (contador2 == ListaExpresionesPuntos.Count - 1)
+                                {
+                                    if (valorParaAsignar is CreateType)
+                                    {
+                                        item.valor = valorParaAsignar;
+                                    }
+                                    else
+                                    {
+                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                            "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                        return tipoDato.errorSemantico;
+                                    }
+                                }
+                                else
+                                {
+                                    contador2 = 1;
+                                    mastypeusersss((CreateType) item.valor, entorno, listas, management, contador2);
+                                }
+                            }
+                            else if (item.tipo.tipo == tipoDato.list || item.tipo.tipo == tipoDato.list)
+                            {
+                                if (contador2 == ListaExpresionesPuntos.Count - 1)
+                                {
+                                    if (idItem.expresion1 is Identificador)
+                                    {
+                                        if (valorParaAsignar is Lista)//tendria que ser de tipo list/set
+                                        {
+                                            if (((Lista)item.valor).tipoValor == ((Lista)valorParaAsignar).tipoValor)
+                                            {
+                                                item.valor = new object();
+                                                item.valor = valorParaAsignar;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                    else if (idItem.expresion1 is listaAccesoTabla)
+                                    {
+                                        Lista valorExistente = (Lista)item.valor;
+                                        List<object> lista = (List<object>)valorExistente.listaValores;
+                                        object index = posLista.getValue(entorno, listas, management);
+                                        tipoDato tipoIndex = posLista.getType(entorno, listas, management);
+                                        if (tipoIndex == tipoDato.entero)
+                                        {
+                                            lista.RemoveAt(Convert.ToInt32(index));
+                                            lista.Insert(Convert.ToInt32(index), valorParaAsignar);
+                                        }
+                                        else
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    contador2++;
+                                    Lista valorExistente = (Lista)item.valor;
+                                    List<object> lista = (List<object>)valorExistente.listaValores;
+                                    foreach (object dentroLista in lista)
+                                    {
+                                        if (dentroLista is CreateType)
+                                        {
+                                            mastypeusersss((CreateType)item.valor, entorno, listas, management, contador2);
+                                        }
+                                    }
+                                }
+                            }
+                            else 
+                            {
+                                if (item.tipo.tipo == tipoValorParaAsignar)
+                                {
+                                    item.valor = valorParaAsignar;
+                                }
+                                else
+                                {
+                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                        "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                    return tipoDato.errorSemantico;
+                                }
+                            }
+                        }
+                    }
+                }
             }
             else if (col.tipo == tipoDato.list || col.tipo == tipoDato.set)
             {
-                
+                //REVISAR
+
+                if (contador2 == ListaExpresionesPuntos.Count - 1)
+                {
+                    if (idItem.expresion1 is Identificador)
+                    {
+                        if (valorParaAsignar is Lista)//tendria que ser de tipo list/set
+                        {
+                            if (((Lista)item.valor).tipoValor == ((Lista)valorParaAsignar).tipoValor)
+                            {
+                                item.valor = new object();
+                                item.valor = valorParaAsignar;
+                            }
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                            return tipoDato.errorSemantico;
+                        }
+                    }
+                    else if (idItem.expresion1 is listaAccesoTabla)
+                    {
+                        Lista valorExistente = (Lista)item.valor;
+                        List<object> lista = (List<object>)valorExistente.listaValores;
+                        object index = posLista.getValue(entorno, listas, management);
+                        tipoDato tipoIndex = posLista.getType(entorno, listas, management);
+                        if (tipoIndex == tipoDato.entero)
+                        {
+                            lista.RemoveAt(Convert.ToInt32(index));
+                            lista.Insert(Convert.ToInt32(index), valorParaAsignar);
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                            return tipoDato.errorSemantico;
+                        }
+                    }
+                }
+                else
+                {
+                    contador2++;
+                    Lista valorExistente = (Lista)item.valor;
+                    List<object> lista = (List<object>)valorExistente.listaValores;
+                    foreach (object dentroLista in lista)
+                    {
+                        if (dentroLista is CreateType)
+                        {
+                            mastypeusersss((CreateType)item.valor, entorno, listas, management, contador2);
+                        }
+                    }
+                }
+
+                //REVISAR
             }
             else
             {
@@ -80,24 +247,24 @@ namespace Server.AST.Instrucciones
                 if (tipoDato.counter == col.tipo)
                 {
                     listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                        "No se puede actualizar un campo de tipo counter en la columna: " + coll.idColumna));
+                        "No se puede actualizar un campo de tipo counter en la columna: " + col.idColumna));
                     return tipoDato.errorSemantico;
                 }
                 else
                 {
                     if (col.tipo == tipoValorParaAsignar)
                     {
-                        int cantValores = coll.valorColumna.Count;
-                        coll.valorColumna.Clear();
+                        int cantValores = col.valorColumna.Count;
+                        col.valorColumna.Clear();
                         for (int i = 0; i < cantValores; i++)
                         {
-                            coll.valorColumna.AddLast(valorParaAsignar);
+                            col.valorColumna.Add(valorParaAsignar);
                         }
                     }
                     else
                     {
                         listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                            "No se puede actualizar la columna porque no es del mismo tipo: " + coll.idColumna));
+                            "No se puede actualizar la columna porque no es del mismo tipo: " + col.idColumna));
                         return tipoDato.errorSemantico;
                     }
                 }                
@@ -106,70 +273,122 @@ namespace Server.AST.Instrucciones
             return tipoDato.ok;
         }
 
-        public object devuleveFuncionCollection(FuncionesCollections funcion, Entorno entorno,
-            ErrorImpresion listas, tipoDato tipoValor, Administrador management)
+
+        
+        public object mastypeusersss(CreateType masTypeUser, Entorno entorno, ErrorImpresion listas, Administrador management, int cuenta)
         {
-            try
+            String iditemType = "";
+            Expresion posLista;
+            Puntos idItem = ListaExpresionesPuntos.ElementAt(cuenta);
+            posLista = idItem;
+            if (idItem.expresion1 is Identificador)
             {
-                if (tipoFinal == tipoDato.list || tipoFinal == tipoDato.set)
+                Identificador ident = (Identificador)idItem.expresion1;
+                iditemType = ident.id;
+            }
+            else if (idItem.expresion1 is listaAccesoTabla)
+            {
+                listaAccesoTabla lat = (listaAccesoTabla)idItem.expresion1;
+                iditemType = lat.idLista;
+                posLista = lat.index;
+            }
+
+            foreach (itemType item in masTypeUser.itemTypee)
+            {
+                if (iditemType.ToLower().Equals(item.id.ToLower()))
                 {
-                    List<Object> auxlista = (List<Object>)auxParaFunciones;
-                    switch (funcion.funcionCollections)
+                    if (item.tipo.tipo == tipoDato.id)
                     {
-                        case "get":
-                            if (auxlista.Count == 0)
+                        //creattipe
+                        if (cuenta == ListaExpresionesPuntos.Count - 1)
+                        {
+                            if (valorParaAsignar is CreateType)
                             {
-                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                            "La lista esta vacia no se puede realizar ninguna operacion"));
-                                auxParaFunciones = tipoDato.errorSemantico;
+                                item.valor = valorParaAsignar;
+                            }
+                            else
+                            {
+                                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                    "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
                                 return tipoDato.errorSemantico;
                             }
-                            int contaPos1 = -1;
-                            foreach (Object item in auxlista)
+                        }
+                        else
+                        {
+                            cuenta++;
+                            mastypeusersss((CreateType)item.valor, entorno, listas, management, cuenta);
+                        }
+                    }
+                    else if (item.tipo.tipo == tipoDato.list || item.tipo.tipo == tipoDato.list)
+                    {
+                        if (cuenta == ListaExpresionesPuntos.Count - 1) {
+                            if (idItem.expresion1 is Identificador)
                             {
-                                contaPos1++;
+                                if (valorParaAsignar is Lista)//tendria que ser de tipo list/set
+                                {
+                                    if (((Lista)item.valor).tipoValor== ((Lista)valorParaAsignar).tipoValor) {
+                                        item.valor = new object();
+                                        item.valor = valorParaAsignar;
+                                    }
+                                }
+                                else
+                                {
+                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                        "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                    return tipoDato.errorSemantico;
+                                }
                             }
-                            object valorPos = funcion.exp1.getValue(entorno, listas, management);
-                            tipoDato tipovalorPos = funcion.exp1.getType(entorno, listas, management);
-
-                            if (tipovalorPos != tipoDato.entero)
+                            else if (idItem.expresion1 is listaAccesoTabla)
                             {
-                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                        "El indice no es de tipo entero"));
-                                auxParaFunciones = tipoDato.errorSemantico;
-                                return tipoDato.errorSemantico;
+                                Lista valorExistente = (Lista)item.valor;
+                                List<object> lista = (List<object>)valorExistente.listaValores;
+                                object index = posLista.getValue(entorno, listas, management);
+                                tipoDato tipoIndex = posLista.getType(entorno, listas, management);
+                                if (tipoIndex == tipoDato.entero) {
+                                    lista.RemoveAt(Convert.ToInt32(index));
+                                    lista.Insert(Convert.ToInt32(index), valorParaAsignar);
+                                }
+                                else
+                                {
+                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                        "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                    return tipoDato.errorSemantico;
+                                }
                             }
-                            if (Int32.Parse(Convert.ToString(valorPos)) > contaPos1)
-                            {
-                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                        "Posicion es mayor a la de la lists/set"));
-                                auxParaFunciones = tipoDato.errorSemantico;
-                                return tipoDato.errorSemantico;
+                        }
+                        else
+                        {
+                            cuenta++;
+                            Lista valorExistente = (Lista)item.valor;
+                            List<object> lista = (List<object>)valorExistente.listaValores;
+                            foreach (object dentroLista in lista) {
+                                if (dentroLista is CreateType) {
+                                    mastypeusersss((CreateType)item.valor, entorno, listas, management, cuenta);
+                                }
                             }
-
-                            auxParaFunciones = null;
-                            tipoFinal = tipoValor;
-                            auxParaFunciones = auxlista.ElementAt(Int32.Parse(Convert.ToString(valorPos)));
-                            return auxParaFunciones;
+                        }
+                    }
+                    else
+                    {
+                        if (item.tipo.tipo == tipoValorParaAsignar)
+                        {
+                            item.valor = valorParaAsignar;
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                            return tipoDato.errorSemantico;
+                        }
                     }
                 }
-                else
-                {
-                    listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                       "Acceso no valido no es una lista/set a la que se le aplicara las funciones de listas"));
-                    auxParaFunciones = tipoDato.errorSemantico;
-                    return tipoDato.errorSemantico;
-                }
             }
-            catch (Exception e)
-            {
-                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                                                        "Acceso no valido"));
-                auxParaFunciones = tipoDato.errorSemantico;
-                return tipoDato.errorSemantico;
-            }
-            return tipoDato.errorSemantico;
+
+            return null;
         }
+
+
+
 
 
         public object masPuntos(Entorno entorno, ErrorImpresion listas, LinkedList<Puntos> listapuntos, int contador)

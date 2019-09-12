@@ -12,6 +12,7 @@ namespace Server.AST.Expresiones
     {
         public String idLista { get; set; }
         public Expresion index { get; set; }
+        public Expresion igual { get; set; }
         public int linea { get; set; }
         public int columna { get; set; }
 
@@ -25,15 +26,24 @@ namespace Server.AST.Expresiones
             this.columna = columna;
         }
 
+        public listaAccesoTabla(String idLista, Expresion index,
+            Expresion igual, int linea, int columna)
+        {
+            this.idLista = idLista;
+            this.index = index;
+            this.igual = igual;
+            this.linea = linea;
+            this.columna = columna;
+        }
 
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            throw new NotImplementedException();
+            return Operacion.tipoDato.errorSemantico;
         }
 
         public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            throw new NotImplementedException();
+            return this;
         }
     }
 }

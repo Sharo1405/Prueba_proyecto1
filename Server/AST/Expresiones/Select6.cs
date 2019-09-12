@@ -125,7 +125,7 @@ namespace Server.AST.Expresiones
 
                                             //ya buscando en laas columnas
                                             Columna colNuevita = new Columna();
-                                            LinkedList<object> listaItems = new LinkedList<object>();
+                                            List<object> listaItems = new List<object>();
                                             Columna colNuevita2 = new Columna();
                                             if (encontrado2.columnasTabla.TryGetValue(idColumnaPunto.ToLower(), out colNuevita))
                                             {
@@ -187,7 +187,7 @@ namespace Server.AST.Expresiones
                                                             Columna colNuevita33 = new Columna();
                                                             if (paraRetorno.columnasTabla.TryGetValue(saca.columna.ToLower(), out colNuevita33))
                                                             {
-                                                                colNuevita33.valorColumna.AddLast(ojo);
+                                                                colNuevita33.valorColumna.Add(ojo);
                                                             }
                                                         }
                                                         else
@@ -201,7 +201,7 @@ namespace Server.AST.Expresiones
                                                                     Columna colNuevita33 = new Columna();
                                                                     if (paraRetorno.columnasTabla.TryGetValue(saca.columna+ "." + saca.accesoCol, out colNuevita33))
                                                                     {
-                                                                        colNuevita33.valorColumna.AddLast(t);
+                                                                        colNuevita33.valorColumna.Add(t);
                                                                     }
                                                                     //paraRetorno.columnasTabla.ElementAt(0).Value.valorColumna.AddLast(t);
                                                                     break;
@@ -280,7 +280,7 @@ namespace Server.AST.Expresiones
                                     }
                                     //ya buscando en laas columnas
                                     Columna colNuevita = new Columna();
-                                    LinkedList<object> listaItems = new LinkedList<object>();
+                                    List<object> listaItems = new List<object>();
                                     Columna colNuevita2 = new Columna();
                                     if (encontrado2.columnasTabla.TryGetValue(idColumnaPunto.ToLower(), out colNuevita))
                                     {
@@ -330,7 +330,7 @@ namespace Server.AST.Expresiones
                                                     {
                                                         if (t.id.ToLower().Equals(idItemUserType.ToLower()))
                                                         {
-                                                            paraRetorno.columnasTabla.ElementAt(0).Value.valorColumna.AddLast(t);
+                                                            paraRetorno.columnasTabla.ElementAt(0).Value.valorColumna.Add(t);
                                                             break;
                                                         }
                                                     }                                                   
@@ -376,7 +376,7 @@ namespace Server.AST.Expresiones
                                     int cantValoresXcolumna = 1;
 
                                     Columna colNuevita = new Columna();
-                                    LinkedList<object> listaItems = new LinkedList<object>();
+                                    List<object> listaItems = new List<object>();
                                     Columna colNuevita2 = new Columna();
                                     if (encontrado2.columnasTabla.TryGetValue(ii.id.ToLower(), out colNuevita))
                                     {
@@ -426,7 +426,7 @@ namespace Server.AST.Expresiones
                                                     {
                                                         if (t.id.ToLower().Equals(ii.id.ToLower()))
                                                         {
-                                                            paraRetorno.columnasTabla.ElementAt(0).Value.valorColumna.AddLast(t);
+                                                            paraRetorno.columnasTabla.ElementAt(0).Value.valorColumna.Add(t);
                                                             break;
                                                         }
                                                     }
@@ -509,7 +509,7 @@ namespace Server.AST.Expresiones
                                                 Columna paraAsignar = new Columna();
                                                 if (paraRetorno.columnasTabla.TryGetValue(kvp.Value.idColumna.ToLower(), out paraAsignar))
                                                 {
-                                                    paraAsignar.valorColumna.AddLast(kvp.Value.valorColumna.ElementAt(contador));
+                                                    paraAsignar.valorColumna.Add(kvp.Value.valorColumna.ElementAt(contador));
                                                 }
                                             }
 

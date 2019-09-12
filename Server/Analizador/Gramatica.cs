@@ -721,7 +721,8 @@ namespace Server.Analizador
 
 
             ITEMASIGNACION.Rule = id + igual + E
-                                | id + punto + E + igual + E;
+                                | id + punto + E + igual + E
+                                | id + acorchete + E + ccorchete + igual + E;
                                 //| E;
                                  //ACCESOASIGNACION
 

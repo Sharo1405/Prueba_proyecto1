@@ -28,26 +28,26 @@ namespace Server.AST.Instrucciones
         }
 
 
-        public LinkedList<object> llenarListaValores(tipoDato tipo, int indice)
+        public List<object> llenarListaValores(tipoDato tipo, int indice)
         {
-            LinkedList<Object> listaRetorno = new LinkedList<object>();
+            List<Object> listaRetorno = new List<object>();
             for (int i = 0; i < indice; i++)
             {
                 if (tipo == tipoDato.entero)
                 {
-                    listaRetorno.AddLast(0);
+                    listaRetorno.Add(0);
                 }
                 else if (tipo == tipoDato.decimall)
                 {
-                    listaRetorno.AddLast(0.0);
+                    listaRetorno.Add(0.0);
                 }
                 else if (tipo == tipoDato.booleano)// || tipo == tipoDato.date || tipo == tipoDato.time)
                 {
-                    listaRetorno.AddLast(false);
+                    listaRetorno.Add(false);
                 }
                 else
                 {
-                    listaRetorno.AddLast(null);
+                    listaRetorno.Add(null);
                 }
             }
             return listaRetorno;
@@ -76,7 +76,7 @@ namespace Server.AST.Instrucciones
                         foreach (itemType item in itemTypee) {
                             try
                             {
-                                LinkedList<object> valColumnaGuardar = llenarListaValores(item.tipo.tipo, countColumna);
+                                List<object> valColumnaGuardar = llenarListaValores(item.tipo.tipo, countColumna);
                                 if (item.tipo.tipoValor != null)
                                 {
                                     nueva = new Columna(item.id.ToLower(), item.tipo.tipo,
