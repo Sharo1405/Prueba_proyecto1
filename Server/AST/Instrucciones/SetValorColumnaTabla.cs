@@ -168,16 +168,61 @@ namespace Server.AST.Instrucciones
                                 }
                                 else
                                 {
-                                    contador2++;
-                                    Lista valorExistente = (Lista)item.valor;
-                                    List<object> lista = (List<object>)valorExistente.listaValores;
-                                    foreach (object dentroLista in lista)
+                                    //revisar
+
+                                    Lista utu = (Lista)item.valor;
+                                    object vindex = posLista.getValue(entorno, listas, management);
+                                    tipoDato tipovindex = posLista.getType(entorno, listas, management);
+
+                                    if (tipovindex != tipoDato.entero)
                                     {
-                                        if (dentroLista is CreateType)
+                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                            "No de puede acceder a la posicion de la lista ya que no es de tipo entero el index, en la columna: " + col.idColumna));
+                                        return tipoDato.errorSemantico;
+                                    }
+
+
+                                    CreateType ut = (CreateType)utu.listaValores.ElementAt(Convert.ToInt32(vindex));
+                                    
+                                    if (idItem.expresion1 is listaAccesoTabla)
+                                    {                                        
+                                        foreach (itemType tititi in ut.itemTypee)
                                         {
-                                            mastypeusersss((CreateType)item.valor, entorno, listas, management, contador2);
+                                            if (tititi.id == iditemType)
+                                            {
+                                                if (tititi.tipo.tipo == tipoDato.list || tititi.tipo.tipo == tipoDato.set)
+                                                {
+
+                                                    Lista lista = (Lista)tititi.valor;
+                                                    List<object> lista2 = (List<object>)lista.listaValores;
+                                                    masListas(lista2, entorno, listas, management, contador2 + 1, Convert.ToInt32(vindex));
+                                                }
+                                                else if(tititi.tipo.tipo == tipoDato.id)
+                                                {
+                                                    CreateType otro = (CreateType)tititi.valor;
+                                                    mastypeusersss(otro, entorno, listas, management, contador2+1);
+                                                }
+                                                else
+                                                {
+                                                    if (tititi.tipo.tipo == tipoValorParaAsignar) {
+                                                        tititi.valor = valorParaAsignar;
+                                                    }
+                                                    else
+                                                    {
+                                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                            "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                                        return tipoDato.errorSemantico;
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
+                                    else
+                                    {
+                                        mastypeusersss(ut, entorno, listas, management, contador2);
+                                    }
+
+                                    //revisar
                                 }
                             }
                             else
@@ -289,7 +334,7 @@ namespace Server.AST.Instrucciones
                             }
                             else 
                             {                           
-                                mastypeusersss(ut, entorno, listas, management, contador2);
+                                mastypeusersss(ut, entorno, listas, management, contador2+1);
                             }
                         }
                     }
@@ -418,12 +463,14 @@ namespace Server.AST.Instrucciones
                     }
                     else if (item.tipo.tipo == tipoDato.list || item.tipo.tipo == tipoDato.list)
                     {
-                        if (cuenta == ListaExpresionesPuntos.Count - 1) {
+                        if (cuenta == ListaExpresionesPuntos.Count - 1)
+                        {
                             if (idItem.expresion1 is Identificador)
                             {
                                 if (valorParaAsignar is Lista)//tendria que ser de tipo list/set
                                 {
-                                    if (((Lista)item.valor).tipoValor== ((Lista)valorParaAsignar).tipoValor) {
+                                    if (((Lista)item.valor).tipoValor == ((Lista)valorParaAsignar).tipoValor)
+                                    {
                                         item.valor = new object();
                                         item.valor = valorParaAsignar;
                                     }
@@ -441,7 +488,8 @@ namespace Server.AST.Instrucciones
                                 List<object> lista = (List<object>)valorExistente.listaValores;
                                 object index = posLista.getValue(entorno, listas, management);
                                 tipoDato tipoIndex = posLista.getType(entorno, listas, management);
-                                if (tipoIndex == tipoDato.entero) {
+                                if (tipoIndex == tipoDato.entero)
+                                {
                                     lista.RemoveAt(Convert.ToInt32(index));
                                     lista.Insert(Convert.ToInt32(index), valorParaAsignar);
                                 }
@@ -455,14 +503,62 @@ namespace Server.AST.Instrucciones
                         }
                         else
                         {
-                            cuenta++;
-                            Lista valorExistente = (Lista)item.valor;
-                            List<object> lista = (List<object>)valorExistente.listaValores;
-                            foreach (object dentroLista in lista) {
-                                if (dentroLista is CreateType) {
-                                    mastypeusersss((CreateType)item.valor, entorno, listas, management, cuenta);
+                            //revisar
+
+                            Lista utu = (Lista)item.valor;
+                            object vindex = posLista.getValue(entorno, listas, management);
+                            tipoDato tipovindex = posLista.getType(entorno, listas, management);
+
+                            if (tipovindex != tipoDato.entero)
+                            {
+                                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                    "No de puede acceder a la posicion de la lista ya que no es de tipo entero el index, en la columna: " + col.idColumna));
+                                return tipoDato.errorSemantico;
+                            }
+
+
+                            CreateType ut = (CreateType)utu.listaValores.ElementAt(Convert.ToInt32(vindex));
+
+                            if (idItem.expresion1 is listaAccesoTabla)
+                            {
+                                foreach (itemType tititi in ut.itemTypee)
+                                {
+                                    if (tititi.id == iditemType)
+                                    {
+                                        if (tititi.tipo.tipo == tipoDato.list || tititi.tipo.tipo == tipoDato.set)
+                                        {
+
+                                            Lista lista = (Lista)tititi.valor;
+                                            List<object> lista2 = (List<object>)lista.listaValores;
+                                            masListas(lista2, entorno, listas, management, cuenta + 1, Convert.ToInt32(vindex));
+                                        }
+                                        else if (tititi.tipo.tipo == tipoDato.id)
+                                        {
+                                            CreateType otro = (CreateType)tititi.valor;
+                                            mastypeusersss(otro, entorno, listas, management, cuenta + 1);
+                                        }
+                                        else
+                                        {
+                                            if (tititi.tipo.tipo == tipoValorParaAsignar)
+                                            {
+                                                tititi.valor = valorParaAsignar;
+                                            }
+                                            else
+                                            {
+                                                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                    "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                            else
+                            {
+                                mastypeusersss(ut, entorno, listas, management, cuenta+1);
+                            }
+
+                            //revisar
                         }
                     }
                     else
