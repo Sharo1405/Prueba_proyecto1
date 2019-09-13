@@ -64,6 +64,7 @@
     <Compile Include="AST\Expresiones\FuncionesCollections.cs" />
     <Compile Include="AST\Expresiones\FuncionesNativasCadenas.cs" />
     <Compile Include="AST\Expresiones\listaAccesoTabla.cs" />
+    <Compile Include="AST\Expresiones\listaAccesoTablapuntoEigualE.cs" />
     <Compile Include="AST\Expresiones\ListaErrorPrinter.cs" />
     <Compile Include="AST\Expresiones\ListaExpresiones.cs" />
     <Compile Include="AST\Expresiones\ListaPuntos.cs" />

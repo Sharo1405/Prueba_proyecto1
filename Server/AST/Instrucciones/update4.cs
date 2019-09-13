@@ -343,6 +343,116 @@ namespace Server.AST.Instrucciones
                                         }
                                     }
                                 }
+                                else if (asignar is listaAccesoTablapuntoEigualE)
+                                {
+                                    listaAccesoTablapuntoEigualE asi = (listaAccesoTablapuntoEigualE)asignar;
+                                    Columna coll = new Columna();
+                                    if (encontrado2.columnasTabla.TryGetValue(asi.idListaCol.ToLower(), out coll))
+                                    {
+                                        //object valor = asi.igual.getValue(entorno, listas, management);
+                                        //tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
+
+                                        List<object> lista = new List<object>();
+                                        Lista listaGuardar = new Lista();
+
+                                        object indice = asi.index.getValue(entorno, listas, management);
+                                        tipoDato tipoIndice = asi.index.getType(entorno, listas, management);
+
+                                        if (tipoIndice != tipoDato.entero)
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                    "El acceso a la lista en la tabla con el id: " + idTabla + " En la columna" + asi.idListaCol + " No es permitido porque el tipo del indice no es valido"));
+                                            return tipoDato.errorSemantico;
+                                        }
+
+                                        object valorComa = asi.igual.getValue(entorno, listas, management);
+                                        tipoDato tipoComa = asi.igual.getType(entorno, listas, management);
+                                        if (asi.igual is Corchetes)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista("", lista, tipoDato.list, tipoComa, this.linea, this.columna);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista("", lista, tipoDato.list, tipoComa, this.linea, this.columna);
+                                            }
+                                            tipoComa = tipoDato.list;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (asi.igual is Llaves)
+                                        {
+                                            if (valorComa is List<object>)
+                                            {
+                                                lista = (List<object>)valorComa;
+                                                listaGuardar = new Lista("", lista, tipoDato.set, tipoComa, this.linea, this.columna);
+                                            }
+                                            else
+                                            {
+                                                lista.Add(valorComa);
+                                                listaGuardar = new Lista("", lista, tipoDato.set, tipoComa, this.linea, this.columna);
+                                            }
+                                            tipoComa = tipoDato.set;
+                                            valorComa = listaGuardar;
+                                        }
+                                        else if (valorComa is Neww)
+                                        {
+                                            Neww claseNeww = (Neww)valorComa;
+                                            if (claseNeww.tipoNew.tipo == tipoDato.id)
+                                            {
+                                                Simbolo sim2 = entorno.get(claseNeww.tipoNew.id.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                                                if (sim2 != null)
+                                                {
+                                                    if (sim2.valor is CreateType)
+                                                    {
+                                                        CreateType ss = (CreateType)sim2.valor;
+                                                        CreateType lista2 = CreaNuevoType(ss, entorno, listas);
+                                                        valorComa = lista2;
+                                                    }
+                                                }
+                                            }
+                                            else if (claseNeww.tipoNew.tipo == tipoDato.list || claseNeww.tipoNew.tipo == tipoDato.set)
+                                            {
+                                                listaGuardar = new Lista("", new List<Object>(), claseNeww.tipoNew.tipo, claseNeww.tipoNew.tipoValor.tipo, this.linea, this.columna);
+                                                valorComa = listaGuardar;
+                                            }
+                                        }
+                                        //-------------------------------------------------------------------------------------------------------
+
+
+                                        if (asi.accesos is ListaPuntos)
+                                        {
+                                            SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.accesos, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
+                                            svCol.ejecutar(entorno, listas, management);
+                                        }
+                                        else
+                                        {
+                                            if (asi.accesos is Identificador)
+                                            {
+                                                Identificador id = (Identificador)asi.accesos;
+                                                ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
+                                                svCol.ejecutar(entorno, listas, management);
+                                            }
+                                            else if (asi.accesos is listaAccesoTabla)
+                                            {
+                                                listaAccesoTabla id = (listaAccesoTabla)asi.accesos;
+                                                ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
+                                                svCol.ejecutar(entorno, listas, management);
+                                            }
+                                            else
+                                            {
+                                                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                    "El acceso a la columna en la tabla con el id: " + idTabla + " No es permitido"));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                        }
+                                        
+                                    }
+                                }
                             }
                         }
                         else
