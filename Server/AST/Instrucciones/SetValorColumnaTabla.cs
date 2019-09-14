@@ -670,6 +670,89 @@ namespace Server.AST.Instrucciones
                                         item.valor = valorParaAsignar;
                                     }
                                 }
+                                else if (valorParaAsignar == null)
+                                {
+                                    if (sumaResta is Suma)
+                                    {
+                                        Suma plus = (Suma)sumaResta;
+                                        Identificador ident = (Identificador)plus.expresion1;
+                                        if (ident.id == item.id)
+                                        {
+                                            if (plus.expresion2 is Corchetes)
+                                            {
+                                                tipoValorParaAsignar = tipoDato.list;
+                                            }
+                                            else if (plus.expresion2 is Llaves)
+                                            {
+                                                tipoValorParaAsignar = tipoDato.set;
+                                            }
+                                            else
+                                            {
+                                                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                    "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                            object listaSetValores = plus.expresion2.getValue(entorno, listas, management);
+                                            tipoDato ltipo = plus.expresion2.getType(entorno, listas, management);
+
+                                            if (((Lista)item.valor).tipoValor == ltipo)
+                                            {
+                                                if (item.tipo.tipo == tipoValorParaAsignar)
+                                                {
+                                                    Lista ls = (Lista)item.valor;
+                                                    List<object> foreaach = (List<object>)listaSetValores;
+
+                                                    foreach (object o in foreaach)
+                                                    {
+                                                        ls.listaValores.Add(o);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (sumaResta is Resta)
+                                    {
+                                        Resta plus = (Resta)sumaResta;
+                                        Identificador ident = (Identificador)plus.expresion1;
+                                        if (ident.id == item.id)
+                                        {
+                                            if (plus.expresion2 is Llaves)
+                                            {
+                                                tipoValorParaAsignar = tipoDato.set;
+                                            }
+                                            else
+                                            {
+                                                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                    "No se puede actualizar el campo porque no es el mismo tipo en la: " + col.idColumna));
+                                                return tipoDato.errorSemantico;
+                                            }
+                                            object listaSetValores = plus.expresion2.getValue(entorno, listas, management);
+                                            tipoDato ltipo = plus.expresion2.getType(entorno, listas, management);
+
+                                            if (((Lista)item.valor).tipoValor == ltipo)
+                                            {
+                                                if (item.tipo.tipo == tipoValorParaAsignar)
+                                                {
+                                                    Lista ls = (Lista)item.valor;
+                                                    List<object> foreaach = (List<object>)listaSetValores;
+
+                                                    foreach (object o in foreaach)
+                                                    {
+                                                        foreach (object oo in ls.listaValores)
+                                                        {
+                                                            if (o.Equals(oo))
+                                                            {
+                                                                ls.listaValores.Remove(o);
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
                                 else
                                 {
                                     listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
