@@ -132,8 +132,6 @@ namespace Server.AST.Instrucciones
                                             return tipoDato.errorSemantico;
                                         }
                                         int cantidadDatos = coll.valorColumna.Count;
-                                        //object valor = asi.igual.getValue(entorno, listas, management);
-                                        //tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
                                         if (tipoComa == coll.tipoValor)
                                         {
                                             List<object> l = (List<object>)coll.valorColumna;
@@ -311,12 +309,20 @@ namespace Server.AST.Instrucciones
                                                 valorComa = listaGuardar;
                                             }
                                         }
-                                        //-------------------------------------------------------------------------------------------------------
+                                        //-------------------------------------------------------------------------------------------------------------
 
                                         if (asi.acceso is ListaPuntos)
                                         {
-                                            SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.acceso, valorComa, tipoComa, this.linea, this.columna);
-                                            svCol.ejecutar(entorno, listas, management);
+                                            if (asi.igual is Suma || asi.igual is Resta)
+                                            {
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.acceso, this.linea, this.columna, asi.igual);
+                                                svCol.ejecutar(entorno, listas, management);
+                                            }
+                                            else
+                                            {
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.acceso, valorComa, tipoComa, this.linea, this.columna);
+                                                svCol.ejecutar(entorno, listas, management);
+                                            }
                                         }
                                         else
                                         {
@@ -324,15 +330,31 @@ namespace Server.AST.Instrucciones
                                             {
                                                 Identificador id = (Identificador)asi.acceso;
                                                 ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
-                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna);
-                                                svCol.ejecutar(entorno, listas, management);
+                                                if (asi.igual is Suma || asi.igual is Resta)
+                                                {
+                                                    SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, this.linea, this.columna, asi.igual);
+                                                    svCol.ejecutar(entorno, listas, management);
+                                                }
+                                                else
+                                                {
+                                                    SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna);
+                                                    svCol.ejecutar(entorno, listas, management);
+                                                }
                                             } 
                                             else if (asi.acceso is listaAccesoTabla)
                                             {
                                                 listaAccesoTabla id = (listaAccesoTabla)asi.acceso;
                                                 ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
-                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna);
-                                                svCol.ejecutar(entorno, listas, management);
+                                                if (asi.igual is Suma || asi.igual is Resta)
+                                                {
+                                                    SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, this.linea, this.columna, asi.igual);
+                                                    svCol.ejecutar(entorno, listas, management);
+                                                }
+                                                else
+                                                {
+                                                    SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna);
+                                                    svCol.ejecutar(entorno, listas, management);
+                                                }
                                             }
                                             else
                                             {
@@ -349,9 +371,6 @@ namespace Server.AST.Instrucciones
                                     Columna coll = new Columna();
                                     if (encontrado2.columnasTabla.TryGetValue(asi.idListaCol.ToLower(), out coll))
                                     {
-                                        //object valor = asi.igual.getValue(entorno, listas, management);
-                                        //tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
-
                                         List<object> lista = new List<object>();
                                         Lista listaGuardar = new Lista();
 
@@ -424,8 +443,16 @@ namespace Server.AST.Instrucciones
 
                                         if (asi.accesos is ListaPuntos)
                                         {
-                                            SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.accesos, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
-                                            svCol.ejecutar(entorno, listas, management);
+                                            if (asi.igual is Suma || asi.igual is Resta)
+                                            {
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.accesos, this.linea, this.columna, Convert.ToInt32(indice), asi.igual);
+                                                svCol.ejecutar(entorno, listas, management);
+                                            }
+                                            else
+                                            {
+                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, (ListaPuntos)asi.accesos, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
+                                                svCol.ejecutar(entorno, listas, management);
+                                            }
                                         }
                                         else
                                         {
@@ -433,15 +460,31 @@ namespace Server.AST.Instrucciones
                                             {
                                                 Identificador id = (Identificador)asi.accesos;
                                                 ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
-                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
-                                                svCol.ejecutar(entorno, listas, management);
+                                                if (asi.igual is Suma || asi.igual is Resta)
+                                                {
+                                                    SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, this.linea, this.columna, Convert.ToInt32(indice), asi.igual);
+                                                    svCol.ejecutar(entorno, listas, management);
+                                                }
+                                                else
+                                                {
+                                                    SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
+                                                    svCol.ejecutar(entorno, listas, management);
+                                                }
                                             }
                                             else if (asi.accesos is listaAccesoTabla)
                                             {
                                                 listaAccesoTabla id = (listaAccesoTabla)asi.accesos;
                                                 ListaPuntos lpp = new ListaPuntos(id, this.linea, this.columna);
-                                                SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
-                                                svCol.ejecutar(entorno, listas, management);
+                                                if (asi.igual is Suma || asi.igual is Resta)
+                                                {
+                                                    SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, this.linea, this.columna, Convert.ToInt32(indice), asi.igual);
+                                                    svCol.ejecutar(entorno, listas, management);
+                                                }
+                                                else
+                                                {
+                                                    SetValorColumnaTabla svCol = new SetValorColumnaTabla(coll, lpp, valorComa, tipoComa, this.linea, this.columna, Convert.ToInt32(indice));
+                                                    svCol.ejecutar(entorno, listas, management);
+                                                }
                                             }
                                             else
                                             {
