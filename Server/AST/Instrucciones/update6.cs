@@ -61,7 +61,7 @@ namespace Server.AST.Instrucciones
 
                             int contador = 0;
                             int cantValoresXcolumna = 1;
-                            while (contador <= cantValoresXcolumna - 1)
+                            while (contador <= cantValoresXcolumna-1)
                             {
                                 foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                                 {
@@ -176,12 +176,10 @@ namespace Server.AST.Instrucciones
                                                     int cantidadDatos = coll.valorColumna.Count;
                                                     if (tipoComa == coll.tipoValor)
                                                     {
-                                                        List<object> l = (List<object>)coll.valorColumna;
-                                                        foreach (Lista lis in l)
-                                                        {
-                                                            lis.listaValores.RemoveAt(Convert.ToInt32(index));
-                                                            lis.listaValores.Insert(Convert.ToInt32(index), valorComa);
-                                                        }
+                                                        Lista lis = (Lista)coll.valorColumna.ElementAt(contador);
+
+                                                        lis.listaValores.RemoveAt(Convert.ToInt32(index));
+                                                        lis.listaValores.Insert(Convert.ToInt32(index), valorComa);
                                                     }
                                                     else
                                                     {
@@ -264,6 +262,7 @@ namespace Server.AST.Instrucciones
                                                             "La columa a actualizar es llave primaria: " + coll.idColumna));
                                                         return tipoDato.errorSemantico;
                                                     }
+
                                                     int cantidadDatos = coll.valorColumna.Count;
 
                                                     if (asi.igual is Suma)
@@ -294,16 +293,12 @@ namespace Server.AST.Instrucciones
                                                             {
                                                                 if (coll.tipo == tipoComa)
                                                                 {
-                                                                    List<object> foreaach = (List<object>)coll.valorColumna;
                                                                     List<object> foreaachSET = (List<object>)listaSetValores;
 
-                                                                    foreach (object o in foreaach)
+                                                                    Lista ls = (Lista) coll.valorColumna.ElementAt(contador);
+                                                                    foreach (object oo in foreaachSET)
                                                                     {
-                                                                        Lista ls = (Lista)o;
-                                                                        foreach (object oo in foreaachSET)
-                                                                        {
-                                                                            ls.listaValores.Add(oo);
-                                                                        }
+                                                                        ls.listaValores.Add(oo);
                                                                     }
                                                                 }
                                                             }
@@ -335,38 +330,27 @@ namespace Server.AST.Instrucciones
                                                                     List<object> foreaach = (List<object>)coll.valorColumna; ;
                                                                     List<object> foreaachSET = (List<object>)listaSetValores;
 
-                                                                    foreach (object o in foreaach)
+                                                                    Lista ls = (Lista)coll.valorColumna.ElementAt(contador);
+                                                                    foreach (object oo in foreaachSET)
                                                                     {
-                                                                        Lista ls = (Lista)o;
-                                                                        foreach (object oo in foreaachSET)
+                                                                        foreach (object ooo in ls.listaValores)
                                                                         {
-                                                                            foreach (object ooo in ls.listaValores)
+                                                                            if (ooo.Equals(oo))
                                                                             {
-                                                                                if (ooo.Equals(oo))
-                                                                                {
-                                                                                    ls.listaValores.Remove(oo);
-                                                                                    break;
-                                                                                }
+                                                                                ls.listaValores.Remove(oo);
+                                                                                break;
                                                                             }
                                                                         }
-                                                                    }
+                                                                    }                                                                    
                                                                 }
                                                             }
                                                         }
-
                                                     }
 
                                                     else if (tipoComa == coll.tipo)
-                                                    {
-
-
-
-                                                        coll.valorColumna.Clear();
-
-                                                        for (int i = 0; i < cantidadDatos; i++)
-                                                        {
-                                                            coll.valorColumna.Add(valorComa);
-                                                        }
+                                                    {                                                        
+                                                        coll.valorColumna.RemoveAt(contador);
+                                                        coll.valorColumna.Insert(contador, valorComa);
                                                     }
                                                     else
                                                     {
