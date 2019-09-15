@@ -112,11 +112,13 @@
     <Compile Include="AST\Instrucciones\NodoCrearTabla.cs" />
     <Compile Include="AST\Instrucciones\Retorno.cs" />
     <Compile Include="AST\Instrucciones\SetValorColumnaTabla.cs" />
+    <Compile Include="AST\Instrucciones\SetValorColumnaTablaWhere.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlock.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlockStatement_Group.cs" />
     <Compile Include="AST\Instrucciones\truncateTabla.cs" />
     <Compile Include="AST\Instrucciones\Type.cs" />
     <Compile Include="AST\Instrucciones\update4.cs" />
+    <Compile Include="AST\Instrucciones\update6.cs" />
     <Compile Include="AST\Instrucciones\Usee_DB.cs" />
     <Compile Include="AST\Llaves.cs" />
     <Compile Include="AST\Otras\Auxiliar.cs" />

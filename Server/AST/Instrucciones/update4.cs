@@ -223,9 +223,101 @@ namespace Server.AST.Instrucciones
                                             return tipoDato.errorSemantico;
                                         }
                                         int cantidadDatos = coll.valorColumna.Count;
-                                        //object valor = asi.igual.getValue(entorno, listas, management);
-                                        //tipoDato tipoValor = asi.igual.getType(entorno, listas, management);
-                                        if (tipoComa == coll.tipo) {
+
+                                        if (asi.igual is Suma)
+                                        {
+                                            Suma plus = (Suma)asi.igual;
+                                            Identificador ident = (Identificador)plus.expresion1;
+                                            if (ident.id == coll.idColumna)
+                                            {
+                                                if (plus.expresion2 is Corchetes)
+                                                {
+                                                    tipoComa = tipoDato.list;
+                                                }
+                                                else if (plus.expresion2 is Llaves)
+                                                {
+                                                    tipoComa = tipoDato.set;
+                                                }
+                                                else
+                                                {
+                                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                        "No se puede actualizar el campo porque no es el mismo tipo en la: " + coll.idColumna));
+                                                    return tipoDato.errorSemantico;
+                                                }
+
+                                                object listaSetValores = plus.expresion2.getValue(entorno, listas, management);
+                                                tipoDato ltipo = plus.expresion2.getType(entorno, listas, management);
+
+                                                if (coll.tipoValor == ltipo)
+                                                {
+                                                    if (coll.tipo == tipoComa)
+                                                    {
+                                                        List<object> foreaach = (List<object>)coll.valorColumna; 
+                                                        List<object> foreaachSET = (List<object>)listaSetValores;
+
+                                                        foreach (object o in foreaach)
+                                                        {
+                                                            Lista ls = (Lista)o;
+                                                            foreach (object oo in foreaachSET)
+                                                            {
+                                                                ls.listaValores.Add(oo);                                                                     
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (asi.igual is Resta)
+                                        {
+                                            Resta plus = (Resta)asi.igual;
+                                            Identificador ident = (Identificador)plus.expresion1;
+                                            if (ident.id == coll.idColumna)
+                                            {
+                                                if (plus.expresion2 is Llaves)
+                                                {
+                                                    tipoComa = tipoDato.set;
+                                                }
+                                                else
+                                                {
+                                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                        "No se puede actualizar el campo porque no es el mismo tipo en la: " + coll.idColumna));
+                                                    return tipoDato.errorSemantico;
+                                                }
+                                                object listaSetValores = plus.expresion2.getValue(entorno, listas, management);
+                                                tipoDato ltipo = plus.expresion2.getType(entorno, listas, management);
+
+                                                if (coll.tipoValor == ltipo)
+                                                {
+                                                    if (coll.tipo == tipoComa)
+                                                    {
+                                                        List<object> foreaach = (List<object>)coll.valorColumna; ;
+                                                        List<object> foreaachSET = (List<object>)listaSetValores;
+
+                                                        foreach (object o in foreaach)
+                                                        {
+                                                            Lista ls = (Lista)o;
+                                                            foreach (object oo in foreaachSET)
+                                                            {
+                                                                foreach (object ooo in ls.listaValores)
+                                                                {
+                                                                    if (ooo.Equals(oo))
+                                                                    {
+                                                                        ls.listaValores.Remove(oo);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                        }
+
+                                        else if (tipoComa == coll.tipo) {
+
+
+
                                             coll.valorColumna.Clear();
 
                                             for (int i = 0; i < cantidadDatos; i++)

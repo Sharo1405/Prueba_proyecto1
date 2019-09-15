@@ -225,7 +225,11 @@ namespace Server.GenerarAST
         {
             if (nodo.ChildNodes.Count == 6)
             {
-
+                return new update6(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    itemasignacion(nodo.ChildNodes.ElementAt(3)),
+                    expresiones(nodo.ChildNodes.ElementAt(5)),
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(0).Token.Location.Column);
             }
             else
             {
