@@ -12,7 +12,11 @@ namespace Server.AST.BaseDatos
         public Dictionary<String, BaseDeDatos> basesExistentes =
             new Dictionary<string, BaseDeDatos>();
 
+        public Dictionary<String, userPass> usuarios =
+            new Dictionary<string, userPass>();
+
         public String baseEnUso { get; set; }
+        public String idUsarioEnUso { get; set; }
 
         public Administrador()
         {

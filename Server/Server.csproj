@@ -53,6 +53,7 @@
     <Compile Include="Analizador\Gramatica.cs" />
     <Compile Include="AST\BaseDatos\Administrador.cs" />
     <Compile Include="AST\BaseDatos\BaseDeDatos.cs" />
+    <Compile Include="AST\BaseDatos\userPass.cs" />
     <Compile Include="AST\Entornos\Simbolo.cs" />
     <Compile Include="AST\Expresiones\Aritmeticas\Negatico.cs" />
     <Compile Include="AST\Expresiones\ArrobaId.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="AST\Instrucciones\Ciclos\Iff.cs" />
     <Compile Include="AST\Instrucciones\Ciclos\IfLista.cs" />
     <Compile Include="AST\Instrucciones\Continuee.cs" />
+    <Compile Include="AST\Instrucciones\crearUsuario.cs" />
     <Compile Include="AST\Instrucciones\CreateType.cs" />
     <Compile Include="AST\Instrucciones\DeclaracionMapNew.cs" />
     <Compile Include="AST\Instrucciones\DeclaracionMapValores.cs" />
@@ -105,12 +107,14 @@
     <Compile Include="AST\Instrucciones\Defaultt.cs" />
     <Compile Include="AST\Instrucciones\DropDataBase.cs" />
     <Compile Include="AST\Instrucciones\DropTable.cs" />
+    <Compile Include="AST\Instrucciones\GrantUsu.cs" />
     <Compile Include="AST\Instrucciones\idigualEupdate.cs" />
     <Compile Include="AST\Instrucciones\idpuntoEigualEupdate.cs" />
     <Compile Include="AST\Instrucciones\InsertarInBase.cs" />
     <Compile Include="AST\Instrucciones\InsertarInBaseEspecial.cs" />
     <Compile Include="AST\Instrucciones\NodoCrearTabla.cs" />
     <Compile Include="AST\Instrucciones\Retorno.cs" />
+    <Compile Include="AST\Instrucciones\RevokeUsu.cs" />
     <Compile Include="AST\Instrucciones\SetValorColumnaTabla.cs" />
     <Compile Include="AST\Instrucciones\SetValorColumnaTablaWhere.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlock.cs" />

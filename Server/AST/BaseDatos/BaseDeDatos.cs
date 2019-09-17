@@ -17,6 +17,7 @@ namespace Server.AST.BaseDatos
         public Dictionary<String, Simbolo> procedures = new Dictionary<string, Simbolo>();
         public Dictionary<String, CreateType> usertypes = new Dictionary<string, CreateType>();
         public Dictionary<String, Tabla> Tabla = new Dictionary<string, Tabla>();
+        public String idUsuarioPropietario { get; set; }
         public Boolean isUse = false;
         public Boolean ifnotexist = false;
         public int linea { get; set; }
@@ -48,7 +49,8 @@ namespace Server.AST.BaseDatos
         {
             try
             {
-                management.basesExistentes.Add(idbase, this);
+                //this.idUsuarioPropietario = management.idUsarioEnUso; //el ultimo creado
+                management.basesExistentes.Add(idbase.ToLower(), this);
             }
             catch (ArgumentException e)
             {                

@@ -119,13 +119,13 @@ namespace Server.GenerarAST
                     break;
 
                 case "CREATEUSER":
-                    break;
+                    return crearUsuarioMetodo(nodo.ChildNodes.ElementAt(0));
 
                 case "GRANT":
-                    break;
+                    return grantUsuarios(nodo.ChildNodes.ElementAt(0));
 
                 case "REVOKEE":
-                    break;
+                    return revokeUsuarios(nodo.ChildNodes.ElementAt(0));
 
                 case "TODOCONSULTAS":
                     return todoOperacionesBase(nodo.ChildNodes.ElementAt(0));
@@ -201,6 +201,33 @@ namespace Server.GenerarAST
         }
 
 
+        public NodoAST revokeUsuarios(ParseTreeNode nodo)
+        {
+            return new RevokeUsu(nodo.ChildNodes.ElementAt(1).Token.Text,
+               nodo.ChildNodes.ElementAt(3).Token.Text,
+               nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+               nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
+
+
+        public NodoAST grantUsuarios(ParseTreeNode nodo)
+        {
+            return new GrantUsu(nodo.ChildNodes.ElementAt(1).Token.Text,
+                nodo.ChildNodes.ElementAt(3).Token.Text,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
+
+
+        public NodoAST crearUsuarioMetodo(ParseTreeNode nodo)
+        {
+            return new crearUsuario(nodo.ChildNodes.ElementAt(2).Token.Text,
+                expresiones(nodo.ChildNodes.ElementAt(5)),
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
+
+        
         public NodoAST todoOperacionesBase(ParseTreeNode nodo)
         {
             string s = nodo.ChildNodes.ElementAt(0).Term.ToString().ToLower();

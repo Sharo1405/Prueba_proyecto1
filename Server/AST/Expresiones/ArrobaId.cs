@@ -11,9 +11,9 @@ namespace Server.AST.Expresiones
 {
     class ArrobaId : Entorno, Expresion
     {
-        public String id;
-        public int linea;
-        public int columna;
+        public String id { get; set; }
+        public int linea { get; set; }
+        public int columna { get; set; }
 
         public ArrobaId(String id, int linea, int columna)
         {

@@ -76,7 +76,6 @@ namespace Server.GenerarAST
 
 
                 Entorno next = new Entorno(global);
-
                 foreach (var item in ASTClases)
                 { 
                     if (item != null)
