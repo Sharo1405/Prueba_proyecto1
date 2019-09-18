@@ -97,9 +97,11 @@
     <Compile Include="AST\Instrucciones\Ciclos\Forr.cs" />
     <Compile Include="AST\Instrucciones\Ciclos\Iff.cs" />
     <Compile Include="AST\Instrucciones\Ciclos\IfLista.cs" />
+    <Compile Include="AST\Instrucciones\CloseCursor.cs" />
     <Compile Include="AST\Instrucciones\Continuee.cs" />
     <Compile Include="AST\Instrucciones\crearUsuario.cs" />
     <Compile Include="AST\Instrucciones\CreateType.cs" />
+    <Compile Include="AST\Instrucciones\CursorLlenar.cs" />
     <Compile Include="AST\Instrucciones\DeclaracionMapNew.cs" />
     <Compile Include="AST\Instrucciones\DeclaracionMapValores.cs" />
     <Compile Include="AST\Instrucciones\DeclaracionSetNew.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="AST\Instrucciones\InsertarInBase.cs" />
     <Compile Include="AST\Instrucciones\InsertarInBaseEspecial.cs" />
     <Compile Include="AST\Instrucciones\NodoCrearTabla.cs" />
+    <Compile Include="AST\Instrucciones\OpenCursor.cs" />
     <Compile Include="AST\Instrucciones\Retorno.cs" />
     <Compile Include="AST\Instrucciones\RevokeUsu.cs" />
     <Compile Include="AST\Instrucciones\SetValorColumnaTabla.cs" />

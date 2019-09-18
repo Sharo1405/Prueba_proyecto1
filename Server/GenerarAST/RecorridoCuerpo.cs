@@ -184,7 +184,7 @@ namespace Server.GenerarAST
                     return sentenciaTranferencia(nodo.ChildNodes.ElementAt(0));
 
                 case "CURSORES":
-                    break;
+                    return cursoresEjecutar(nodo.ChildNodes.ElementAt(0));
 
                 case "FOREACH_ACCESOCURSOR":
                     break;
@@ -197,6 +197,35 @@ namespace Server.GenerarAST
 
                 case "TRYCATCHH":
                     break;
+            }
+            return null;
+        }
+
+
+        public NodoAST cursoresEjecutar(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 5)
+            {
+                return new CursorLlenar("@" + nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                    selectInBase(nodo.ChildNodes.ElementAt(4)),
+                    nodo.ChildNodes.ElementAt(2).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(2).Token.Location.Column);
+            }
+            else
+            {
+                string s = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
+                switch (s)
+                {
+                    case "open":
+                        return new OpenCursor("@"+ nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                            nodo.ChildNodes.ElementAt(2).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(2).Token.Location.Column);
+
+                    case "close":
+                        return new CloseCursor("@" + nodo.ChildNodes.ElementAt(2).Token.Text.ToLower(),
+                            nodo.ChildNodes.ElementAt(2).Token.Location.Line,
+                            nodo.ChildNodes.ElementAt(2).Token.Location.Column);
+                }
             }
             return null;
         }

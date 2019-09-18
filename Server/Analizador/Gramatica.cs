@@ -514,7 +514,7 @@ namespace Server.Analizador
 
             LOG.Rule = log + aparentesis + E + cparentesis;
 
-            CURSORES.Rule = cursor + arroba + id + iss + TODOCONSULTAS
+            CURSORES.Rule = cursor + arroba + id + iss + SELECTT
                           | open + arroba + id
                           | close + arroba + id;
 

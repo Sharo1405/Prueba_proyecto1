@@ -11,6 +11,7 @@ namespace Server.AST.Entornos
 {
     class Simbolo: ICloneable
     {
+        public Boolean abierto { get; set; }
         public String id { get; set; }
         public Object valor { get; set; }
         public int fila { get; set; }
@@ -109,6 +110,8 @@ namespace Server.AST.Entornos
             this.rol = rol;
         }
 
+       
+
         public Simbolo(String id, Object valor, int fila, int columna, tipoDato tipo, Rol rol)
         {
             this.id = id;
@@ -117,6 +120,7 @@ namespace Server.AST.Entornos
             this.columna = columna;
             this.tipo = tipo;
             this.rol = rol;
+            this.abierto = false;
         }
 
         public Simbolo(String id, Object valor, int fila, int columna, tipoDato tipo, Rol rol, LinkedList<Parametros> parametros)
