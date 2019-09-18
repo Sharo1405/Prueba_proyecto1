@@ -683,7 +683,7 @@ namespace Server.Analizador
 
             BATCHH.Rule = begin + batch + CONTENIDOBATCHH + apply + batch;
 
-            CONTENIDOBATCHH.Rule = MakePlusRule(CONTENIDOBATCHH, ITEMBATCH);
+            CONTENIDOBATCHH.Rule = MakeStarRule(CONTENIDOBATCHH, ITEMBATCH);
 
             ITEMBATCH.Rule = INSERTARR + puntoycoma
                            | UPDATEE + puntoycoma

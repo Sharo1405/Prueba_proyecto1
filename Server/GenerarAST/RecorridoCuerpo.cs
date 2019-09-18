@@ -132,7 +132,7 @@ namespace Server.GenerarAST
                     return todoOperacionesBase(nodo.ChildNodes.ElementAt(0));
 
                 case "BATCHH":
-                    break;
+                    return batchch(nodo.ChildNodes.ElementAt(0));
 
                 case "FUNCIONAGREGACION":
                     return funcionesAgregacion(nodo.ChildNodes.ElementAt(0));
@@ -201,6 +201,25 @@ namespace Server.GenerarAST
             return null;
         }
 
+
+        public NodoAST batchch(ParseTreeNode nodo)
+        {
+            return new Batchch(recorreCdelBatch(nodo.ChildNodes.ElementAt(2)),
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
+
+
+        public LinkedList<NodoAST> recorreCdelBatch(ParseTreeNode nodo)
+        {
+            LinkedList<NodoAST> listaCOnsultas = new LinkedList<NodoAST>();
+            foreach (ParseTreeNode nod in nodo.ChildNodes)
+            {
+                NodoAST n = todoOperacionesBase(nod);
+                listaCOnsultas.AddLast(n);
+            }
+            return listaCOnsultas;
+        }
 
         public Expresion funcionesAgregacion(ParseTreeNode nodo)
         {

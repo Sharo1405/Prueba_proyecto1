@@ -90,6 +90,7 @@
     <Compile Include="AST\Instrucciones\AlterDropTable.cs" />
     <Compile Include="AST\Instrucciones\ArrobaIDPuntoE.cs" />
     <Compile Include="AST\Instrucciones\Asignacion.cs" />
+    <Compile Include="AST\Instrucciones\Batchch.cs" />
     <Compile Include="AST\Instrucciones\Breakk.cs" />
     <Compile Include="AST\Instrucciones\Casee.cs" />
     <Compile Include="AST\Instrucciones\Ciclos\DoWhile.cs" />
