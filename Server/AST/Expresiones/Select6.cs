@@ -131,6 +131,7 @@ namespace Server.AST.Expresiones
                                             {
                                                 CreateType extract = new CreateType();
                                                 colNuevita2.idColumna = colNuevita.idColumna + "." + idItemUserType;
+                                                colNuevita2.tipo = colNuevita.tipo;
                                                 colNuevita2.idTipo = colNuevita.idTipo;
                                                 colNuevita2.valorColumna = listaItems;
                                                 listacampos.AddLast(new ColAccesoSelect6(idColumnaPunto.ToLower(), idItemUserType.ToLower()));

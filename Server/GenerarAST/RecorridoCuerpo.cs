@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Server.AST.Expresiones.funcionesAgregacion;
 using static Server.AST.Expresiones.Operacion;
 
 namespace Server.GenerarAST
@@ -134,7 +135,7 @@ namespace Server.GenerarAST
                     break;
 
                 case "FUNCIONAGREGACION":
-                    break;
+                    return funcionesAgregacion(nodo.ChildNodes.ElementAt(0));
 
                 case "IFSTATEMENT":
                     return ifStatement(nodo.ChildNodes.ElementAt(0));
@@ -198,6 +199,38 @@ namespace Server.GenerarAST
                     break;
             }
             return null;
+        }
+
+
+        public Expresion funcionesAgregacion(ParseTreeNode nodo)
+        {
+            return new funcionesAgregacion(fa(nodo.ChildNodes.ElementAt(0)),
+                selectInBase(nodo.ChildNodes.ElementAt(4)),
+                nodo.ChildNodes.ElementAt(1).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+        }
+
+        public tipoFuncionAgregacion fa(ParseTreeNode nodo)
+        {
+            String f = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
+            switch (f)
+            {
+                case "count":
+                    return tipoFuncionAgregacion.COUNT;
+
+                case "min":
+                    return tipoFuncionAgregacion.MIN;
+
+                case "max":
+                    return tipoFuncionAgregacion.MAX;
+
+                case "sum":
+                    return tipoFuncionAgregacion.MAX;
+
+                case "avg":
+                    return tipoFuncionAgregacion.AVG;
+            }
+            return tipoFuncionAgregacion.X;
         }
 
 
@@ -339,7 +372,7 @@ namespace Server.GenerarAST
             return null;
         }
 
-        public NodoAST selectInBase(ParseTreeNode nodo)
+        public Expresion selectInBase(ParseTreeNode nodo)
         {
             if (nodo.ChildNodes.Count == 9)
             {
@@ -1579,6 +1612,9 @@ namespace Server.GenerarAST
 
                     case "FUNCIONESCOLLECTIONS":
                         return funcionesCollections(nodo.ChildNodes.ElementAt(0));
+
+                    case "FUNCIONAGREGACION":
+                        return funcionesAgregacion(nodo.ChildNodes.ElementAt(0));
 
                 }
             }

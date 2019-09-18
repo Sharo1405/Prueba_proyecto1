@@ -62,6 +62,7 @@
     <Compile Include="AST\Expresiones\Corchetes.cs" />
     <Compile Include="AST\Expresiones\DosPuntos.cs" />
     <Compile Include="AST\Expresiones\Funciones.cs" />
+    <Compile Include="AST\Expresiones\funcionesAgregacion.cs" />
     <Compile Include="AST\Expresiones\FuncionesCollections.cs" />
     <Compile Include="AST\Expresiones\FuncionesNativasCadenas.cs" />
     <Compile Include="AST\Expresiones\listaAccesoTabla.cs" />

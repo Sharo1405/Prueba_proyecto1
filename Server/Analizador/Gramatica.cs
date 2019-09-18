@@ -667,7 +667,7 @@ namespace Server.Analizador
             PUNTOIDS2.Rule = punto + id;
 
 
-            FUNCIONAGREGACION.Rule = ITEMFAGREGACION + aparentesis + menorq + TODOCONSULTAS + mayorq + cparentesis;
+            FUNCIONAGREGACION.Rule = ITEMFAGREGACION + aparentesis + menorq + menorq + SELECTT + mayorq + mayorq + cparentesis; //solo puede ser select
             //van en E funciones de agragacion
 
             ITEMFAGREGACION.Rule = count
@@ -863,6 +863,8 @@ namespace Server.Analizador
                 | allave + E + cllave + ass + id  //user types
                 | acorchete + E + ccorchete //list y acceso normal [num]
 
+                //| TODOCONSULTAS
+                | FUNCIONAGREGACION
                 | LLAMADASFUNCIONES
                 | LLAMADASPROCEDIMIENTOS
                 | FUNCIONESCOLLECTIONS

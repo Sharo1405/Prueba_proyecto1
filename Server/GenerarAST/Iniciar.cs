@@ -46,7 +46,7 @@ namespace Server.GenerarAST
                 Administrador management = new Administrador();
 
                 foreach (var item in ASTClases)
-                { 
+                {
                     if (item != null) {
                         if (item is Instruccion)
                         {
@@ -56,7 +56,10 @@ namespace Server.GenerarAST
                             } else if (ins is DeclaracionAsignacion || ins is Declarcion ||
                                       ins is DeclaraListNew || ins is DeclaraListValores ||
                                       ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
-                                      ins is DeclaracionMapNew || ins is DeclaracionMapValores)
+                                      ins is DeclaracionMapNew || ins is DeclaracionMapValores || 
+                                      ins is BaseDeDatos || ins is Usee_DB || ins is crearUsuario || 
+                                      ins is GrantUsu || ins is RevokeUsu || ins is update4 ||
+                                      ins is update6 || ins is InsertarInBase || ins is InsertarInBaseEspecial || ins is NodoCrearTabla)
                             {
                                 ins.ejecutar(global, listas, management);
                             }
@@ -65,7 +68,8 @@ namespace Server.GenerarAST
                         {//funciones 
                             Expresion exp = (Expresion)item;
                             if (exp is Funciones ||
-                                exp is Procedimientos) {
+                                exp is Procedimientos || exp is Select6 ||
+                                      exp is Select4) {
                                 exp.getValue(global, listas, management);
                             }
                             //aqui faltan los procedimientos
@@ -86,7 +90,11 @@ namespace Server.GenerarAST
                             if (!(ins is CreateType) && !(ins is DeclaracionAsignacion || ins is Declarcion ||
                                      ins is DeclaraListNew || ins is DeclaraListValores ||
                                      ins is DeclaracionSetNew || ins is DeclaracionSetValores ||
-                                     ins is DeclaracionMapNew || ins is DeclaracionMapValores))
+                                     ins is DeclaracionMapNew || ins is DeclaracionMapValores ||
+                                     ins is BaseDeDatos || ins is Usee_DB || ins is crearUsuario ||
+                                     ins is GrantUsu || ins is RevokeUsu || ins is update4 ||
+                                     ins is update6 || ins is InsertarInBase || ins is InsertarInBaseEspecial
+                                     || ins is NodoCrearTabla))
                             {
                                 ins.ejecutar(next, listas, management);
                             }
@@ -94,7 +102,8 @@ namespace Server.GenerarAST
                         else
                         {//funciones 
                             Expresion exp = (Expresion)item;
-                            if (!(exp is Funciones || exp is Procedimientos))
+                            if (!(exp is Funciones || exp is Procedimientos || exp is Select6 ||
+                                      exp is Select4))
                             {
                                 exp.getValue(next, listas, management);
                             }

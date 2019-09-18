@@ -36,7 +36,15 @@ namespace Server.AST.Instrucciones
                 {
                     if (encontrado.permisoBase.Equals(idBase.ToLower()))
                     {
-                        encontrado.permisoBase = "";
+                        if (encontrado.permisoBase.Equals(idBase.ToLower())) {
+                            encontrado.permisoBase = "";
+                        }
+                        else
+                        {
+                            listas.errores.AddLast(new NodoError(linea, columna,
+                                NodoError.tipoError.Semantico, "El permiso no coincide con el existente en el usuario: " + idUsu));
+                            return tipoDato.errorSemantico;
+                        }
                     }
                 }
                 else

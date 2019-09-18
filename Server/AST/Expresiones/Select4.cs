@@ -125,6 +125,7 @@ namespace Server.AST.Expresiones
                                                 }
                                                 colNuevita2.idColumna = colNuevita.idColumna + "." + idItemUserType;
                                                 colNuevita2.idTipo = colNuevita.idTipo;
+                                                colNuevita2.tipo = colNuevita.tipo;
                                                 colNuevita2.valorColumna = listaItems;
                                                 paraRetorno.columnasTabla.Add(colNuevita2.idColumna, colNuevita2);
                                             }
@@ -192,6 +193,7 @@ namespace Server.AST.Expresiones
                                         }
                                         colNuevita2.idColumna = colNuevita.idColumna + "." + idItemUserType;
                                         colNuevita2.idTipo = colNuevita.idTipo;
+                                        colNuevita2.tipo = colNuevita.tipo;
                                         colNuevita2.valorColumna = listaItems;
                                         paraRetorno.columnasTabla.Add(colNuevita2.idColumna, colNuevita2);
                                     }
