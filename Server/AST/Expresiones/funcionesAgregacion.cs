@@ -52,7 +52,7 @@ namespace Server.AST.Expresiones
 
         public object getValue(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
-            int numeroRetorno = -1;
+            int numeroRetorno = 1234567891;
             try
             {
                 if (idFuncion == tipoFuncionAgregacion.X)
@@ -109,13 +109,11 @@ namespace Server.AST.Expresiones
                             {
                                 foreach (object objs in kvp.Value.valorColumna)
                                 {
-
                                     if (Convert.ToInt32(objs) > numeroRetorno)
                                     {
                                         numeroRetorno = Convert.ToInt32(objs);
                                     }
                                 }
-                                numeroRetorno = numeroRetorno / kvp.Value.valorColumna.Count;
                             }
                             catch (Exception e)
                             {
@@ -142,8 +140,6 @@ namespace Server.AST.Expresiones
                                         numeroRetorno = Convert.ToInt32(objs);
                                     }
                                 }
-
-                                numeroRetorno = numeroRetorno / kvp.Value.valorColumna.Count;
                             }
                             catch (Exception e)
                             {
@@ -170,7 +166,7 @@ namespace Server.AST.Expresiones
                             catch (Exception e)
                             {
                                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                "No se puede realizar el MIN porque no es tipo numerico la columna: " + Convert.ToString(idFuncion)));
+                                "No se puede realizar el SUM porque no es tipo numerico la columna: " + Convert.ToString(idFuncion)));
                                 return tipoDato.errorSemantico;
                             }
                             break;
