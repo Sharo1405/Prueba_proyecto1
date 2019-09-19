@@ -41,7 +41,7 @@ namespace Server.AST.Instrucciones
             catch (Exception e)
             {
                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                 "No se puede Guardar el cursos" + idCursor));
+                 "No se puede Guardar el cursor" + idCursor));
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;

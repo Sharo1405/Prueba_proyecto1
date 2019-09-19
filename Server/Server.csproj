@@ -111,6 +111,7 @@
     <Compile Include="AST\Instrucciones\Defaultt.cs" />
     <Compile Include="AST\Instrucciones\DropDataBase.cs" />
     <Compile Include="AST\Instrucciones\DropTable.cs" />
+    <Compile Include="AST\Instrucciones\FOREACHcursor.cs" />
     <Compile Include="AST\Instrucciones\GrantUsu.cs" />
     <Compile Include="AST\Instrucciones\idigualEupdate.cs" />
     <Compile Include="AST\Instrucciones\idpuntoEigualEupdate.cs" />

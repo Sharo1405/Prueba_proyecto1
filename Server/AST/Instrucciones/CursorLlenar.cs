@@ -32,15 +32,25 @@ namespace Server.AST.Instrucciones
         {
             try
             {
-                object obj = selectt.getValue(entorno, listas, management);
+                Simbolo variable = entorno.get(idCursor.ToLower(), entorno, Simbolo.Rol.VARIABLE);
+                if (variable == null)
+                {
+                    object obj = selectt.getValue(entorno, listas, management);
 
-                entorno.setSimbolo(idCursor.ToLower(), new Simbolo(idCursor.ToLower(), obj, this.linea, this.columana,
-                                tipoDato.cursor, Simbolo.Rol.VARIABLE));
+                    entorno.setSimbolo(idCursor.ToLower(), new Simbolo(idCursor.ToLower(), obj, this.linea, this.columana,
+                                    tipoDato.cursor, Simbolo.Rol.VARIABLE));
+                }
+                else
+                {
+                    listas.errores.AddLast(new NodoError(this.linea, this.columana, NodoError.tipoError.Semantico,
+                         "No se puede Guardar el cursor porque ya existe ese id: " + idCursor));
+                    return tipoDato.errorSemantico;
+                }
             }
             catch (Exception e)
             {
                 listas.errores.AddLast(new NodoError(this.linea, this.columana, NodoError.tipoError.Semantico,
-                 "No se puede Guardar el cursos" + idCursor));
+                 "No se puede Guardar el cursor" + idCursor));
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;

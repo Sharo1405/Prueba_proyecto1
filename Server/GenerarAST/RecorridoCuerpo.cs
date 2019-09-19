@@ -187,7 +187,7 @@ namespace Server.GenerarAST
                     return cursoresEjecutar(nodo.ChildNodes.ElementAt(0));
 
                 case "FOREACH_ACCESOCURSOR":
-                    break;
+                    return foreachEjecutar(nodo.ChildNodes.ElementAt(0));
 
                 case "LOG":
                     return Log(nodo.ChildNodes.ElementAt(0));
@@ -199,6 +199,17 @@ namespace Server.GenerarAST
                     break;
             }
             return null;
+        }
+
+
+        public NodoAST foreachEjecutar(ParseTreeNode nodo)
+        {
+            return new FOREACHcursor(
+                Parametros(nodo.ChildNodes.ElementAt(3)),
+                "@" + nodo.ChildNodes.ElementAt(7).Token.Text.ToLower(),
+                bloque(nodo.ChildNodes.ElementAt(8)),
+                nodo.ChildNodes.ElementAt(2).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(2).Token.Location.Column);
         }
 
 

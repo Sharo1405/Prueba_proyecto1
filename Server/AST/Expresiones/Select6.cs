@@ -595,7 +595,6 @@ namespace Server.AST.Expresiones
                 case tipoDato.list:
                     return new ListsBase(valor, this.linea, this.columna);
             }
-
             return null;
         }
     }
