@@ -41,6 +41,10 @@ namespace Server.AST.Instrucciones
                         /*else if(ins is ){  //es para evitar que vengan user types, funciones 
 
                         }*/
+                        else if (ins is Retorno)
+                        {
+                            return ins;
+                        }
                         else
                         {
                             ins.ejecutar(entorno, listas, management);

@@ -81,8 +81,19 @@ namespace Server.AST.Instrucciones
                                         posLista++;
                                     }
 
-                                    sentencias.ejecutar(actual, listas, management);
-
+                                    object devuelto= sentencias.ejecutar(actual, listas, management);
+                                    if (devuelto is Retorno)
+                                    {
+                                        return devuelto;
+                                    }
+                                    else if (devuelto is Continuee)
+                                    {
+                                        continue;
+                                    }
+                                    else if (devuelto is Breakk)
+                                    {
+                                        return devuelto;
+                                    }                                    
 
                                     indice++;
                                 }
