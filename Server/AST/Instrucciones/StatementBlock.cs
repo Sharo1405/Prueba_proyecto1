@@ -44,10 +44,14 @@ namespace Server.AST.Instrucciones
                         else if (ins is Retorno)
                         {
                             return ins;
-                        }
+                        }                       
                         else
                         {
-                            ins.ejecutar(entorno, listas, management);
+                            object ss = ins.ejecutar(entorno, listas, management);
+                            if (ss is TipoExcepcion.excep)
+                            {
+                                return ss;
+                            }
                         }
                     }
                     else
@@ -60,7 +64,11 @@ namespace Server.AST.Instrucciones
                         }
                         else
                         {
-                            exp.getValue(entorno, listas, management);
+                            object sss = exp.getValue(entorno, listas, management);
+                            if (sss is TipoExcepcion.excep)
+                            {
+                                return sss;
+                            }
                         }
                     }
                 }

@@ -101,6 +101,10 @@ namespace Server.AST.Expresiones
                                     return r.getValue(actual, listas, management);
                                 }
                             }
+                            else if (reto is TipoExcepcion.excep)
+                            {
+                                return reto;
+                            }
                         }
                         else
                         {//funciones 
@@ -125,7 +129,11 @@ namespace Server.AST.Expresiones
                             }
                             else
                             {
-                                exp.getValue(actual, listas, management);
+                                object xxss = exp.getValue(actual, listas, management);
+                                if (xxss is TipoExcepcion.excep)
+                                {
+                                    return xxss;
+                                }
                             }
                         }
                     }

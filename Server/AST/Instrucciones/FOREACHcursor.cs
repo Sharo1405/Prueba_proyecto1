@@ -93,7 +93,11 @@ namespace Server.AST.Instrucciones
                                     else if (devuelto is Breakk)
                                     {
                                         return devuelto;
-                                    }                                    
+                                    }  
+                                    else if (devuelto is TipoExcepcion.excep)
+                                    {
+                                        return devuelto;
+                                    }
 
                                     indice++;
                                 }

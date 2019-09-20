@@ -37,7 +37,7 @@ namespace Server.AST.Instrucciones
                 if (valor == null)
                 {
                     listas.errores.AddLast(new NodoError(linea, col, NodoError.tipoError.Semantico,"Condicion del Swicht no es valida para evaluar"));
-                    return null;
+                    return tipoDato.errorSemantico;
                 }
 
                 foreach (NodoAST listaGrupo in listaGrupos)
@@ -47,33 +47,52 @@ namespace Server.AST.Instrucciones
                         NodoAST caseeDefault = casee.listaCasee.Last();
                         StatementBlock sentencias =
                             (StatementBlock)casee.listaSentencias;
-                        if (caseeDefault is Instruccion) {
+                    if (caseeDefault is Instruccion)
+                    {
                         Instruccion instru = (Instruccion)caseeDefault;
-                        if (instru is Defaultt) {
+                        if (instru is Defaultt)
+                        {
 
                             Object retorno = sentencias.ejecutar(entorno, listas, management);
 
-                            if (retorno is Breakk) {
-                                return null;
-                            } else if (retorno is Retorno) {
-                                //AQUI VA EL RETURN 
+                            if (retorno is Breakk)
+                            {
+                                return tipoDato.ok;
                             }
-
+                            else if (retorno is Retorno)
+                            {
+                                return retorno;
+                            }
+                            else if (retorno is TipoExcepcion.excep)
+                            {
+                                return retorno;
+                            }
                         }
-                        } else if (caseeDefault is Expresion) {
-                            Expresion instru = (Expresion)caseeDefault;
-                            if (instru is Casee) {
-                                IgualIgual relacion = new IgualIgual(linea, col, condicion ,((Casee)instru).valorCase);
-                                //Relacional relacion = new Relacional(condicion, ((Casee)instru).getValorCase(), Operacion.Operador.IGUAL, linea, col, null);
-                                if ((Boolean)relacion.getValue(entorno, listas, management))
-                                {
-                                    Object retorno = sentencias.ejecutar(entorno, listas, management);
+                    }
+                    else if (caseeDefault is Expresion)
+                    {
+                        Expresion instru = (Expresion)caseeDefault;
+                        if (instru is Casee)
+                        {
+                            IgualIgual relacion = new IgualIgual(linea, col, condicion, ((Casee)instru).valorCase);
+                            //Relacional relacion = new Relacional(condicion, ((Casee)instru).getValorCase(), Operacion.Operador.IGUAL, linea, col, null);
+                            if ((Boolean)relacion.getValue(entorno, listas, management))
+                            {
+                                Object retorno = sentencias.ejecutar(entorno, listas, management);
 
-                                    if (retorno is Breakk) {
-                                            break;
-                                    } else if (retorno is Retorno) {
-                                            return retorno;
+                                if (retorno is Breakk)
+                                {
+                                    break;
                                 }
+                                else if (retorno is Retorno)
+                                {
+                                    return retorno;
+                                }
+                                else if (retorno is TipoExcepcion.excep)
+                                {
+                                    return retorno;
+                                }
+
                             }
 
                         }

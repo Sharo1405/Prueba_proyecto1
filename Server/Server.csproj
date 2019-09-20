@@ -81,6 +81,7 @@
     <Compile Include="AST\Expresiones\Select4.cs" />
     <Compile Include="AST\Expresiones\Select6.cs" />
     <Compile Include="AST\Expresiones\Ternario.cs" />
+    <Compile Include="AST\Expresiones\TipoDato\ElExcepcion.cs" />
     <Compile Include="AST\Expresiones\TipoDato\ListsBase.cs" />
     <Compile Include="AST\Expresiones\TipoDato\SetBase.cs" />
     <Compile Include="AST\Expresiones\TipoDato\TypeBase.cs" />
@@ -125,7 +126,10 @@
     <Compile Include="AST\Instrucciones\SetValorColumnaTablaWhere.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlock.cs" />
     <Compile Include="AST\Instrucciones\SwitchBlockStatement_Group.cs" />
+    <Compile Include="AST\Instrucciones\TipoExcepcion.cs" />
+    <Compile Include="AST\Instrucciones\TrowwExcepcion.cs" />
     <Compile Include="AST\Instrucciones\truncateTabla.cs" />
+    <Compile Include="AST\Instrucciones\TryCatchEjecutar.cs" />
     <Compile Include="AST\Instrucciones\Type.cs" />
     <Compile Include="AST\Instrucciones\update4.cs" />
     <Compile Include="AST\Instrucciones\update6.cs" />

@@ -193,12 +193,102 @@ namespace Server.GenerarAST
                     return Log(nodo.ChildNodes.ElementAt(0));
 
                 case "EXCEPCIONES":
-                    break;
+                    return elThrow(nodo.ChildNodes.ElementAt(0));
 
                 case "TRYCATCHH":
-                    break;
+                    return TryCatchmetodo(nodo.ChildNodes.ElementAt(0));
             }
             return null;
+        }
+
+
+        public NodoAST TryCatchmetodo(ParseTreeNode nodo)
+        {
+            return new TryCatchEjecutar(
+                    bloque(nodo.ChildNodes.ElementAt(1)),
+                    TipoExcepcionEjecutar(nodo.ChildNodes.ElementAt(4)),
+                    "@"+nodo.ChildNodes.ElementAt(6).Token.Text.ToLower(),
+                    bloque(nodo.ChildNodes.ElementAt(8)),
+                    nodo.ChildNodes.ElementAt(6).Token.Location.Line,
+                    nodo.ChildNodes.ElementAt(6).Token.Location.Column);  
+        }
+
+
+        public NodoAST elThrow(ParseTreeNode nodo)
+        {
+            return new TrowwExcepcion(TipoExcepcionEjecutar(nodo.ChildNodes.ElementAt(2)), 
+                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
+
+        
+        public TipoExcepcion.excep TipoExcepcionEjecutar(ParseTreeNode nodo)
+        {
+            String s = nodo.ChildNodes.ElementAt(0).Token.Text.ToLower();
+
+            switch (s)
+            {
+                case "typealreadyexists":
+                    return TipoExcepcion.excep.TypeAlreadyExists;
+
+                case "typedontexists":
+                    return TipoExcepcion.excep.TypeDontExists;
+
+                case "bdalreadyexists":
+                    return TipoExcepcion.excep.BDAlreadyExists;
+
+                case "bddontexists":
+                    return TipoExcepcion.excep.BDDontExists;
+
+                case "usebdexception":
+                    return TipoExcepcion.excep.UseBDException;
+
+                case "tablealreadyexists":
+                    return TipoExcepcion.excep.TableAlreadyExists;
+
+                case "tabledontexists":
+                    return TipoExcepcion.excep.TableDontExists;
+
+                case "countertypeexception":
+                    return TipoExcepcion.excep.CounterTypeException;
+
+                case "useralreadyexists":
+                    return TipoExcepcion.excep.UserAlreadyExists;
+
+                case "userdontexists":
+                    return TipoExcepcion.excep.UserDontExists;
+
+                case "valuesexception":
+                    return TipoExcepcion.excep.ValuesException;
+
+                case "columnexception":
+                    return TipoExcepcion.excep.ColumnException;
+
+                case "batchexception":
+                    return TipoExcepcion.excep.BatchException;
+
+                case "indexoutexception":
+                    return TipoExcepcion.excep.IndexOutException;
+
+                case "arithmeticexception":
+                    return TipoExcepcion.excep.ArithmeticException;
+
+                case "nullpointerexception":
+                    return TipoExcepcion.excep.NullPointerException;
+
+                case "numberreturnsexception":
+                    return TipoExcepcion.excep.NumberReturnsException;
+
+                case "functionalreadyexists":
+                    return TipoExcepcion.excep.FunctionAlreadyExists;
+
+                case "procedurealreadyexists":
+                    return TipoExcepcion.excep.ProcedureAlreadyExists;
+
+                case "objectalreadyexists":
+                    return TipoExcepcion.excep.ObjectAlreadyExists;
+            }
+            return TipoExcepcion.excep.ErrorSemantico;
         }
 
 
@@ -1428,6 +1518,9 @@ namespace Server.GenerarAST
                             expresiones(nodo.ChildNodes.ElementAt(2)),
                             nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+
+                    case "@":
+
                 }
             }
             else if (nodo.ChildNodes.Count == 3)

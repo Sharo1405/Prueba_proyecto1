@@ -66,7 +66,11 @@ namespace Server.AST.Instrucciones.Ciclos
                             continue;
                         } else if (retorno is Retorno) {
                             return retorno; 
-                        }                        
+                        } else if (retorno is TipoExcepcion.excep)
+                        {
+                            return retorno;
+                        }
+                        
 
                         Object valor = aumento.getValue(actualactual, listas, management);
 

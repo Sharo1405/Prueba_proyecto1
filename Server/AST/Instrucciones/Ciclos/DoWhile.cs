@@ -47,6 +47,10 @@ namespace Server.AST.Instrucciones.Ciclos
                     {
                         return retorno;
                     }
+                    else if (retorno is TipoExcepcion.excep)
+                    {
+                        return retorno;
+                    }
 
                     //-----------------------------------------------------------------------------------------------
                     ob = condicion.getValue(entorno, listas, management);

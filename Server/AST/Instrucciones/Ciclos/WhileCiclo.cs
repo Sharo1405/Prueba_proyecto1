@@ -55,7 +55,10 @@ namespace Server.AST.Ciclos
                         {
                             return retorno;
                         }
-
+                        else if (retorno is TipoExcepcion.excep)
+                        {
+                            return retorno;
+                        }
                         valor = condicion.getValue(entorno, listas, management);
                     }
                 }

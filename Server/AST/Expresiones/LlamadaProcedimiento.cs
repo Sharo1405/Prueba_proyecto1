@@ -152,10 +152,10 @@ namespace Server.AST.Expresiones
                                 retexiste = true;
                                 Expresion r = (Expresion)reto;
                                 Retorno rr = (Retorno)r;
-                                
+
                                 if (rr.retorno is ListaExpresiones)
                                 {
-                                    
+
                                     Corchetes haciendoLista = new Corchetes(rr.retorno, rr.linea, rr.col);
                                     List<Object> listRetornada = (List<Object>)haciendoLista.getValue(entorno, listas, management);
                                     tipoDato t = rr.getType(entorno, listas, management);
@@ -170,7 +170,11 @@ namespace Server.AST.Expresiones
                                     tipoDato t = rr.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
-                                }                                                               
+                                }
+                            }
+                            else if (reto is TipoExcepcion.excep)
+                            {
+                                return reto;
                             }
                         }
                         else
@@ -202,7 +206,11 @@ namespace Server.AST.Expresiones
                             }
                             else
                             {
-                                exp.getValue(actual, listas, management);
+                                object xcv = exp.getValue(actual, listas, management);
+                                if (xcv is TipoExcepcion.excep)
+                                {
+                                    return xcv;
+                                }
                             }
                         }
                     }

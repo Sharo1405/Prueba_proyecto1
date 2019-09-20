@@ -271,7 +271,7 @@ namespace Server.Analizador
             var defaultt = ToTerm("default");
             var notpalabra = ToTerm("not");
             var ass = ToTerm("as");
-
+            var message = ToTerm("message");
             #endregion
 
             #region SIGNOS
@@ -509,8 +509,8 @@ namespace Server.Analizador
                                | ProcedureAlreadyExists
                                | ObjectAlreadyExists;
 
-            TRYCATCHH.Rule = tryy + STATEMENTBLOCK + catchh + aparentesis + TIPOEXCEPCION + arroba + id + cparentesis + STATEMENTBLOCK
-                           | tryy + STATEMENTBLOCK + catchh + aparentesis + TIPOEXCEPCION + id + cparentesis + STATEMENTBLOCK;
+            TRYCATCHH.Rule = tryy + STATEMENTBLOCK + catchh + aparentesis + TIPOEXCEPCION + arroba + id + cparentesis + STATEMENTBLOCK;
+                           //| tryy + STATEMENTBLOCK + catchh + aparentesis + TIPOEXCEPCION + id + cparentesis + STATEMENTBLOCK;
 
             LOG.Rule = log + aparentesis + E + cparentesis;
 
@@ -847,6 +847,9 @@ namespace Server.Analizador
                 | E + inn + E
                 | not + E
                 | arroba + id
+
+                | arroba + id + punto + message
+
                 | id
                 | id + acorchete + E + ccorchete //tallas[0]
                 | numero               

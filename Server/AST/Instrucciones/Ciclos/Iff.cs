@@ -61,7 +61,11 @@ namespace Server.AST.Instrucciones.Ciclos
                                     }
                                     else
                                     {
-                                        ins.ejecutar(entorno, listas, management);
+                                        object aal = ins.ejecutar(entorno, listas, management);
+                                        if (aal is TipoExcepcion.excep)
+                                        {
+                                            return aal;
+                                        }
                                     }
                                 }
                                 else
@@ -73,7 +77,11 @@ namespace Server.AST.Instrucciones.Ciclos
                                     }
                                     else
                                     {
-                                        exp.getValue(entorno, listas, management);
+                                        object aal = exp.getValue(entorno, listas, management);
+                                        if (aal is TipoExcepcion.excep)
+                                        {
+                                            return aal;
+                                        }
                                     }
                                 }
                             }
