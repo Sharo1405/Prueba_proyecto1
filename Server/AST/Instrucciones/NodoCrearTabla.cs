@@ -181,11 +181,8 @@ namespace Server.AST.Instrucciones
                 }
                 else
                 {
-
-                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                "La base de datos EN USO no fue encontrada"));
-                    
-                    return tipoDato.errorSemantico;
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                    return TipoExcepcion.excep.UseBDException;
                 }
             }
             catch (ArgumentException e)
@@ -193,6 +190,7 @@ namespace Server.AST.Instrucciones
                 if (ifnotexists is false)
                 {
                     listas.impresiones.AddLast("WARNNING!! ESA TABLA YA EXISTE: " + idTabla);
+                    return TipoExcepcion.excep.TableAlreadyExists;
                 }
                 return tipoDato.errorSemantico;
             }

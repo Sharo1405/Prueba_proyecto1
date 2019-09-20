@@ -96,13 +96,16 @@ namespace Server.AST.Instrucciones
                             }
                         }
                     }
+                    else
+                    {
+                        listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla);
+                        return TipoExcepcion.excep.TableDontExists;
+                    }
                 }
                 else
                 {
-
-                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                "La base de datos EN USO no fue encontrada"));
-                    return tipoDato.errorSemantico;
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                    return TipoExcepcion.excep.UseBDException;
                 }
             }        
             catch (Exception e)

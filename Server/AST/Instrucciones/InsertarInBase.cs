@@ -116,22 +116,20 @@ namespace Server.AST.Instrucciones
 
                             if (encontrado2.columnasTabla.Count != cantidadValores)
                             {
-                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                        "La cantidad de valores a insertar no coincide con la cantidad de columnas de la tabla: "
-                                        + idTabla));
-                                return tipoDato.errorSemantico;
+                                listas.impresiones.AddLast("WARNNING!! La cantidad de valores a insertar no coincide con la cantidad de columnas de la tabla: "
+                                        + idTabla);
+                                return TipoExcepcion.excep.UserAlreadyExists;
                             }
 
                             //validar que las llaves primarias no esten repetidas y no insertar por gusto
                             foreach (KeyValuePair<string, Columna> kvp in encontrado2.columnasTabla)
                             {
                                 Columna iterador = (Columna)kvp.Value;
+
                                 if (iterador.tipo == tipoDato.counter)
                                 {
-                                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                        "No se puede realizar el insert NORMAL ya que contiene counters la Tabla: " + idTabla + "en la columna: "
-                                        + iterador.idColumna));
-                                    return tipoDato.errorSemantico;
+                                    listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER: " + idTabla);
+                                    return TipoExcepcion.excep.CounterTypeException;
                                 }
                                 else
                                 {
@@ -198,18 +196,16 @@ namespace Server.AST.Instrucciones
                                                         {
                                                             if (iterador.idTipo != ((Neww)valorComa).tipoNew.id)
                                                             {
-                                                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.id) +
-                                                                " en la tabla: " + idTabla));
-                                                                return tipoDato.errorSemantico;
+                                                                listas.impresiones.AddLast("WARNNING!! Los tipos de las columnas no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.id) +
+                                                                " en la tabla: " + idTabla);
+                                                                return TipoExcepcion.excep.UserAlreadyExists;
                                                             }
                                                         }
                                                         else if (iterador.idTipo != ((CreateType)valorComa).idType)
                                                         {
-                                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)exp).idType) +
-                                                                " en la tabla: " + idTabla));
-                                                            return tipoDato.errorSemantico;
+                                                            listas.impresiones.AddLast("WARNNING!! Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)exp).idType) +
+                                                                " en la tabla: " + idTabla);
+                                                            return TipoExcepcion.excep.UserAlreadyExists;
                                                         }
                                                     }
                                                 }
@@ -219,30 +215,27 @@ namespace Server.AST.Instrucciones
                                                     {
                                                         if (iterador.tipoValor != ((Neww)valorComa).tipoNew.tipoValor.tipo)
                                                         {
-                                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de los valores del set/list" +
+                                                            listas.impresiones.AddLast("WARNNING!! Los tipos de los valores del set / list" +
                                                                 "no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.tipoValor.tipo) +
-                                                                " en la tabla: " + idTabla));
-                                                            return tipoDato.errorSemantico;
+                                                                " en la tabla: " + idTabla);
+                                                            return TipoExcepcion.excep.UserAlreadyExists;
                                                         }
                                                     }
                                                     else if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
                                                     {
-                                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de los valores del set/list" +
+                                                        listas.impresiones.AddLast("WARNNING!! Los tipos de los valores del set / list" +
                                                                 "no son iguales: " + Convert.ToString(((Lista)exp).tipoValor) +
-                                                                " en la tabla: " + idTabla));
-                                                        return tipoDato.errorSemantico;
+                                                                " en la tabla: " + idTabla);
+                                                        return TipoExcepcion.excep.UserAlreadyExists;
                                                     }
                                                 }
                                                 else
                                                 {
                                                     if (iterador.tipo != tipoComa)
                                                     {
-                                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
-                                                                " en la tabla: " + idTabla));
-                                                        return tipoDato.errorSemantico;
+                                                        listas.impresiones.AddLast("WARNNING!! Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
+                                                                " en la tabla: " + idTabla);
+                                                        return TipoExcepcion.excep.UserAlreadyExists;
                                                     }
                                                 }
                                             }
@@ -256,18 +249,16 @@ namespace Server.AST.Instrucciones
                                                         {
                                                             if (iterador.idTipo != ((Neww)valorComa).tipoNew.id)
                                                             {
-                                                                listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.id) +
-                                                                " en la tabla: " + idTabla));
-                                                                return tipoDato.errorSemantico;
+                                                                listas.impresiones.AddLast("WARNNING!! Los tipos de las columnas no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.id) +
+                                                                " en la tabla: " + idTabla);
+                                                                return TipoExcepcion.excep.UserAlreadyExists;
                                                             }
                                                         }
                                                         else if (iterador.idTipo != ((CreateType)valorComa).idType)
                                                         {                                                                                                          
-                                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)exp).idType) +
-                                                                " en la tabla: " + idTabla));
-                                                            return tipoDato.errorSemantico;
+                                                            listas.impresiones.AddLast("WARNNING!! Los tipos de las columnas no son iguales: " + Convert.ToString(((CreateType)exp).idType) +
+                                                                " en la tabla: " + idTabla);
+                                                            return TipoExcepcion.excep.UserAlreadyExists;
                                                         }
                                                     }
                                                 }
@@ -277,30 +268,27 @@ namespace Server.AST.Instrucciones
                                                     {
                                                         if (iterador.tipoValor != ((Neww)valorComa).tipoNew.tipoValor.tipo)
                                                         {
-                                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de los valores del set/list" +
+                                                            listas.impresiones.AddLast("WARNNING!! Los tipos de los valores del set/list" +
                                                                 "no son iguales: " + Convert.ToString(((Neww)valorComa).tipoNew.tipoValor.tipo) +
-                                                                " en la tabla: " + idTabla));
-                                                            return tipoDato.errorSemantico;
+                                                                " en la tabla: " + idTabla);
+                                                            return TipoExcepcion.excep.UserAlreadyExists;
                                                         }
                                                     }
                                                     else if (iterador.tipoValor != ((Lista)valorComa).tipoValor)
                                                     {                                                    
-                                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de los valores del set/list" +
+                                                        listas.impresiones.AddLast("WARNNING!! Los tipos de los valores del set/list" +
                                                                 "no son iguales: " + Convert.ToString(((Lista)exp).tipoValor) +
-                                                                " en la tabla: " + idTabla));
-                                                        return tipoDato.errorSemantico;
+                                                                " en la tabla: " + idTabla);
+                                                        return TipoExcepcion.excep.UserAlreadyExists;
                                                     }
                                                 }
                                                 else
                                                 {
                                                     if (iterador.tipo != tipoComa)
                                                     {
-                                                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                                "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
-                                                                " en la tabla: " + idTabla));
-                                                        return tipoDato.errorSemantico;
+                                                        listas.impresiones.AddLast("WARNNING!! Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
+                                                                " en la tabla: " + idTabla);
+                                                        return TipoExcepcion.excep.UserAlreadyExists;
                                                     }
                                                 }
 
@@ -308,10 +296,9 @@ namespace Server.AST.Instrucciones
                                         }
                                         else
                                         {
-                                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                                        "Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
-                                                        " en la tabla: " + idTabla));
-                                            return tipoDato.errorSemantico;
+                                            listas.impresiones.AddLast("WARNNING!! Los tipos de las columnas no son iguales: " + Convert.ToString(tipoComa) +
+                                                        " en la tabla: " + idTabla);
+                                            return TipoExcepcion.excep.UserAlreadyExists;
                                         }
                                     }                                    
                                 }
@@ -518,9 +505,8 @@ namespace Server.AST.Instrucciones
                         }
                         else
                         {
-                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                "La tabla con el id: " + idTabla + "No existe"));
-                            return tipoDato.errorSemantico;
+                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla);
+                            return TipoExcepcion.excep.TableDontExists;
                         }
 
                     }
@@ -533,10 +519,8 @@ namespace Server.AST.Instrucciones
                 }
                 else
                 {
-
-                    listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                "La base de datos EN USO no fue encontrada"));
-                    return tipoDato.errorSemantico;
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                    return TipoExcepcion.excep.UseBDException;
                 }
             }
             catch (Exception e)

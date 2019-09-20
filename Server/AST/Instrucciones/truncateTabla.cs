@@ -45,17 +45,15 @@ namespace Server.AST.Instrucciones
                         }
                         else
                         {
-                            listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                "La tabla con el id: " + idTabla + "No existe"));
-                            return tipoDato.errorSemantico;
+                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla);
+                            return TipoExcepcion.excep.TableDontExists;
                         }
 
                     }
                     catch (ArgumentException e)
                     {
-                        listas.errores.AddLast(new NodoError(this.linea, this.col, NodoError.tipoError.Semantico,
-                                "La tabla con el id: " + idTabla + "No existe"));
-                        return tipoDato.errorSemantico;
+                         listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla);
+                        return TipoExcepcion.excep.TableDontExists;
                     }
                 }
                 else

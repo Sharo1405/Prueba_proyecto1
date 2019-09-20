@@ -29,6 +29,7 @@ namespace Server.AST.Instrucciones
             this.itemTypee = itemType;
             this.linea = linea;
             this.columna = columna;
+            this.ifnotexists = false;
         }
 
         public CreateType(String idType, LinkedList<itemType> itemType,
@@ -53,9 +54,16 @@ namespace Server.AST.Instrucciones
                 }
                 else
                 {
-                    listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                        "Variable ya declara en el entorno actual. El nombre es: " + idType));
-                    return tipoDato.errorSemantico;
+                    if (ifnotexists == false)
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                            "Variable ya declara en el entorno actual. El nombre es: " + idType));
+                        return TipoExcepcion.excep.TypeAlreadyExists;
+                    }
+                    else
+                    {
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!!!!!!!! Intento de crar un type user que ya existe " + idType);
+                    }
                 }
             }
             catch (Exception e)

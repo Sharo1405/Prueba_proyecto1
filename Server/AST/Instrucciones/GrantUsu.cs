@@ -29,8 +29,14 @@ namespace Server.AST.Instrucciones
         {
             try
             {
-                userPass encontrado = new userPass();
+                userPass encontrado = null;
                 management.usuarios.TryGetValue(idUsu.ToLower(),out encontrado);
+
+                if (encontrado == null)
+                {
+                    listas.impresiones.AddLast("WARNNING!! EL USUARIO NO EXISTE: " + idUsu);
+                    return TipoExcepcion.excep.UserAlreadyExists;
+                }
 
                 if (encontrado.permisoBase.Equals(""))
                 {

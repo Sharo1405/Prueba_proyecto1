@@ -36,9 +36,8 @@ namespace Server.AST.Instrucciones
             }
             catch (ArgumentException e)
             {
-                listas.errores.AddLast(new NodoError(linea, columna, 
-                    NodoError.tipoError.Semantico, "El usuario ya existe: " + idUsuario));
-                return tipoDato.errorSemantico;
+                listas.impresiones.AddLast("WARNNING!! ESE USUARIO YA EXISTE: " + idUsuario  );
+                return TipoExcepcion.excep.UserAlreadyExists;
             }
             return tipoDato.ok;
         }

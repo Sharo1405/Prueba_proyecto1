@@ -166,8 +166,12 @@ namespace Server.AST.Instrucciones
                                                     }
 
                                                     //---------------------------------------------------------------------------------
-
-                                                    if (coll.primaryKey == true)
+                                                    if (coll.tipo == tipoDato.counter)
+                                                    {
+                                                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER: " + idTabla);
+                                                        return TipoExcepcion.excep.CounterTypeException;
+                                                    }
+                                                    else if (coll.primaryKey == true)
                                                     {
                                                         listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
                                                             "La columa a actualizar es llave primaria: " + coll.idColumna));
@@ -255,8 +259,13 @@ namespace Server.AST.Instrucciones
                                                     }
 
                                                     //---------------------------------------------------------------------------------
-
-                                                    if (coll.primaryKey == true)
+                                                    if (coll.tipo == tipoDato.counter)
+                                                    {
+                                                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER: " + idTabla);
+                                                        return TipoExcepcion.excep.CounterTypeException;
+                                                    }
+                                                    else
+                                                   if (coll.primaryKey == true)
                                                     {
                                                         listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
                                                             "La columa a actualizar es llave primaria: " + coll.idColumna));
@@ -627,9 +636,8 @@ namespace Server.AST.Instrucciones
                         }
                         else
                         {
-                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                "La tabla con el id: " + idTabla + " No existe"));
-                            return tipoDato.errorSemantico;
+                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla);
+                            return TipoExcepcion.excep.TableDontExists;
                         }
                     }
                     catch (ArgumentException e)
@@ -641,9 +649,8 @@ namespace Server.AST.Instrucciones
                 }
                 else
                 {
-                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                "La base de datos EN USO no fue encontrada"));
-                    return tipoDato.errorSemantico;
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                    return TipoExcepcion.excep.UseBDException;
                 }
             }
             catch (Exception e)

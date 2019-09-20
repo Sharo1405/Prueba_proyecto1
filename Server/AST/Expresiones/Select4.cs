@@ -198,10 +198,9 @@ namespace Server.AST.Expresiones
                                         paraRetorno.columnasTabla.Add(colNuevita2.idColumna, colNuevita2);
                                     }
                                     else
-                                    {
-                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                            "El id de la columna no existe en la tabla " + idTabla));
-                                        return tipoDato.errorSemantico;
+                                    {                                        
+                                        listas.impresiones.AddLast("WARNNING!! El id de la columna no existe en la tabla " + idTabla);
+                                        return TipoExcepcion.excep.ColumnException;
                                     }
 
                                     return paraRetorno;
@@ -231,9 +230,8 @@ namespace Server.AST.Expresiones
                         }
                         else
                         {
-                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                "La tabla con el id: " + idTabla + " No existe"));
-                            return tipoDato.errorSemantico;
+                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla);
+                            return TipoExcepcion.excep.TableDontExists;
                         }
                     }
                     catch (ArgumentException e)
@@ -245,9 +243,8 @@ namespace Server.AST.Expresiones
                 }
                 else
                 {
-                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                "La base de datos EN USO no fue encontrada"));
-                    return tipoDato.errorSemantico;
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                    return TipoExcepcion.excep.UseBDException;
                 }
             }
             catch (Exception e)

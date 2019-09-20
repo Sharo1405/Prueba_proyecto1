@@ -31,9 +31,8 @@ namespace Server.AST.Instrucciones
             }
             else
             {
-                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                            "La base de datos especificada para eliminar NO EXISTE: " + usada));
-                return tipoDato.errorSemantico;
+                listas.impresiones.AddLast("WARNINGGGGGGGGGG!!!!!!!!!!  La base de datos especificada para eliminar NO EXISTE: " + usada);
+                return TipoExcepcion.excep.BDDontExists;
             }
         }
     }

@@ -37,8 +37,15 @@ namespace Server.AST.Instrucciones
                 {
                     object obj = selectt.getValue(entorno, listas, management);
 
-                    entorno.setSimbolo(idCursor.ToLower(), new Simbolo(idCursor.ToLower(), obj, this.linea, this.columana,
-                                    tipoDato.cursor, Simbolo.Rol.VARIABLE));
+                    if (!(obj is TipoExcepcion.excep)) {
+                        entorno.setSimbolo(idCursor.ToLower(), new Simbolo(idCursor.ToLower(), obj, this.linea, this.columana,
+                                        tipoDato.cursor, Simbolo.Rol.VARIABLE));
+                    }
+                    else if(obj is TipoExcepcion.excep)
+                    {
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                        return TipoExcepcion.excep.UseBDException;
+                    }
                 }
                 else
                 {

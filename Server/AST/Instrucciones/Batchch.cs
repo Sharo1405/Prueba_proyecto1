@@ -45,9 +45,8 @@ namespace Server.AST.Instrucciones
 
                     if (ob.Equals(tipoDato.errorSemantico))
                     {
-                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                            "No se puede seguir realizando el BATCH"));
-                        return tipoDato.errorSemantico;
+                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE SEGUIR EJECUTANDO EL BATCH");
+                        return TipoExcepcion.excep.BatchException;
                     }
                 }
             }

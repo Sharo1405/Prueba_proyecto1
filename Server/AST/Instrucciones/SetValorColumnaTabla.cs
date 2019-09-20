@@ -460,9 +460,10 @@ namespace Server.AST.Instrucciones
 
                 if (tipoDato.counter == col.tipo)
                 {
-                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                        "No se puede actualizar un campo de tipo counter en la columna: " + col.idColumna));
-                    return tipoDato.errorSemantico;
+                   
+                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER");
+                        return TipoExcepcion.excep.CounterTypeException;
+                   
                 }
                 else
                 {
