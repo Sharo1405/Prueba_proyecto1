@@ -52,8 +52,9 @@ namespace Server.AST.Expresiones
             }
             else
             {
-                listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,
-                    "Funcion ya esta declara. El nombre es: " + idFuncion ));
+                listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGG!!!!!!!!!!!... Funcion ya esta declara. El nombre es: " 
+                    + idFuncion + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                return TipoExcepcion.excep.FunctionAlreadyExists;
             }
 
                 return tipoDato.ok;

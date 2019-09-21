@@ -34,7 +34,13 @@ namespace Server.AST.Expresiones.TipoDato
             Simbolo encontrado = get(idExcepcion, entorno, Simbolo.Rol.VARIABLE);
             if (encontrado != null)
             {
-                return Convert.ToString(encontrado.valor);
+                if (encontrado.tipo == tipoDato.excepcion) {
+                    return Convert.ToString(encontrado.valor);
+                }
+                else
+                {
+                    return tipoDato.errorSemantico;
+                }
             }
             else
             {

@@ -162,7 +162,7 @@ namespace Server.AST.Expresiones
                                     {
                                         listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  No se puede realizar la operacion -- " +
                                             "por no son tipo numerico las expresiones " + " Linea/Columna: "
-                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
                                         return TipoExcepcion.excep.NumberReturnsException;
                                     }
 
@@ -179,7 +179,7 @@ namespace Server.AST.Expresiones
                                     {
                                         listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
                                             "No se puede realizar la operacion -- por no son tipo numerico las expresiones " + " Linea/Columna: "
-                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
                                         return TipoExcepcion.excep.NumberReturnsException;
                                     }
                                     tipoDato t = rr.getType(entorno, listas, management);

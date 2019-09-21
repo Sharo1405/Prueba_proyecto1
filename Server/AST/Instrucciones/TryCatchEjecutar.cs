@@ -102,7 +102,7 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
 
-            return tipoDato.errorSemantico;
+            return tipoDato.ok;
         }
     }
 }

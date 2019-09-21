@@ -135,6 +135,11 @@ namespace Server.AST.Instrucciones
                                             tipo.tipo, tipo.id, Simbolo.Rol.VARIABLE));
                                 }
                             }
+                            else if (tipoValor == tipoDato.cadena && tipo.tipo == tipoDato.excepcion)
+                            {
+                                entorno.setSimbolo(id.ToLower(), new Simbolo(id.ToLower(), value, tipo.linea, tipo.columna,
+                                            tipo.tipo, tipo.id, Simbolo.Rol.VARIABLE));
+                            }
                             else
                             {
                                 listas.errores.AddLast(new NodoError(tipo.linea, tipo.columna, NodoError.tipoError.Semantico,

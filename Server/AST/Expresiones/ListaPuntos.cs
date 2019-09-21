@@ -103,7 +103,19 @@ namespace Server.AST.Expresiones
             if (ob is Simbolo)
             {
                 Simbolo s = (Simbolo)ob;
-                if (s.tipo == tipoDato.id)
+                if (s.tipo == tipoDato.excepcion)
+                {
+                    contador++;
+                    Puntos punto = ListaExpresionesPuntos.ElementAt(contador);
+                    if (punto.expresion1 is ElExcepcion)
+                    {
+                        auxParaFunciones = Convert.ToString(s.valor);
+                        tipoFinal = tipoDato.excepcion;
+                        return auxParaFunciones;
+                    }
+
+                }
+                else if (s.tipo == tipoDato.id)
                 {
                     CreateType type = (CreateType)s.valor;
                     contador++;

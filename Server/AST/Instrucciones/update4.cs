@@ -607,7 +607,7 @@ namespace Server.AST.Instrucciones
                         else
                         {
                             listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla + " Linea/Columna "
-                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                             return TipoExcepcion.excep.TableDontExists;
                         }
                     }

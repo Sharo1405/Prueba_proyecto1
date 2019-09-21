@@ -85,8 +85,9 @@ namespace Server.AST.Expresiones
                     }
                     catch (ArgumentException e)
                     {
-                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                    "El procedimiento ya existe en la base de datos EN USO: " + firmaFuncion));
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGG!!!!!!!!!!!... El procedimiento ya existe en la base de datos EN USO: " 
+                            + firmaFuncion + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                        return TipoExcepcion.excep.ProcedureAlreadyExists;                         
                     }
                 }
 
@@ -95,8 +96,10 @@ namespace Server.AST.Expresiones
             }
             else
             {
-                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                    "Funcion ya esta declara. El nombre es: " + idProc));
+                listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGG!!!!!!!!!!!... " +
+                "uncion ya esta declara. El nombre es: " 
+                + firmaFuncion + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                return TipoExcepcion.excep.ProcedureAlreadyExists;
             }
 
             return tipoDato.ok;

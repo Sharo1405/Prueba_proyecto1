@@ -35,7 +35,7 @@ namespace Server.AST.Instrucciones
                 if (encontrado == null)
                 {
                     listas.impresiones.AddLast("WARNNING!! EL USUARIO NO EXISTE: " + idUsu + " Linea/Columna "
-                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                     return TipoExcepcion.excep.UserDontExists;
                 }
 

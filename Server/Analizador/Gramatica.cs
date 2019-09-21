@@ -842,14 +842,15 @@ namespace Server.Analizador
                 | E + incremento//
                 | E + decremento//
                 | E + coma + E
+                //| arroba + id + punto + message
                 | E + punto + E
                 | E + dospuntos + E
                 | E + inn + E
                 | not + E
                 | arroba + id
 
-                | arroba + id + punto + message
-
+                
+                | message
                 | id
                 | id + acorchete + E + ccorchete //tallas[0]
                 | numero               

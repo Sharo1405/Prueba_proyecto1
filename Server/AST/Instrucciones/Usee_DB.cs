@@ -34,7 +34,7 @@ namespace Server.AST.Instrucciones
             }
             else
             {
-                listas.impresiones.AddLast("WARNINGGGGGGGGGG!!!!!!!!!!  La base de datos especificada para eliminar NO EXISTE: " 
+                listas.impresiones.AddLast("WARNINGGGGGGGGGG!!!!!!!!!!  La base de datos especificada para USAR NO EXISTE: " 
                     + usada + " Linea/Columna "
                          + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                 return TipoExcepcion.excep.BDDontExists;

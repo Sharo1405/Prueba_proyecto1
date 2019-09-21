@@ -1483,7 +1483,8 @@ namespace Server.GenerarAST
             if (nodo.ChildNodes.Count == 5)
             {
                 String str = nodo.ChildNodes.ElementAt(0).Term.Name;
-                switch (str) {
+                switch (str)
+                {
                     case "{":
                         return new LLaveAsTypeUser(expresiones(nodo.ChildNodes.ElementAt(1)),
                             nodo.ChildNodes.ElementAt(4).Token.Text.ToLower(),
@@ -1504,7 +1505,7 @@ namespace Server.GenerarAST
             {
                 string operador = nodo.ChildNodes.ElementAt(0).Term.Name.ToLower();
                 switch (operador)
-                {                    
+                {
                     case "(": //CASTEOS
                         return new Casteos(
                             nodo.ChildNodes.ElementAt(1).ChildNodes.ElementAt(0).Token.Text.ToLower(),
@@ -1519,8 +1520,11 @@ namespace Server.GenerarAST
                             nodo.ChildNodes.ElementAt(0).Token.Location.Line,
                             nodo.ChildNodes.ElementAt(0).Token.Location.Column);
 
-                    case "@":
-
+                        /*case "@":
+                            return new ElExcepcion(
+                                nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                                nodo.ChildNodes.ElementAt(0).Token.Location.Line,
+                                nodo.ChildNodes.ElementAt(0).Token.Location.Column);*/
                 }
             }
             else if (nodo.ChildNodes.Count == 3)
@@ -1530,7 +1534,7 @@ namespace Server.GenerarAST
                 {
                     //aritmeticas
                     case "+":
-                        return new Suma(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column, 
+                        return new Suma(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
                             expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)));
 
                     case "-":
@@ -1573,7 +1577,7 @@ namespace Server.GenerarAST
                         return new DividirIgual(nodo.ChildNodes[1].Token.Location.Line, nodo.ChildNodes[1].Token.Location.Column,
                             expresiones(nodo.ChildNodes.ElementAt(0)), expresiones(nodo.ChildNodes.ElementAt(2)));
 
-                    
+
 
 
                     //RELACIONALES
@@ -1625,10 +1629,10 @@ namespace Server.GenerarAST
 
                     //E dospuntos E
                     case ":":
-                        ClaveValor claVa = new ClaveValor(expresiones(nodo.ChildNodes.ElementAt(0)), 
+                        ClaveValor claVa = new ClaveValor(expresiones(nodo.ChildNodes.ElementAt(0)),
                             expresiones(nodo.ChildNodes.ElementAt(2)));
                         return new DosPuntos(claVa,
-                            nodo.ChildNodes[1].Token.Location.Line, 
+                            nodo.ChildNodes[1].Token.Location.Line,
                             nodo.ChildNodes[1].Token.Location.Column);
 
                     case ".":
@@ -1654,7 +1658,7 @@ namespace Server.GenerarAST
 
                         }
                         break;
-                        
+
 
                 }
 
@@ -1668,7 +1672,7 @@ namespace Server.GenerarAST
                     {
                         case "-":
                             return new Negatico(nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column,
-                                expresiones(nodo.ChildNodes.ElementAt(1)));                        
+                                expresiones(nodo.ChildNodes.ElementAt(1)));
 
                         case "!":
                             return new Nott(nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column,
@@ -1693,19 +1697,19 @@ namespace Server.GenerarAST
                         //-----------------------------------------------------------------------------------------------------------
                         case "--":
                             return new Decremento(expresiones(nodo.ChildNodes.ElementAt(0)),
-                                nodo.ChildNodes[1].Token.Location.Line, 
+                                nodo.ChildNodes[1].Token.Location.Line,
                                 nodo.ChildNodes[1].Token.Location.Column);
 
                         case "++":
                             return new Incremento(expresiones(nodo.ChildNodes.ElementAt(0)),
                                 nodo.ChildNodes[1].Token.Location.Line,
                                 nodo.ChildNodes[1].Token.Location.Column);
-                        //-----------------------------------------------------------------------------------------------------------
+                            //-----------------------------------------------------------------------------------------------------------
 
                     }
                 }
 
-                }
+            }
             else if (nodo.ChildNodes.Count == 1)
             {
                 string operador = nodo.ChildNodes.ElementAt(0).Term.Name.ToString();
@@ -1718,35 +1722,35 @@ namespace Server.GenerarAST
 
                     //fecha y hora
                     case "tdatetime":
-                        String valor = nodo.ChildNodes.ElementAt(0).Token.Text.Replace("'","");
+                        String valor = nodo.ChildNodes.ElementAt(0).Token.Text.Replace("'", "");
                         if (valor.Contains("-"))
                         {
-                            return new Date(valor, Operacion.tipoDato.date, nodo.ChildNodes[0].Token.Location.Line, 
+                            return new Date(valor, Operacion.tipoDato.date, nodo.ChildNodes[0].Token.Location.Line,
                                 nodo.ChildNodes[0].Token.Location.Column);
                         }
                         else
                         {
-                            return new Time(valor, Operacion.tipoDato.time, nodo.ChildNodes[0].Token.Location.Line, 
+                            return new Time(valor, Operacion.tipoDato.time, nodo.ChildNodes[0].Token.Location.Line,
                                 nodo.ChildNodes[0].Token.Location.Column);
                         }
-                        
+
 
                     case "numero":
                         //Object valor, tipoDato tipo, int linea, int columna
-                        return new Numero(nodo.ChildNodes.ElementAt(0).Token.Text, Operacion.tipoDato.decimall, 
+                        return new Numero(nodo.ChildNodes.ElementAt(0).Token.Text, Operacion.tipoDato.decimall,
                             nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column);
 
                     case "tstring":
                         String valor2 = nodo.ChildNodes.ElementAt(0).Token.Text.Replace("\"", "");
-                        return new cadena(valor2, Operacion.tipoDato.cadena, nodo.ChildNodes[0].Token.Location.Line, 
+                        return new cadena(valor2, Operacion.tipoDato.cadena, nodo.ChildNodes[0].Token.Location.Line,
                             nodo.ChildNodes[0].Token.Location.Column);
-                    
+
                     case "true":
                         return new Booleano(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(), Operacion.tipoDato.booleano,
                             nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column);
 
                     case "false":
-                        return new Booleano(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(), Operacion.tipoDato.booleano, 
+                        return new Booleano(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(), Operacion.tipoDato.booleano,
                             nodo.ChildNodes[0].Token.Location.Line, nodo.ChildNodes[0].Token.Location.Column);
 
                     case "null":
@@ -1767,6 +1771,12 @@ namespace Server.GenerarAST
 
                     case "FUNCIONAGREGACION":
                         return funcionesAgregacion(nodo.ChildNodes.ElementAt(0));
+
+                    case "message":
+                        return new ElExcepcion(nodo.ChildNodes.ElementAt(0).Token.Text.ToLower(),
+                            nodo.ChildNodes[0].Token.Location.Line, 
+                            nodo.ChildNodes[0].Token.Location.Column);
+
 
                 }
             }
