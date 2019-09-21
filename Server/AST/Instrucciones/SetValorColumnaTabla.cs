@@ -461,7 +461,8 @@ namespace Server.AST.Instrucciones
                 if (tipoDato.counter == col.tipo)
                 {
                    
-                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER");
+                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER " + " Linea/Columna "
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
                         return TipoExcepcion.excep.CounterTypeException;
                    
                 }

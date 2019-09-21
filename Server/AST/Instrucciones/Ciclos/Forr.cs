@@ -46,6 +46,14 @@ namespace Server.AST.Instrucciones.Ciclos
                 }
 
                 object ob = condicion.getValue(actual, listas, management);
+                if (ob == null)
+                {
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " +
+                               " El valor es nulo " + " Linea/Columna " +
+                                   Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
+                    return TipoExcepcion.excep.NullPointerException;
+                }
+
                 tipoDato t = condicion.getType(actual, listas, management);
                 if (t == tipoDato.booleano)
                 {
@@ -75,6 +83,13 @@ namespace Server.AST.Instrucciones.Ciclos
                         Object valor = aumento.getValue(actualactual, listas, management);
 
                         ob = condicion.getValue(actual, listas, management);
+                        if (ob == null)
+                        {
+                            listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " 
+                                       +" Linea/Columna " +
+                                   " El valor es nulo " + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
+                            return TipoExcepcion.excep.NullPointerException;
+                        }
                     }
 
                 }

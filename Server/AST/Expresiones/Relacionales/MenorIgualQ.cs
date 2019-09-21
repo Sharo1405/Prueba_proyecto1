@@ -1,5 +1,6 @@
 ﻿using Server.AST.BaseDatos;
 using Server.AST.Entornos;
+using Server.AST.Instrucciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,11 +49,25 @@ namespace Server.AST.Expresiones.Relacionales
             {
                 Simbolo ar = (Simbolo)exp;
                 exp = ar.valor;
+                if (exp == null)
+                {
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " +
+                               " El valor es nulo " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                    return TipoExcepcion.excep.NullPointerException;
+                }
             }
             if (expresion2 is ArrobaId)
             {
                 Simbolo ar = (Simbolo)exp2;
                 exp2 = ar.valor;
+                if (exp2 == null)
+                {
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " +
+                               " El valor es nulo " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                    return TipoExcepcion.excep.NullPointerException;
+                }
             }
 
             if (nuevo == tipoDato.decimall)
@@ -73,7 +88,9 @@ namespace Server.AST.Expresiones.Relacionales
             {
                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "Tipo de dato para operador \"<=\" no valido Tipos: " +
                     Convert.ToString(expresion1.getType(entorno, listas, management)) + " y " + 
-                    Convert.ToString(expresion2.getType(entorno, listas, management)) + " y se esperaba Int o Double, Strings, dates, times"));
+                    Convert.ToString(expresion2.getType(entorno, listas, management)) + 
+                    " y se esperaba Int o Double, Strings, dates, times " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna)));
                 return tipoDato.errorSemantico;
             }
         }

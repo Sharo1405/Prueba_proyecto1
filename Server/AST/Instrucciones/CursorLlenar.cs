@@ -43,7 +43,8 @@ namespace Server.AST.Instrucciones
                     }
                     else if(obj is TipoExcepcion.excep)
                     {
-                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada " +
+                            Convert.ToString(this.linea) + " " + Convert.ToString(this.columana));
                         return TipoExcepcion.excep.UseBDException;
                     }
                 }

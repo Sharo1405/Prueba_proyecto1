@@ -34,8 +34,9 @@ namespace Server.AST.Instrucciones
 
                 if (encontrado == null)
                 {
-                    listas.impresiones.AddLast("WARNNING!! EL USUARIO NO EXISTE: " + idUsu);
-                    return TipoExcepcion.excep.UserAlreadyExists;
+                    listas.impresiones.AddLast("WARNNING!! EL USUARIO NO EXISTE: " + idUsu + " Linea/Columna "
+                                   + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                    return TipoExcepcion.excep.UserDontExists;
                 }
 
                 if (encontrado.permisoBase.Equals(""))

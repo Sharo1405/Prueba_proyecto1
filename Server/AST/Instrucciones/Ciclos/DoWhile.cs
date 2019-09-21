@@ -54,6 +54,13 @@ namespace Server.AST.Instrucciones.Ciclos
 
                     //-----------------------------------------------------------------------------------------------
                     ob = condicion.getValue(entorno, listas, management);
+                    if (ob == null)
+                    {
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " + " Linea/Columna " +
+                                   Convert.ToString(this.linea) + " / " + Convert.ToString(this.col));
+                        return TipoExcepcion.excep.NullPointerException;
+                    }
+
                     tipoDato tipo = condicion.getType(entorno, listas, management);
                     if (tipo == tipoDato.booleano)
                     {
@@ -61,8 +68,10 @@ namespace Server.AST.Instrucciones.Ciclos
                     }
                     else
                     {
-                        listas.errores.AddLast(new NodoError(linea, col, NodoError.tipoError.Semantico, "La condicion no es valida para el DoWhile: "
-                            + Convert.ToString(tipo)));
+                        listas.errores.AddLast(new NodoError(linea, col, NodoError.tipoError.Semantico, 
+                            "La condicion no es valida para el DoWhile: "
+                            + Convert.ToString(tipo) + " Linea/Columna " 
+                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.col)));
                         return tipoDato.errorSemantico;
                     }
                     //-----------------------------------------------------------------------------------------------

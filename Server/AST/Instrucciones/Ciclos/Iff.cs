@@ -35,6 +35,15 @@ namespace Server.AST.Instrucciones.Ciclos
                 foreach (IfLista ifLista in ejecutarIFS)
                 {
                     Object ob = ifLista.condicion.getValue(entorno, listas, management);
+
+                    if (ob == null)
+                    {
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " +
+                                   " El valor es nulo " + " Linea/Columna "
+                                   + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
+                        return TipoExcepcion.excep.NullPointerException;
+                    }
+
                     tipoDato tipo = ifLista.condicion.getType(entorno, listas, management);
                     if (tipo == tipoDato.booleano)
                     {

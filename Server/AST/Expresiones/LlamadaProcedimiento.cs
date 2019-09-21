@@ -158,6 +158,14 @@ namespace Server.AST.Expresiones
 
                                     Corchetes haciendoLista = new Corchetes(rr.retorno, rr.linea, rr.col);
                                     List<Object> listRetornada = (List<Object>)haciendoLista.getValue(entorno, listas, management);
+                                    if (listRetornada.Count != buscado.retornos.Count)
+                                    {
+                                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  No se puede realizar la operacion -- " +
+                                            "por no son tipo numerico las expresiones " + " Linea/Columna: "
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                        return TipoExcepcion.excep.NumberReturnsException;
+                                    }
+
                                     tipoDato t = rr.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
@@ -167,6 +175,13 @@ namespace Server.AST.Expresiones
                                     List<Object> listRetornada = new List<object>();
                                     Object ob = rr.getValue(entorno, listas, management);
                                     listRetornada.Add(ob);
+                                    if (listRetornada.Count != buscado.retornos.Count)
+                                    {
+                                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                                            "No se puede realizar la operacion -- por no son tipo numerico las expresiones " + " Linea/Columna: "
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                        return TipoExcepcion.excep.NumberReturnsException;
+                                    }
                                     tipoDato t = rr.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
@@ -190,6 +205,13 @@ namespace Server.AST.Expresiones
 
                                     Corchetes haciendoLista = new Corchetes(rr.retorno, rr.linea, rr.col);
                                     List<Object> listRetornada = (List<Object>)haciendoLista.getValue(entorno, listas, management);
+                                    if (listRetornada.Count != buscado.retornos.Count)
+                                    {
+                                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                                            "No se puede realizar la operacion -- por no son tipo numerico las expresiones " + " Linea/Columna "
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
+                                        return TipoExcepcion.excep.NumberReturnsException;
+                                    }
                                     tipoDato t = haciendoLista.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;
@@ -199,6 +221,12 @@ namespace Server.AST.Expresiones
                                     List<Object> listRetornada = new List<object>();
                                     Object ob = rr.getValue(entorno, listas, management);
                                     listRetornada.Add(ob);
+                                    if (listRetornada.Count != buscado.retornos.Count)
+                                    {
+                                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  No se puede realizar la operacion -- por no son tipo numerico las expresiones " + " Linea/Columna "
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
+                                        return TipoExcepcion.excep.NumberReturnsException;
+                                    }
                                     tipoDato t = rr.getType(entorno, listas, management);
                                     Lista listaGuardar = new Lista("", listRetornada, tipoDato.list, t, linea, col);
                                     return listaGuardar;

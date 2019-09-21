@@ -56,7 +56,8 @@ namespace Server.AST.BaseDatos
             {                
                 if (ifnotexist is false)
                 {
-                    listas.impresiones.AddLast("WARNNING!! BASE DE DATOS YA EXISTE: " + idbase);
+                    listas.impresiones.AddLast("WARNNING!! BASE DE DATOS YA EXISTE: " + idbase + " Linea/Columa: " + 
+                        Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                     return TipoExcepcion.excep.BDAlreadyExists;
                 }                
                 return tipoDato.errorSemantico;

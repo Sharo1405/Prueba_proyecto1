@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Server.AST.BaseDatos;
 using Server.AST.Entornos;
+using Server.AST.Instrucciones;
 using static Server.AST.Expresiones.Operacion;
 
 namespace Server.AST.Expresiones
@@ -46,6 +47,15 @@ namespace Server.AST.Expresiones
             try
             {
                 object valor = expParaCastear.getValue(entorno, listas, management);
+                if (valor == null)
+                {
+
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " +
+                               " El valor es nulo");
+                    return TipoExcepcion.excep.NullPointerException;
+                    
+                }
+
                 tipoDato tipoValor = expParaCastear.getType(entorno, listas, management);
 
                 if (tipoValor == tipoDato.counter || 

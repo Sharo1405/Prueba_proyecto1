@@ -681,16 +681,30 @@ namespace Server.AST.Expresiones
                             }
                             if (Int32.Parse(Convert.ToString(valorPos)) > contaPos1)
                             {
-                                listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                /*listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                         "Posicion es mayor a la de la lists/set"));
                                 auxParaFunciones = tipoDato.errorSemantico;
-                                return tipoDato.errorSemantico;
+                                return tipoDato.errorSemantico;*/
+                                listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO "
+                                    + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                return TipoExcepcion.excep.IndexOutException;
                             }
 
-                            auxParaFunciones = null;
-                            tipoFinal = tipoValor;
-                            auxParaFunciones = auxlista.ElementAt(Int32.Parse(Convert.ToString(valorPos)));
+                            try
+                            {
+                                auxParaFunciones = null;
+                                tipoFinal = tipoValor;
+                                auxParaFunciones = auxlista.ElementAt(Int32.Parse(Convert.ToString(valorPos)));
+                            }
+                            catch (Exception e)
+                            {
+                                listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                return TipoExcepcion.excep.IndexOutException;
+                            }
                             return auxParaFunciones;
+
 
                         case "set":
                             if (auxlista.Count == 0)
@@ -713,18 +727,30 @@ namespace Server.AST.Expresiones
                                 int p = Int32.Parse(Convert.ToString(pos));
                                 if (p > contaPos)
                                 {
-                                    listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                                    /*listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
                                         "Posicion es mayor a la de la lists/set"));
                                     auxParaFunciones = tipoDato.errorSemantico;
-                                    return tipoDato.errorSemantico;
+                                    return tipoDato.errorSemantico;*/
+                                    listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                    return TipoExcepcion.excep.IndexOutException;
                                 }
 
                                 Object itemAsignar = funcion.exp2.getValue(entorno, listas, management);
                                 tipoDato tipoAsignar = funcion.exp2.getType(entorno, listas, management);
                                 if (tipoValor == tipoAsignar)
                                 {
-                                    auxlista.RemoveAt(p);
-                                    auxlista.Insert(p, itemAsignar);
+                                    try
+                                    {
+                                        auxlista.RemoveAt(p);
+                                        auxlista.Insert(p, itemAsignar);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                        return TipoExcepcion.excep.IndexOutException;
+                                    }
                                 }
                                 auxParaFunciones = null;
                                 auxParaFunciones = auxlista;
@@ -751,7 +777,16 @@ namespace Server.AST.Expresiones
                             tipoDato tipoPos = funcion.exp1.getType(entorno, listas, management);
                             if (tipoPos == tipoDato.entero)
                             {
-                                auxlista.RemoveAt(Int32.Parse(Convert.ToString(posicion)));
+                                try
+                                {
+                                    auxlista.RemoveAt(Int32.Parse(Convert.ToString(posicion)));
+                                }
+                                catch (Exception e)
+                                {
+                                    listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                    return TipoExcepcion.excep.IndexOutException;
+                                }
                             }
                             else
                             {

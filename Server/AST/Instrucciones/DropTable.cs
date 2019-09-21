@@ -55,7 +55,9 @@ namespace Server.AST.Instrucciones
                         {
                             if (ifnotexists is false)
                             {
-                                listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla + " No se puede eliminar");
+                                listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla + " No se puede eliminar "
+                                    + " Linea/Columna "
+                                   + Convert.ToString(this.linea) + " " + Convert.ToString(this.col));
                             }
                             return tipoDato.errorSemantico;
                         }
@@ -65,7 +67,8 @@ namespace Server.AST.Instrucciones
                     {
                         if (ifnotexists is false)
                         {
-                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla + " No se puede eliminar");
+                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla + " No se puede eliminar " + " Linea/Columna "
+                                   + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                         }
                         return tipoDato.errorSemantico;
                     }

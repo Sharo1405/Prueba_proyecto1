@@ -36,7 +36,8 @@ namespace Server.AST.Instrucciones
             }
             catch (ArgumentException e)
             {
-                listas.impresiones.AddLast("WARNNING!! ESE USUARIO YA EXISTE: " + idUsuario  );
+                listas.impresiones.AddLast("WARNNING!! ESE USUARIO YA EXISTE: " + idUsuario + " Linea/Columna "
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                 return TipoExcepcion.excep.UserAlreadyExists;
             }
             return tipoDato.ok;

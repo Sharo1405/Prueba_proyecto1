@@ -388,74 +388,98 @@ namespace Server.AST.Instrucciones
                 {
                     if (item.tipoValor == tipoValorParaAsignar)
                     {
-                        listaEnColumna.RemoveAt(iterINDICE);
-                        listaEnColumna.Insert(iterINDICE, valorParaAsignar);
+                        try
+                        {
+                            listaEnColumna.RemoveAt(iterINDICE);
+                            listaEnColumna.Insert(iterINDICE, valorParaAsignar);
+                        }
+                        catch (Exception e)
+                        {
+                            listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO");
+                            return TipoExcepcion.excep.IndexOutException;
+                        }
                     }
                 }
                 else
                 {
                     if (contador2 == ListaExpresionesPuntos.Count - 1)
                     {
-                        CreateType ut = (CreateType)listaEnColumna.ElementAt(iterINDICE);
-                        foreach (itemType it in ut.itemTypee)
+                        try
                         {
-                            if (it.id == iditemType)
+                            CreateType ut = (CreateType)listaEnColumna.ElementAt(iterINDICE);
+                            foreach (itemType it in ut.itemTypee)
                             {
-                                if (idItem.expresion1 is listaAccesoTabla)
+                                if (it.id == iditemType)
                                 {
-                                    object vindex = posLista.getValue(entorno, listas, management);
-                                    tipoDato tipovindex = posLista.getType(entorno, listas, management);
-                                    if (tipovindex != tipoDato.entero)
+                                    if (idItem.expresion1 is listaAccesoTabla)
                                     {
-                                        listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                            "No de puede acceder a la posicion de la lista ya que no es de tipo entero el index, en la columna: " + col.idColumna));
-                                        return tipoDato.errorSemantico;
+                                        object vindex = posLista.getValue(entorno, listas, management);
+                                        tipoDato tipovindex = posLista.getType(entorno, listas, management);
+                                        if (tipovindex != tipoDato.entero)
+                                        {
+                                            listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                                "No de puede acceder a la posicion de la lista ya que no es de tipo entero el index, en la columna: " + col.idColumna));
+                                            return tipoDato.errorSemantico;
+                                        }
+                                        Lista lista = (Lista)it.valor;
+                                        List<object> lista2 = (List<object>)lista.listaValores;
+                                        lista2.RemoveAt(Convert.ToInt32(vindex));
+                                        lista2.Insert(Convert.ToInt32(vindex), valorParaAsignar);
                                     }
-                                    Lista lista = (Lista)it.valor;
-                                    List<object> lista2 = (List<object>)lista.listaValores;
-                                    lista2.RemoveAt(Convert.ToInt32(vindex));
-                                    lista2.Insert(Convert.ToInt32(vindex), valorParaAsignar);
-                                }
-                                else if (it.tipo.tipo == tipoValorParaAsignar)
-                                {
-                                    it.valor = valorParaAsignar;
+                                    else if (it.tipo.tipo == tipoValorParaAsignar)
+                                    {
+                                        it.valor = valorParaAsignar;
+                                    }
                                 }
                             }
+                        }
+                        catch (Exception e)
+                        {
+                            listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO");
+                            return TipoExcepcion.excep.IndexOutException;
                         }
                     }
                     else
                     {
                         //acceso usertype dentro de lista
                         //contador2 = 1;
-                        CreateType ut = (CreateType)listaEnColumna.ElementAt(iterINDICE);
-                        if (idItem.expresion1 is listaAccesoTabla)
+                        try
                         {
-                            object vindex = posLista.getValue(entorno, listas, management);
-                            tipoDato tipovindex = posLista.getType(entorno, listas, management);
-                            if (tipovindex != tipoDato.entero)
+                            CreateType ut = (CreateType)listaEnColumna.ElementAt(iterINDICE);
+                            if (idItem.expresion1 is listaAccesoTabla)
                             {
-                                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
-                                    "No de puede acceder a la posicion de la lista ya que no es de tipo entero el index, en la columna: " + col.idColumna));
-                                return tipoDato.errorSemantico;
-                            }
-
-                            foreach (itemType tititi in ut.itemTypee)
-                            {
-                                if (tititi.id == iditemType)
+                                object vindex = posLista.getValue(entorno, listas, management);
+                                tipoDato tipovindex = posLista.getType(entorno, listas, management);
+                                if (tipovindex != tipoDato.entero)
                                 {
-                                    if (tititi.tipo.tipo == tipoDato.list || tititi.tipo.tipo == tipoDato.set)
-                                    {
+                                    listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico,
+                                        "No de puede acceder a la posicion de la lista ya que no es de tipo entero el index, en la columna: " + col.idColumna));
+                                    return tipoDato.errorSemantico;
+                                }
 
-                                        Lista lista = (Lista)tititi.valor;
-                                        List<object> lista2 = (List<object>)lista.listaValores;
-                                        masListas(lista2, entorno, listas, management, contador2 + 1, Convert.ToInt32(vindex));
+                                foreach (itemType tititi in ut.itemTypee)
+                                {
+                                    if (tititi.id == iditemType)
+                                    {
+                                        if (tititi.tipo.tipo == tipoDato.list || tititi.tipo.tipo == tipoDato.set)
+                                        {
+
+                                            Lista lista = (Lista)tititi.valor;
+                                            List<object> lista2 = (List<object>)lista.listaValores;
+                                            masListas(lista2, entorno, listas, management, contador2 + 1, Convert.ToInt32(vindex));
+                                        }
                                     }
                                 }
                             }
+                            else
+                            {
+                                mastypeusersss(ut, entorno, listas, management, contador2 + 1);
+                            }
                         }
-                        else
+                        catch (Exception e)
                         {
-                            mastypeusersss(ut, entorno, listas, management, contador2 + 1);
+                            listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO");
+                            return TipoExcepcion.excep.IndexOutException;
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 ﻿using Server.AST.BaseDatos;
 using Server.AST.Entornos;
+using Server.AST.Instrucciones;
 using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,8 @@ namespace Server.AST.Expresiones.Aritmeticas
 
         tipoDato tipoOpcion1 = tipoDato.errorSemantico;
         tipoDato tipoOpcion2 = tipoDato.errorSemantico;
+        private object tipoExcepcion;
+
         public tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             if (idExp != null)
@@ -72,9 +75,13 @@ namespace Server.AST.Expresiones.Aritmeticas
 
                             if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
                             {
-                                listas.errores.AddLast(new NodoError(linea, columna,
+                                /*listas.errores.AddLast(new NodoError(linea, columna,
                                     NodoError.tipoError.Semantico, "No se puede realizar la operacion ++ por no son tipo numerico las expresiones"));
-                                return tipoDato.errorSemantico;
+                                return tipoDato.errorSemantico;*/
+                                listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                                    "No se puede realizar la operacion -- por no son tipo numerico las expresiones" + "Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                return TipoExcepcion.excep.ArithmeticException;
                             }
 
                             if (valorExp1 is Simbolo)
@@ -107,9 +114,12 @@ namespace Server.AST.Expresiones.Aritmeticas
 
                             if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
                             {
-                                listas.errores.AddLast(new NodoError(linea, columna,
-                                    NodoError.tipoError.Semantico, "No se puede realizar la operacion ++ por no son tipo numerico las expresiones"));
-                                return tipoDato.errorSemantico;
+                                
+                                listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                                    "No se puede realizar la operacion -- por no son tipo numerico las expresiones "
+                                    + "Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                return TipoExcepcion.excep.ArithmeticException;
                             }
 
                             if (valorExp1 is Simbolo)
@@ -150,10 +160,12 @@ namespace Server.AST.Expresiones.Aritmeticas
                             return valorantiguo;
                         }
                         else
-                        {
-                            listas.errores.AddLast(new NodoError(linea, columna,
-                                NodoError.tipoError.Semantico, "No se puede realizar el Decremento -- porque el tipo no lo admite: " + Convert.ToString(tipovar)));
-                            return tipoDato.errorSemantico;
+                        {                            
+                            listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                                "No se puede realizar el Decremento -- porque el tipo no lo admite: " + Convert.ToString(tipovar) 
+                                + "Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                            return TipoExcepcion.excep.ArithmeticException;
                         }
                     }
                     else if (idExp is ListaPuntos)
@@ -162,9 +174,12 @@ namespace Server.AST.Expresiones.Aritmeticas
                         tipoDato tipoExpId = idExp.getType(entorno, listas, management);
                         if (tipoExpId != tipoDato.entero && tipoExpId != tipoDato.decimall)
                         {
-                            listas.errores.AddLast(new NodoError(linea, columna,
-                                NodoError.tipoError.Semantico, "El tipo del incremento no es numerico sino: " + Convert.ToString(tipoExpId)));
-                            return tipoDato.errorSemantico;
+                            /*listas.errores.AddLast(new NodoError(linea, columna,
+                                NodoError.tipoError.Semantico, "El tipo del incremento no es numerico sino: " + Convert.ToString(tipoExpId)));*/
+                            listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                                "El tipo del incremento no es numerico sino: " + Convert.ToString(tipoExpId) + " Linea/Columna:"
+                                + Convert.ToString(this.linea) + " / " + Convert.ToString(this.columna));
+                            return TipoExcepcion.excep.ArithmeticException;
                         }
 
                         if (tipoExpId == tipoDato.entero)
@@ -182,9 +197,13 @@ namespace Server.AST.Expresiones.Aritmeticas
                     }
                     else
                     {
-                        listas.errores.AddLast(new NodoError(linea, columna,
-                            NodoError.tipoError.Semantico, "No se puede realizar el Decremento -- porque no es id el primer arguemnto"));
-                        return tipoDato.errorSemantico;
+                        /*listas.errores.AddLast(new NodoError(linea, columna,
+                            NodoError.tipoError.Semantico, "No se puede realizar el Decremento -- porque no es id el primer arguemnto"));*/
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                               "No se puede realizar el Decremento -- porque no es id el primer arguemnto " + " Linea/Columna:"
+                                + Convert.ToString(this.linea) + " / " + Convert.ToString(this.columna));
+                        return TipoExcepcion.excep.ArithmeticException;
+
                     }
                 }
                 else
@@ -206,14 +225,19 @@ namespace Server.AST.Expresiones.Aritmeticas
                     }
                     else
                     {
-                        listas.errores.AddLast(new NodoError(linea, columna,
-                            NodoError.tipoError.Semantico, "No se puede realizar el Decremento -- porque el tipo no lo admite: " + Convert.ToString(tipovar)));
-                        return tipoDato.errorSemantico;
+                        /*listas.errores.AddLast(new NodoError(linea, columna,
+                            NodoError.tipoError.Semantico, "No se puede realizar el Decremento -- porque el tipo no lo admite: " + Convert.ToString(tipovar)));*/
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                              "No se puede realizar el Decremento -- porque el tipo no lo admite: " + Convert.ToString(tipovar) + " Linea/Columna:"
+                                + Convert.ToString(this.linea) + " / " + Convert.ToString(this.columna));
+                        return TipoExcepcion.excep.ArithmeticException;
                     }
                 }
             }
             catch (Exception e)
-            { }
+            {
+
+            }
             listas.errores.AddLast(new NodoError(linea, columna,
                 NodoError.tipoError.Semantico, "No se puede realizar el Decremento --"));
             return tipoDato.errorSemantico;

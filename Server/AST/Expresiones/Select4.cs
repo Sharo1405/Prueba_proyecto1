@@ -199,7 +199,8 @@ namespace Server.AST.Expresiones
                                     }
                                     else
                                     {                                        
-                                        listas.impresiones.AddLast("WARNNING!! El id de la columna no existe en la tabla " + idTabla);
+                                        listas.impresiones.AddLast("WARNNING!! El id de la columna no existe en la tabla " + idTabla  +" Linea/Columna "
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                                         return TipoExcepcion.excep.ColumnException;
                                     }
 
@@ -230,7 +231,8 @@ namespace Server.AST.Expresiones
                         }
                         else
                         {
-                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla);
+                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla + " Linea/Columna "
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                             return TipoExcepcion.excep.TableDontExists;
                         }
                     }
@@ -243,7 +245,8 @@ namespace Server.AST.Expresiones
                 }
                 else
                 {
-                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada " + " Linea/Columna "
+                                            + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                     return TipoExcepcion.excep.UseBDException;
                 }
             }

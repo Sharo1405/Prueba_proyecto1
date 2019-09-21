@@ -168,7 +168,8 @@ namespace Server.AST.Instrucciones
                                                     //---------------------------------------------------------------------------------
                                                     if (coll.tipo == tipoDato.counter)
                                                     {
-                                                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER: " + idTabla);
+                                                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER: " + idTabla + " Linea/Columna "
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                                                         return TipoExcepcion.excep.CounterTypeException;
                                                     }
                                                     else if (coll.primaryKey == true)
@@ -181,9 +182,17 @@ namespace Server.AST.Instrucciones
                                                     if (tipoComa == coll.tipoValor)
                                                     {
                                                         Lista lis = (Lista)coll.valorColumna.ElementAt(contador);
-
-                                                        lis.listaValores.RemoveAt(Convert.ToInt32(index));
-                                                        lis.listaValores.Insert(Convert.ToInt32(index), valorComa);
+                                                        try
+                                                        {
+                                                            lis.listaValores.RemoveAt(Convert.ToInt32(index));
+                                                            lis.listaValores.Insert(Convert.ToInt32(index), valorComa);
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACCEDER A LA LISTA/SET INDICE FUERA DE RANGO " + " Linea/Columna "
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                                                            return TipoExcepcion.excep.IndexOutException;
+                                                        }
                                                     }
                                                     else
                                                     {
@@ -261,7 +270,8 @@ namespace Server.AST.Instrucciones
                                                     //---------------------------------------------------------------------------------
                                                     if (coll.tipo == tipoDato.counter)
                                                     {
-                                                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER: " + idTabla);
+                                                        listas.impresiones.AddLast("WARNNING!! NO SE PUEDE ACTUALIZAR UN DATO DE TIPO COUNTER: " + idTabla + " Linea/Columna "
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                                                         return TipoExcepcion.excep.CounterTypeException;
                                                     }
                                                     else
@@ -636,7 +646,8 @@ namespace Server.AST.Instrucciones
                         }
                         else
                         {
-                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla);
+                            listas.impresiones.AddLast("WARNNING!! ESA TABLA NO EXISTE: " + idTabla + " Linea/Columna "
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                             return TipoExcepcion.excep.TableDontExists;
                         }
                     }
@@ -649,7 +660,8 @@ namespace Server.AST.Instrucciones
                 }
                 else
                 {
-                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada");
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  La base de datos EN USO no fue encontrada " + " Linea/Columna "
+                                                                + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
                     return TipoExcepcion.excep.UseBDException;
                 }
             }

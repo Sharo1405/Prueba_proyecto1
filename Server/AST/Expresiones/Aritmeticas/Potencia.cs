@@ -1,5 +1,6 @@
 ﻿using Server.AST.BaseDatos;
 using Server.AST.Entornos;
+using Server.AST.Instrucciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,11 +49,13 @@ namespace Server.AST.Expresiones.Aritmeticas
                 return Math.Pow(Convert.ToDouble(exp) , Convert.ToDouble(exp2));
             }
             else
-            {
-                listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "Tipo de dato para operador \"**\" no valido Tipos: " +
-                     Convert.ToString(expresion1.getType(entorno, listas, management)) + " y " + 
-                     Convert.ToString(expresion2.getType(entorno, listas, management)) + " y se esperaba Int o Double"));
-                return tipoDato.errorSemantico;
+            {                
+                listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " +
+                               " Tipo de dato para operador \"**\" no valido Tipos: " +
+                     Convert.ToString(expresion1.getType(entorno, listas, management)) + " y " +
+                     Convert.ToString(expresion2.getType(entorno, listas, management)) + " y se esperaba Int o Double " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                return TipoExcepcion.excep.ArithmeticException;
             }
         }
     }

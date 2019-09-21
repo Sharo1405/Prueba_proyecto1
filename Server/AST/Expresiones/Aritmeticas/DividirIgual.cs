@@ -1,5 +1,6 @@
 ﻿using Server.AST.BaseDatos;
 using Server.AST.Entornos;
+using Server.AST.Instrucciones;
 using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
@@ -78,9 +79,12 @@ namespace Server.AST.Expresiones.Aritmeticas
 
                 if (tipoExp2 != tipoDato.entero && tipoExp2 != tipoDato.decimall)
                 {
-                    listas.errores.AddLast(new NodoError(linea, columna,
-                        NodoError.tipoError.Semantico, "No se puede realizar la operacion /= por no son tipo numerico las expresiones"));
-                    return tipoDato.errorSemantico;
+                    /*listas.errores.AddLast(new NodoError(linea, columna,
+                        NodoError.tipoError.Semantico, "No se puede realizar la operacion /= por no son tipo numerico las expresiones"));*/              
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                             "No se puede realizar la operacion /= por no son tipo numerico las expresiones " + "Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                    return TipoExcepcion.excep.ArithmeticException;
                 }
 
 
@@ -98,9 +102,12 @@ namespace Server.AST.Expresiones.Aritmeticas
 
                     if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
                     {
-                        listas.errores.AddLast(new NodoError(linea, columna,
-                            NodoError.tipoError.Semantico, "No se puede realizar la operacion /= por no son tipo numerico las expresiones"));
-                        return tipoDato.errorSemantico;
+                        /*listas.errores.AddLast(new NodoError(linea, columna,
+                            NodoError.tipoError.Semantico, "No se puede realizar la operacion /= por no son tipo numerico las expresiones"));*/
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                            "No se puede realizar la operacion /= por no son tipo numerico las expresiones " + "Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                        return TipoExcepcion.excep.ArithmeticException;
                     }
 
                     if (valorExp1 is Simbolo)
@@ -190,7 +197,9 @@ namespace Server.AST.Expresiones.Aritmeticas
                     else
                     {
                         listas.errores.AddLast(new NodoError(linea, columna,
-                                NodoError.tipoError.Semantico, "No se puede realizar la operacion -= porque no existe la variable" + id));
+                                NodoError.tipoError.Semantico, "No se puede realizar la operacion -= porque no existe la variable" + id 
+                                + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna)));
                         return tipoDato.errorSemantico;
                     }
 
@@ -207,9 +216,12 @@ namespace Server.AST.Expresiones.Aritmeticas
 
                         if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
                         {
-                            listas.errores.AddLast(new NodoError(linea, columna,
-                                NodoError.tipoError.Semantico, "No se puede realizar la operacion /= por no son tipo numerico las expresiones"));
-                            return tipoDato.errorSemantico;
+                            /*listas.errores.AddLast(new NodoError(linea, columna,
+                                NodoError.tipoError.Semantico, "No se puede realizar la operacion /= por no son tipo numerico las expresiones"));*/
+                            listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                            "No se puede realizar la operacion /= por no son tipo numerico las expresiones " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                            return TipoExcepcion.excep.ArithmeticException;
                         }
 
                         if (valorExp1 is Simbolo)
@@ -244,9 +256,12 @@ namespace Server.AST.Expresiones.Aritmeticas
 
                         if (tipoExp1 != tipoDato.entero && tipoExp1 != tipoDato.decimall)
                         {
-                            listas.errores.AddLast(new NodoError(linea, columna,
-                                NodoError.tipoError.Semantico, "No se puede realizar la operacion /= por no son tipo numerico las expresiones"));
-                            return tipoDato.errorSemantico;
+                            /*listas.errores.AddLast(new NodoError(linea, columna,
+                                NodoError.tipoError.Semantico, "No se puede realizar la operacion /= por no son tipo numerico las expresiones"));*/
+                            listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!  " +
+                                "No se puede realizar la operacion /= por no son tipo numerico las expresiones " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                            return TipoExcepcion.excep.ArithmeticException;
                         }
 
                         if (valorExp1 is Simbolo)

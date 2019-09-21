@@ -36,6 +36,13 @@ namespace Server.AST.Ciclos
             try
             {
                 Object valor = condicion.getValue(entorno, listas, management);
+                if (valor == null)
+                {
+                    listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " +
+                               " El valor es nulo");
+                    return TipoExcepcion.excep.NullPointerException;
+                }
+
                 tipoDato tipo = condicion.getType(entorno, listas, management);
                 if (tipoDato.booleano == tipo)
                 {
@@ -60,6 +67,12 @@ namespace Server.AST.Ciclos
                             return retorno;
                         }
                         valor = condicion.getValue(entorno, listas, management);
+                        if (valor == null)
+                        {
+                            listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!! " +
+                                       " El valor es nulo");
+                            return TipoExcepcion.excep.NullPointerException;
+                        }
                     }
                 }
                 else

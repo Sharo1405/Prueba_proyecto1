@@ -126,7 +126,9 @@ namespace Server.AST.Expresiones.Relacionales
             {
                 listas.errores.AddLast(new NodoError(this.linea, this.columna, NodoError.tipoError.Semantico, "Tipo de dato para operador \"==\" no valido Tipos: " +
                     Convert.ToString(expresion1.getType(entorno, listas, management)) + " y " + 
-                    Convert.ToString(expresion2.getType(entorno, listas, management)) + " y se esperaba Int o Double, Strings, dates, times"));
+                    Convert.ToString(expresion2.getType(entorno, listas, management)) + 
+                    " y se esperaba Int o Double, Strings, dates, times " + " Linea/Columna: "
+                                    + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna)));
                 return tipoDato.errorSemantico;
             }
             
