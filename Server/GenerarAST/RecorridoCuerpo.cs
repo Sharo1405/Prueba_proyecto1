@@ -518,6 +518,14 @@ namespace Server.GenerarAST
 
         public NodoAST eliminarInBase(ParseTreeNode nodo)
         {
+            if (nodo.ChildNodes.Count == 7)
+            {
+                return new EliminarDeLista(
+                    nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(2)),
+                    nodo.ChildNodes.ElementAt(4).Token.Text.ToLower(),
+                    expresiones(nodo.ChildNodes.ElementAt(6)));
+            }
             return null;
         }
 
