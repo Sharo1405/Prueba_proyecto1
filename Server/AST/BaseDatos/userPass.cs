@@ -10,13 +10,13 @@ namespace Server.AST.BaseDatos
     {
         public String idUsuario { get; set; }
         public String pass { get; set; }
-        public String permisoBase { get; set; }
+        public List<String> permisoBase { get; set; }
 
         public userPass(String id, String pass)
         {
             this.idUsuario = id;
             this.pass = pass;
-            this.permisoBase = "";
+            this.permisoBase = new List<string>();
         }
 
         public userPass()
@@ -26,7 +26,7 @@ namespace Server.AST.BaseDatos
 
         public userPass(String permisoBase)
         {
-            this.permisoBase = permisoBase;
+            this.permisoBase.Add(permisoBase);
         }
     }
 }

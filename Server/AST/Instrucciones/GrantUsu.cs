@@ -39,24 +39,26 @@ namespace Server.AST.Instrucciones
                     return TipoExcepcion.excep.UserDontExists;
                 }
 
-                if (encontrado.permisoBase.Equals(""))
+                if (encontrado.permisoBase.Contains(idBase.ToLower()))
                 {
                     BaseDeDatos buscarBase = new BaseDeDatos();
                     if (management.basesExistentes.TryGetValue(idBase.ToLower(), out buscarBase))
                     {
-                        encontrado.permisoBase = idBase.ToLower();
+                        encontrado.permisoBase.Add(idBase.ToLower());
                     }
                     else
                     {
-                        listas.errores.AddLast(new NodoError(linea, columna,
-                            NodoError.tipoError.Semantico, "La base de datos que se quiere asignar en el Grant no existe: " + idUsu));
-                        return tipoDato.errorSemantico;
+                        /*listas.errores.AddLast(new NodoError(linea, columna,
+                            NodoError.tipoError.Semantico, "La base de datos que se quiere asignar en el Grant no existe: " + idUsu));*/
+                        listas.impresiones.AddLast("WARNNING!! La base de datos que se quiere asignar en el Grant no existe: " + idUsu + " Linea/Columna "
+                                   + Convert.ToString(this.linea) + " " + Convert.ToString(this.columna));
+                        return TipoExcepcion.excep.BDDontExists;
                     }                    
                 }
                 else
                 {
                     listas.errores.AddLast(new NodoError(linea, columna,
-                    NodoError.tipoError.Semantico, "El usuario ya tiene un permiso asignado: " + idUsu));
+                    NodoError.tipoError.Semantico, "El usuario ya tiene un permiso asignado: " + idUsu + ": " + idBase.ToLower()));
                     return tipoDato.errorSemantico;
                 }
             }

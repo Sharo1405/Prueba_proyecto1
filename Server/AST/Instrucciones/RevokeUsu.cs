@@ -39,20 +39,19 @@ namespace Server.AST.Instrucciones
                     return TipoExcepcion.excep.UserDontExists;
                 }
 
-                if (!encontrado.pass.Equals(""))
+                if (encontrado.permisoBase.Count != 0)
                 {
-                    if (encontrado.permisoBase.Equals(idBase.ToLower()))
+                    if (encontrado.permisoBase.Contains(idBase.ToLower()))
                     {
-                        if (encontrado.permisoBase.Equals(idBase.ToLower())) {
-                            encontrado.permisoBase = "";
-                        }
-                        else
-                        {
-                            listas.errores.AddLast(new NodoError(linea, columna,
-                                NodoError.tipoError.Semantico, "El permiso no coincide con el existente en el usuario: " + idUsu));
-                            return tipoDato.errorSemantico;
-                        }
+                        encontrado.permisoBase.Remove(idBase.ToLower());
                     }
+                    else
+                    {
+                        listas.errores.AddLast(new NodoError(linea, columna,
+                            NodoError.tipoError.Semantico, "El permiso no coincide con el existente en el usuario: " + idUsu));
+                        return tipoDato.errorSemantico;
+                    }
+                    
                 }
                 else
                 {
