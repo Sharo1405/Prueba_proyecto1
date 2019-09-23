@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analizador CHISON\GramaticaCHISON.cs" />
     <Compile Include="Analizador\GraficadorTree.cs" />
     <Compile Include="Analizador\Gramatica.cs" />
     <Compile Include="AST\BaseDatos\Administrador.cs" />

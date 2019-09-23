@@ -1,5 +1,6 @@
 ﻿using Irony.Parsing;
 using Server.Analizador;
+using Server.Analizador_CHISON;
 using Server.AST;
 using Server.AST.BaseDatos;
 using Server.AST.Entornos;
@@ -118,6 +119,25 @@ namespace Server.GenerarAST
         }
 
 
-        
+
+        public ErrorImpresion analizarCHISON(String texto)
+        {
+            //LENGUAJE -------------->CHISON
+            GramaticaCHISON gram = new GramaticaCHISON();
+            Parser p = new Parser(gram);
+            ParseTree arbol = p.Parse(texto);
+            ParseTreeNode raiz = arbol.Root;
+
+            if (raiz == null || arbol.HasErrors() || arbol.ParserMessages.Count > 0)
+            {
+                //hay errores
+                foreach (var item in arbol.ParserMessages)
+                {
+                    MessageBox.Show("Error: " + item.Message + " Linea: " + item.Location.Line + " Columna: " + item.Location.Column);
+                }
+            }
+
+            return null;
+        }
     }
 }

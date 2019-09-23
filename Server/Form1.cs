@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Irony.Ast;
 using Irony.Parsing;
 using Server.Analizador;
+using Server.Analizador_CHISON;
 using Server.AST;
 using Server.GenerarAST;
 
@@ -28,14 +29,16 @@ namespace Server
             Iniciar iniciar = new Iniciar();
             ErrorImpresion listas =  iniciar.analizar(this.richTextBox1.Text);
 
-            foreach (string log in listas.impresiones)
-            {
-                richTextBox2.Text += log + "\n";
-            }
+            if (listas != null) {
+                foreach (string log in listas.impresiones)
+                {
+                    richTextBox2.Text += log + "\n";
+                }
 
-            foreach (NodoError log in listas.errores)
-            {
-                richTextBox2.Text += log.descripcion + " " + Convert.ToString(log.fila) + ", " + Convert.ToString(log.columna) + "\n";
+                foreach (NodoError log in listas.errores)
+                {
+                    richTextBox2.Text += log.descripcion + " " + Convert.ToString(log.fila) + ", " + Convert.ToString(log.columna) + "\n";
+                }
             }
         }
 
@@ -58,6 +61,27 @@ namespace Server
             GraficadorTree g = new GraficadorTree();
             g.graficar(arbol);
             g.abrirArbol(g.desktop + "\\Files\\Arbol\\arbol.png");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Iniciar iniciar = new Iniciar();
+            ErrorImpresion listas = iniciar.analizarCHISON(this.richTextBox3.Text);
+
+            if (listas != null)
+            {
+
+                richTextBox2.Text += "----------CHISON------------------";
+                foreach (string log in listas.impresiones)
+                {
+                    richTextBox2.Text += log + "\n";
+                }
+
+                foreach (NodoError log in listas.errores)
+                {
+                    richTextBox2.Text += log.descripcion + " " + Convert.ToString(log.fila) + ", " + Convert.ToString(log.columna) + "\n";
+                }
+            }
         }
     }
 }

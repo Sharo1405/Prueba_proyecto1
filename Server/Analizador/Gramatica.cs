@@ -275,7 +275,6 @@ namespace Server.Analizador
             #endregion
 
             #region SIGNOS
-            
             var allave = ToTerm("{");
             var cllave = ToTerm("}");
             var acorchete = ToTerm("[");
