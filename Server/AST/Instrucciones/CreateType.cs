@@ -48,21 +48,42 @@ namespace Server.AST.Instrucciones
             {
                 Simbolo buscado = entorno.getEnActual(idType.ToLower(), Simbolo.Rol.VARIABLE);
                 if (buscado == null)
-                {                    
+                {
+                    Object inUse = management.getInUse();
+                    if (inUse != null)
+                    {
+                        try
+                        {
 
-                    entorno.setSimbolo(idType.ToLower(), new Simbolo(idType.ToLower(), this, linea, columna, tipoDato.id, Simbolo.Rol.VARIABLE));
+                            BaseDeDatos basee = (BaseDeDatos)inUse;
+                            basee.usertypes.Add(idType.ToLower(), new Simbolo(idType.ToLower(), this, linea, columna, tipoDato.id, Simbolo.Rol.VARIABLE));
+
+                            entorno.setSimbolo(idType.ToLower(), new Simbolo(idType.ToLower(), this, linea, columna, tipoDato.id, Simbolo.Rol.VARIABLE));
+                        }
+                        catch (ArgumentException e)
+                        {
+                            listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!!!!!!!! Intento de crear un type user que ya existe " + idType);
+                            return TipoExcepcion.excep.TypeAlreadyExists;
+                        }
+                    }
+                    else
+                    {
+                        entorno.setSimbolo(idType.ToLower(), new Simbolo(idType.ToLower(), this, linea, columna, tipoDato.id, Simbolo.Rol.VARIABLE));
+                    }
                 }
                 else
                 {
                     if (ifnotexists == false)
                     {
-                        listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
-                            "Variable ya declara en el entorno actual. El nombre es: " + idType));
+                        /*listas.errores.AddLast(new NodoError(linea, columna, NodoError.tipoError.Semantico,
+                            "Variable ya declara en el entorno actual. El nombre es: " + idType));*/
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!!!!!!!! Intento de crear un type user que ya existe " + idType);
                         return TipoExcepcion.excep.TypeAlreadyExists;
                     }
                     else
                     {
-                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!!!!!!!! Intento de crar un type user que ya existe " + idType);
+                        listas.impresiones.AddLast("WARNINGGGGGGGGGGGGGGGGGGGGGGGGGG!!!!!!!!!!!!!!!!!! Intento de crear un type user que ya existe " + idType);
+//                        return TipoExcepcion.excep.TypeAlreadyExists;
                     }
                 }
             }

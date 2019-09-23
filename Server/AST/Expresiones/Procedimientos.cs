@@ -82,6 +82,10 @@ namespace Server.AST.Expresiones
                         BaseDeDatos basee = (BaseDeDatos)inUse;
                         basee.procedures.Add(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
                         tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
+
+
+                        entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
+                        tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
                     }
                     catch (ArgumentException e)
                     {
@@ -90,9 +94,11 @@ namespace Server.AST.Expresiones
                         return TipoExcepcion.excep.ProcedureAlreadyExists;                         
                     }
                 }
-
-                entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
-                tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
+                else
+                {
+                    entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
+                       tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
+                }
             }
             else
             {

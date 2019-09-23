@@ -15,7 +15,7 @@ namespace Server.AST.BaseDatos
     {
         public String idbase { get; set; }
         public Dictionary<String, Simbolo> procedures = new Dictionary<string, Simbolo>();
-        public Dictionary<String, CreateType> usertypes = new Dictionary<string, CreateType>();
+        public Dictionary<String, Simbolo> usertypes = new Dictionary<string, Simbolo>();
         public Dictionary<String, Tabla> Tabla = new Dictionary<string, Tabla>();
         public String idUsuarioPropietario { get; set; }
         public Boolean isUse = false;
