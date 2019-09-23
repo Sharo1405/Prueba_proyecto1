@@ -114,7 +114,7 @@ namespace Server.GenerarAST
                     return truncatetable(nodo.ChildNodes.ElementAt(0));
 
                 case "COMMITT":
-                    break;
+                    return comitear(nodo.ChildNodes.ElementAt(0));
 
                 case "ROLLBACKK":
                     break;
@@ -201,6 +201,12 @@ namespace Server.GenerarAST
             return null;
         }
 
+
+        public NodoAST comitear(ParseTreeNode nodo)
+        {
+            return new EscribirCHISON(nodo.ChildNodes.ElementAt(0).Token.Location.Line, 
+                nodo.ChildNodes.ElementAt(0).Token.Location.Column);
+        }
 
         public NodoAST TryCatchmetodo(ParseTreeNode nodo)
         {

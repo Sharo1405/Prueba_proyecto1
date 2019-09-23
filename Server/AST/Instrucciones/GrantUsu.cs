@@ -39,7 +39,7 @@ namespace Server.AST.Instrucciones
                     return TipoExcepcion.excep.UserDontExists;
                 }
 
-                if (encontrado.permisoBase.Contains(idBase.ToLower()))
+                if (!encontrado.permisoBase.Contains(idBase.ToLower()))
                 {
                     BaseDeDatos buscarBase = new BaseDeDatos();
                     if (management.basesExistentes.TryGetValue(idBase.ToLower(), out buscarBase))

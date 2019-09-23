@@ -1,0 +1,21 @@
+$< 
+"USERS" = [ 
+< 
+"NAME" = "Pedro", 
+"PASSWORD" = "1234", 
+"PERMISSIONS" = [] 
+>, 
+< 
+"NAME" = "sharolin", 
+"PASSWORD" = "5678", 
+"PERMISSIONS" = [ 
+< 
+ "NAME"= "prueba1" 
+ >, 
+< 
+ "NAME"= "prueba2" 
+ > 
+] 
+> 
+] 
+>$
