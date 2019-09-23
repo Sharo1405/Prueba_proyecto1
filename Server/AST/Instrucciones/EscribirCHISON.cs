@@ -36,8 +36,8 @@ namespace Server.AST.Instrucciones
                     {
                         chison += "< \n";
                         chison += "\"NAME\" = \"" + kvp.Value.idUsuario + "\", \n";
-                        chison += "\" PASSWORD\" = \"" + kvp.Value.pass + "\", \n";
-                        chison += "\" PERMISSIONS\" = [";
+                        chison += "\"PASSWORD\" = \"" + kvp.Value.pass + "\", \n";
+                        chison += "\"PERMISSIONS\" = [";
                         int cantPermisos = kvp.Value.permisoBase.Count;
                         int contador2 = 0;
                         foreach (String dbpermiso in kvp.Value.permisoBase)
@@ -59,8 +59,8 @@ namespace Server.AST.Instrucciones
                     {
                         chison += "< \n";
                         chison += "\"NAME\" = \"" + kvp.Value.idUsuario + "\", \n";
-                        chison += "\" PASSWORD \" = \"" + kvp.Value.pass + "\", \n";
-                        chison += "\" PERMISSIONS\" = [ \n";
+                        chison += "\"PASSWORD\" = \"" + kvp.Value.pass + "\", \n";
+                        chison += "\"PERMISSIONS\" = [ \n";
                         int cantPermisos = kvp.Value.permisoBase.Count;
                         int contador2 = 0;
                         foreach (String dbpermiso in kvp.Value.permisoBase)
@@ -80,11 +80,239 @@ namespace Server.AST.Instrucciones
                     }
                     contador++;
                 }
-                chison += "] \n";
-                //escribir usuarios---------------------------------
+                chison += "], \n";
+                //escribir usuarios-----------------------------------------
+
+
+                //escribir bases de datos-----------------------------------
+                chison += "\"DATABASES\" = [ \n";
+
+                int cantBases = management.basesExistentes.Count;
+                int contadorB = 0;
+                foreach (KeyValuePair<string, BaseDeDatos> kvp in management.basesExistentes)
+                {
+                    if (contadorB < cantBases - 1)
+                    {
+                        chison += "< \n";
+                        chison += "\"NAME\" = \"" + kvp.Value.idbase + "\", \n";
+                        chison += "\"Data\" = [\n";
+                        int contadorObjeto = 0;
+                        int cantObjetos = kvp.Value.usertypes.Count;
+                        foreach (KeyValuePair<string, Simbolo> sim in kvp.Value.usertypes)
+                        {
+                            CreateType objeto = (CreateType)sim.Value.valor;
+                            if (contadorObjeto < cantObjetos - 1)
+                            {                                
+                                chison += "<\n";
+                                chison += "\"CQL-TYPE\" = \"OBJECT\", \n";
+                                chison += "\"NAME\" = \"" + objeto.idType + "\", \n";
+                                chison += "\"ATTRS\" = [\n";
+                                int contAtri = 0;
+                                int cantAtri = objeto.itemTypee.Count;
+                                foreach (itemType it in objeto.itemTypee)
+                                {
+                                    if (contAtri < cantAtri-1)
+                                    {
+                                        chison += "<\n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo ==tipoDato.set)
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo +"<"+ it.tipo.tipoValor + ">" + "\" \n";
+                                        }
+                                        else
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                        }
+                                        chison += ">,\n";
+                                    }
+                                    else
+                                    {
+                                        chison += "<\n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor + ">" + "\, \n";
+                                        }
+                                        else
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\"\n";
+                                        }
+                                        chison += ">\n";
+                                    }
+                                    contAtri++;
+                                }
+
+                                chison += "] \n";
+                                chison += ">,\n";
+                            }
+                            else
+                            {
+                                chison += "<\n";
+                                chison += "\"CQL-TYPE\" = \"OBJECT\", \n";
+                                chison += "\"NAME\" = \"" + objeto.idType + "\", \n";
+                                chison += "\"ATTRS\" = [\n";
+                                int contAtri = 0;
+                                int cantAtri = objeto.itemTypee.Count;
+                                foreach (itemType it in objeto.itemTypee)
+                                {
+                                    if (contAtri < cantAtri - 1)
+                                    {
+                                        chison += "<\n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor + ">" + "\", \n";
+                                        }
+                                        else
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\", \n";
+                                        }
+                                        chison += ">,\n";
+                                    }
+                                    else
+                                    {
+                                        chison += "<\n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor + ">" + "\", \n";
+                                        }
+                                        else
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\", \n";
+                                        }
+                                        chison += ">\n";
+                                    }
+                                    contAtri++;
+                                }
+
+                                chison += "] \n";
+                                chison += ">\n";
+                            }
+                            contadorObjeto++;
+                        }
+
+
+                        chison += "] \n";
+                        chison += ">, \n";
+                    }
+                    else
+                    {
+
+                        chison += "< \n";
+                        chison += "\"NAME\" = \"" + kvp.Value.idbase + "\", \n";
+                        chison += "\"Data\" = [\n";
+                        int contadorObjeto = 0;
+                        int cantObjetos = kvp.Value.usertypes.Count;
+                        foreach (KeyValuePair<string, Simbolo> sim in kvp.Value.usertypes)
+                        {
+                            CreateType objeto = (CreateType)sim.Value.valor;
+                            if (contadorObjeto < cantObjetos - 1)
+                            {
+                                chison += "<\n";
+                                chison += "\"CQL-TYPE\" = \"OBJECT\", \n";
+                                chison += "\"NAME\" = \"" + objeto.idType + "\", \n";
+                                chison += "\"ATTRS\" = [\n";
+                                int contAtri = 0;
+                                int cantAtri = objeto.itemTypee.Count;
+                                foreach (itemType it in objeto.itemTypee)
+                                {
+                                    if (contAtri < cantAtri - 1)
+                                    {
+                                        chison += "<\n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor + ">" + "\" \n";
+                                        }
+                                        else
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                        }
+                                        chison += ">,\n";
+                                    }
+                                    else
+                                    {
+                                        chison += "<\n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor + ">" + "\" \n";
+                                        }
+                                        else
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                        }
+                                        chison += ">\n";
+                                    }
+                                    contAtri++;
+                                }
+
+                                chison += "] \n";
+                                chison += ">,\n";
+                            }
+                            else
+                            {
+                                chison += "<\n";
+                                chison += "\"CQL-TYPE\" = \"OBJECT\", \n";
+                                chison += "\"NAME\" = \"" + objeto.idType + "\", \n";
+                                chison += "\"ATTRS\" = [\n";
+                                int contAtri = 0;
+                                int cantAtri = objeto.itemTypee.Count;
+                                foreach (itemType it in objeto.itemTypee)
+                                {
+                                    if (contAtri < cantAtri - 1)
+                                    {
+                                        chison += "<\n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor + ">" + "\" \n";
+                                        }
+                                        else
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                        }
+                                        chison += ">,\n";
+                                    }
+                                    else
+                                    {
+                                        chison += "<\n";
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor + ">" + "\" \n";
+                                        }
+                                        else
+                                        {
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                        }
+                                        chison += ">\n";
+                                    }
+                                    contAtri++;
+                                }
+
+                                chison += "] \n";
+                                chison += ">\n";
+                            }
+                            contadorObjeto++;
+                        }
+
+
+                        chison += "] \n";
+                        chison += "> \n";
+
+                    }
+                    contadorB++;
+                }
+
+                chison += "]\n";
+                //escribir bases de datos-----------------------------------
+
 
                 chison += ">$";
-
+                //escribir y guardar el archivo------------------------------
                 GuardarArchivo(chison);
             }
             catch (Exception e)

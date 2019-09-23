@@ -17,5 +17,62 @@ $<
  > 
 ] 
 > 
+], 
+"DATABASES" = [ 
+< 
+"NAME" = "prueba1", 
+"Data" = [
+<
+"CQL-TYPE" = "OBJECT", 
+"NAME" = "mascota", 
+"ATTRS" = [
+<
+"NAME" = "nombre", 
+"TYPE" = "cadena", 
+>
 ] 
+>,
+<
+"CQL-TYPE" = "OBJECT", 
+"NAME" = "persona", 
+"ATTRS" = [
+<
+"NAME" = "pet", 
+"NAME" = "pet", 
+"TYPE" = "id", 
+>,
+<
+"NAME" = "nombre", 
+"TYPE" = "cadena", 
+>
+] 
+>
+] 
+>, 
+< 
+"NAME" = "prueba2", 
+"Data" = [
+<
+"CQL-TYPE" = "OBJECT", 
+"NAME" = "persona22", 
+"ATTRS" = [<
+"NAME" = "pet", 
+"NAME" = "pet", 
+"TYPE" = "id", 
+>,
+<
+"NAME" = "nombre", 
+"NAME" = "nombre", 
+"TYPE" = "list<Server.AST.Otras.Tipo>", 
+>,
+<
+"NAME" = "edad", 
+"NAME" = "edad", 
+"TYPE" = "entero", 
+>
+] 
+>
+] 
+> 
+]
 >$
