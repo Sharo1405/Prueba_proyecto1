@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Irony.Parsing;
 using Server.AST.BaseDatos;
 using Server.AST.Entornos;
 using Server.AST.Instrucciones;
@@ -19,10 +20,11 @@ namespace Server.AST.Expresiones
         public StatementBlock sentencias { get; set; }
         public int linea { get; set; }
         public int columna { get; set; }
+        public ParseTreeNode nodo { get; set; }
 
         public Procedimientos(String idProc, LinkedList<Parametros> parametros,
             LinkedList<Parametros> retornos, StatementBlock sentencias,
-            int linea, int col)
+            int linea, int col, ParseTreeNode nodo)
         {
             this.idProc = idProc;
             this.parametros = parametros;
@@ -30,36 +32,40 @@ namespace Server.AST.Expresiones
             this.sentencias = sentencias;
             this.linea = linea;
             this.columna = col;
+            this.nodo = nodo;
         }
 
 
         public Procedimientos(String idProc, LinkedList<Parametros> parametros,
-            StatementBlock sentencias, int linea, int col)
+            StatementBlock sentencias, int linea, int col, ParseTreeNode nodo)
         {
             this.idProc = idProc;
             this.parametros = parametros;
             this.sentencias = sentencias;
             this.linea = linea;
             this.columna = col;
+            this.nodo = nodo;
         }
 
 
         public Procedimientos(String idProc, LinkedList<Parametros> retornos,
-            StatementBlock sentencias, int linea, int col, int nada)
+            StatementBlock sentencias, int linea, int col, int nada, ParseTreeNode nodo)
         {
             this.idProc = idProc;
             this.retornos = retornos;
             this.sentencias = sentencias;
             this.linea = linea;
             this.columna = col;
+            this.nodo = nodo;
         }
 
-        public Procedimientos(String idProc, StatementBlock sentencias, int linea, int col)
+        public Procedimientos(String idProc, StatementBlock sentencias, int linea, int col, ParseTreeNode nodo)
         {
             this.idProc = idProc;
             this.sentencias = sentencias;
             this.linea = linea;
             this.columna = col;
+            this.nodo = nodo;
         }
 
         public Operacion.tipoDato getType(Entorno entorno, ErrorImpresion listas, Administrador management)
@@ -81,11 +87,11 @@ namespace Server.AST.Expresiones
 
                         BaseDeDatos basee = (BaseDeDatos)inUse;
                         basee.procedures.Add(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
-                        tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
+                        tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos, this.nodo));
 
 
                         entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
-                        tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
+                        tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos, this.nodo));
                     }
                     catch (ArgumentException e)
                     {
@@ -97,7 +103,7 @@ namespace Server.AST.Expresiones
                 else
                 {
                     entorno.setSimbolo(firmaFuncion, new Simbolo(firmaFuncion, sentencias, linea, columna,
-                       tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos));
+                       tipoDato.list, Simbolo.Rol.PROCEDIMIENTO, parametros, retornos, this.nodo));
                 }
             }
             else

@@ -1,5 +1,17 @@
 $< 
 "USERS" = [ 
+< 
+"NAME" = "admin", 
+"PASSWORD" = "admin", 
+"PERMISSIONS" = [ 
+< 
+ "NAME"= "prueba1" 
+ >, 
+< 
+ "NAME"= "prueba2" 
+ > 
+] 
+> 
 ], 
 "DATABASES" = [ 
 < 
@@ -12,6 +24,22 @@ $<
 <
 "NAME" = "nombre", 
 "TYPE" = "cadena" 
+>,
+<
+"NAME" = "raza", 
+"TYPE" = "cadena" 
+>,
+<
+"NAME" = "familia", 
+"TYPE" = "cadena" 
+>,
+<
+"NAME" = "fecha_nacimiento", 
+"TYPE" = "date" 
+>,
+<
+"NAME" = "otraper", 
+"TYPE" = "mascota2" 
 >
 ] 
 >,
@@ -26,120 +54,53 @@ $<
 <
 "NAME" = "nombre", 
 "TYPE" = "cadena" 
+>,
+<
+"NAME" = "edad", 
+"TYPE" = "entero" 
 >
 ] 
->
-, 
-<
-"CQL-TYPE" = "TABLE", 
-"NAME" = "muro", 
-"COLUMNS" = [
-<
-"NAME" = "usuario_id", 
-"TYPE" = "list<entero>", 
-"PK" =  TRUE 
->,
-<
-"NAME" = "mes_publicado", 
-"TYPE" = "list<persona>", 
-"PK" =  TRUE 
->,
-<
-"NAME" = "hora_publicado", 
-"TYPE" = "persona", 
-"PK" =  TRUE 
->,
-<
-"NAME" = "contenido", 
-"TYPE" = "cadena", 
-"PK" =  FALSE 
->
-] 
-,"DATA" = [
-<
-"usuario_id" = [
-1,
-2,
-3
-],
-"mes_publicado" = [
-<
-"pet" = <
-"nombre" ="pepe"
->
-, 
-"nombre" ="mascota"
 >
 ,
+< 
+"CQL-TYPE" = "PROCEDURE",
+"NAME" = "ejemplo_procedure_entero_entero",
+"PARAMETERS" = [
+ <
+"NAME" = "@n",
+"TYPE" = "entero",
+"AS" = IN
+>,
 <
-"pet" = <
-"nombre" ="pepe2"
+"NAME" = "@p",
+"TYPE" = "entero",
+"AS" = IN
 >
-, 
-"nombre" ="mascota2"
+,<
+"NAME" = "@retorno1",
+"TYPE" = "entero",
+"AS" = OUT
+>,
+<
+"NAME" = "@ret2",
+"TYPE" = "entero",
+"AS" = OUT
 >
+],
+"INSTR" = $ 
+int @a = 0 ; 
+call elemplo_Procedure ( ) ; 
+if ( @n == 0 ) { return 1 , 2 ; } 
+else { return @n , @n * 2 ; } 
 
-],
-"hora_publicado" = <
-"pet" = <
-"nombre" ="pepeSolito"
->
-, 
-"nombre" ="mascotaSolita"
->,"contenido" = "soy el contenido 1"
->,
-<
-"usuario_id" = [
-4,
-5,
-6
-],
-"mes_publicado" = [
-<
-"pet" = <
-"nombre" ="pepe2"
->
-, 
-"nombre" ="mascota2"
->
-,
-<
-"pet" = <
-"nombre" ="pepe22"
->
-, 
-"nombre" ="mascota22"
->
 
-],
-"hora_publicado" = <
-"pet" = <
-"nombre" ="pepeSolito2"
->
-, 
-"nombre" ="mascotaSolita2"
->,"contenido" = "soy el contenido 2"
+$
 >
 ] 
->,
-<
-"CQL-TYPE" = "TABLE", 
-"NAME" = "muro23", 
-"COLUMNS" = [
-<
-"NAME" = "usuario_id", 
-"TYPE" = "list<entero>", 
-"PK" =  FALSE 
->,
-<
-"NAME" = "holalala", 
-"TYPE" = "entero", 
-"PK" =  TRUE 
->
-] 
-"DATA" = [
-] 
->
+>, 
+< 
+"NAME" = "prueba2", 
+"Data" = [
 ] 
 > 
 ]

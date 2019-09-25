@@ -795,7 +795,8 @@ namespace Server.GenerarAST
                     Parametros(nodo.ChildNodes.ElementAt(7)),
                     bloque(nodo.ChildNodes.ElementAt(9)),
                     nodo.ChildNodes.ElementAt(1).Token.Location.Line,
-                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column,
+                    nodo.ChildNodes.ElementAt(9));
             }
             else if (nodo.ChildNodes.Count == 9)
             {
@@ -807,14 +808,16 @@ namespace Server.GenerarAST
                     Parametros(nodo.ChildNodes.ElementAt(3)),
                     bloque(nodo.ChildNodes.ElementAt(8)),
                     nodo.ChildNodes.ElementAt(1).Token.Location.Line,
-                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column,
+                    nodo.ChildNodes.ElementAt(8));
 
                     case "aparentesis":
                         return new Procedimientos(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
                     Parametros(nodo.ChildNodes.ElementAt(6)),
                     bloque(nodo.ChildNodes.ElementAt(8)),
                     nodo.ChildNodes.ElementAt(1).Token.Location.Line,
-                    nodo.ChildNodes.ElementAt(1).Token.Location.Column, 0);
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column, 0,
+                    nodo.ChildNodes.ElementAt(8));
                 }                
             }
             else if (nodo.ChildNodes.Count == 8)
@@ -822,7 +825,8 @@ namespace Server.GenerarAST
                 return new Procedimientos(nodo.ChildNodes.ElementAt(1).Token.Text.ToLower(),
                     bloque(nodo.ChildNodes.ElementAt(7)),
                     nodo.ChildNodes.ElementAt(1).Token.Location.Line,
-                    nodo.ChildNodes.ElementAt(1).Token.Location.Column);
+                    nodo.ChildNodes.ElementAt(1).Token.Location.Column,
+                    nodo.ChildNodes.ElementAt(7));
             }            
             return null;
         }

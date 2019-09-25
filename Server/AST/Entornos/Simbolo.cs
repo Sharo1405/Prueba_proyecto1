@@ -1,4 +1,5 @@
-﻿using Server.AST.Expresiones;
+﻿using Irony.Parsing;
+using Server.AST.Expresiones;
 using Server.AST.Otras;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace Server.AST.Entornos
         public LinkedList<Parametros> parametros = new LinkedList<Parametros>();
         public LinkedList<Parametros> retornos = new LinkedList<Parametros>();
 
+        public ParseTreeNode nodo { get; set; }
+
         public enum Rol
         {
             VARIABLE,
@@ -36,7 +39,7 @@ namespace Server.AST.Entornos
         public Simbolo() { }
 
         public Simbolo(String id, Object valor, int fila, int columna, tipoDato tipo, Rol rol, 
-            LinkedList<Parametros> parametros, LinkedList<Parametros> retornos)
+            LinkedList<Parametros> parametros, LinkedList<Parametros> retornos, ParseTreeNode nodo)
         {
             this.id = id;
             this.valor = valor;
@@ -46,6 +49,7 @@ namespace Server.AST.Entornos
             this.rol = rol;
             this.parametros = parametros;
             this.retornos = retornos;
+            this.nodo = nodo;
         }
 
         public Simbolo(String id, Object valor, int fila, int columna, //list con typeUSER

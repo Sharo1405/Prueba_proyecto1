@@ -8,6 +8,8 @@ using Server.AST.Entornos;
 using System.IO;
 using static Server.AST.Expresiones.Operacion;
 using Server.AST.Otras;
+using Server.AST.Expresiones;
+using Irony.Parsing;
 
 namespace Server.AST.Instrucciones
 {
@@ -149,7 +151,7 @@ namespace Server.AST.Instrucciones
                                         {
                                             chison += "\"TYPE\" = \"" + it.tipo.id + "\" \n";
                                         }
-                                        if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
+                                        else if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
                                         {
                                             if (it.tipo.tipoValor.tipo == tipoDato.id)
                                             {
@@ -203,7 +205,7 @@ namespace Server.AST.Instrucciones
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
                                         }
                                         chison += ">,\n";
                                     }
@@ -228,7 +230,7 @@ namespace Server.AST.Instrucciones
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
                                         }
                                         chison += ">\n";
                                     }
@@ -449,8 +451,20 @@ namespace Server.AST.Instrucciones
                             contadorTablas++;
                         }
 
-                        #endregion  
+                        #endregion
                         //TABLAS-----------------------------------------------------------------------------
+
+
+                        #region PROCEDIMIENTO
+
+                        if (kvp.Value.procedures.Count > 0)
+                        {
+                            chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
+                        }
+
+                        #endregion
+
+
                         chison += "] \n";
                         chison += ">, \n";
                     }
@@ -506,7 +520,8 @@ namespace Server.AST.Instrucciones
                                     else
                                     {
                                         chison += "<\n";
-                                        chison += "\"NAME\" = \"" + it.id + "\", \n"; if (it.tipo.tipo == tipoDato.id)
+                                        chison += "\"NAME\" = \"" + it.id + "\", \n";
+                                        if (it.tipo.tipo == tipoDato.id)
                                         {
                                             chison += "\"TYPE\" = \"" + it.tipo.id + "\" \n";
                                         }
@@ -553,10 +568,12 @@ namespace Server.AST.Instrucciones
                                         }
                                         else if (it.tipo.tipo == tipoDato.list || it.tipo.tipo == tipoDato.set)
                                         {
-                                            if (it.tipo.tipoValor.tipo == tipoDato.id) {
+                                            if (it.tipo.tipoValor.tipo == tipoDato.id)
+                                            {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
                                             }
-                                            else {
+                                            else
+                                            {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
                                             }
                                         }
@@ -814,6 +831,17 @@ namespace Server.AST.Instrucciones
                         }
                         #endregion
                         //TABLAS-----------------------------------------------------------------------------
+
+
+                        #region PROCEDIMIENTO
+
+                        if (kvp.Value.procedures.Count > 0)
+                        {
+                            chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
+                        }
+
+                        #endregion
+
                         chison += "] \n";
                         chison += "> \n";
 
@@ -836,6 +864,205 @@ namespace Server.AST.Instrucciones
                 return tipoDato.errorSemantico;
             }
             return tipoDato.ok;
+        }
+
+
+        public String EscribirProcedimiento(Dictionary<String, Simbolo> procedures)
+        {
+            String aux = "";
+            int contador = 0;
+            int cantProcedimientos = procedures.Count;
+            foreach (KeyValuePair<String, Simbolo> kvp in procedures)
+            {
+                Simbolo simi = kvp.Value;
+                if (contador < cantProcedimientos -1)
+                {
+                    aux += "< \n";
+                    aux += "\"CQL-TYPE\" = \"PROCEDURE\",\n";
+                    aux += "\"NAME\" = \"" + simi.id + "\",\n";
+                    aux += "\"PARAMETERS\" = [\n " + EscribirParametros(simi.parametros, simi.retornos) + "],\n";
+                    aux += "\"INSTR\" = $ \n" + EscribirSentenciasProcedure(simi.nodo.ChildNodes.ElementAt(1)) +"$\n";
+                    aux += ">,\n";
+                }
+                else
+                {
+                    aux += "< \n";
+                    aux += "\"CQL-TYPE\" = \"PROCEDURE\",\n";
+                    aux += "\"NAME\" = \"" + simi.id + "\",\n";
+                    aux += "\"PARAMETERS\" = [\n " + EscribirParametros(simi.parametros, simi.retornos) + "],\n";
+                    aux += "\"INSTR\" = $ \n" + EscribirSentenciasProcedure(simi.nodo.ChildNodes.ElementAt(1)) + "$\n";
+                    aux += ">\n";
+                }
+                contador++;
+            }                 
+            return aux;
+        }
+
+
+        public String EscribirSentenciasProcedure(ParseTreeNode nodo)
+        {
+            String aux = "";
+            aux += Inicio(nodo) + "\n";
+            return aux;
+        }
+
+
+        public String Inicio(ParseTreeNode nodo)
+        {
+            if (nodo.ChildNodes.Count == 2)
+            {
+                String aux2 = Inicio(nodo.ChildNodes.ElementAt(0));
+                aux2 += Sentencia(nodo.ChildNodes.ElementAt(1));
+                return aux2 + "\n";
+            }
+            else if (nodo.ChildNodes.Count == 1)
+            {
+                String aux = "";
+                aux += Sentencia(nodo.ChildNodes.ElementAt(0));
+                return aux + "\n";
+            }
+            else
+            {
+                return "\n";
+            }
+        }
+
+
+        public String Sentencia(ParseTreeNode nodo)
+        {
+            String aux = "";
+            if (!(nodo.Term is Terminal))
+            {
+                //si es no terminal
+                for (int i = 0; i< nodo.ChildNodes.Count; i++)
+                {
+                    aux += Sentencia(nodo.ChildNodes.ElementAt(i));
+                }
+                return aux;
+            }
+            else
+            {
+                //si es terminal
+                if (nodo.Token.Text.Equals("@"))
+                {
+                    return aux += nodo.Token.Text;
+                }
+                else if (nodo.Token.Text.Equals("}"))
+                {
+                    return aux += nodo.Token.Text + " \n";
+                }
+                else
+                {
+                    return aux += nodo.Token.Text + " ";
+                }
+            }
+
+            return aux;
+        }
+
+        //revisar el tipado
+        public String EscribirParametros(LinkedList<Parametros> parametros, LinkedList<Parametros> retornos)
+        {
+            String aux = "";
+            int contador = 0;
+            int cantParametros = parametros.Count;
+            foreach (Parametros pa in parametros)
+            {
+                if (contador < cantParametros -1)
+                {
+                    aux += "<\n";
+                    aux += "\"NAME\" = \"" + pa.id + "\",\n";
+                    if (pa.tipo.tipo == tipoDato.id)
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.id) + "\",\n";
+                    }
+                    else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo)+ "<"+ Convert.ToString(pa.tipo.tipoValor) + ">" + "\",\n";
+                    }
+                    else
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "\",\n";
+                    }
+
+                    aux += "\"AS\" = IN\n";
+                    aux += ">,\n";
+                }
+                else
+                {
+                    aux += "<\n";
+                    aux += "\"NAME\" = \"" + pa.id + "\",\n";
+                    if (pa.tipo.tipo == tipoDato.id)
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.id) + "\",\n";
+                    }
+                    else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor) + ">" + "\",\n";
+                    }
+                    else
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "\",\n";
+                    }
+
+                    aux += "\"AS\" = IN\n";
+                    aux += ">\n";
+                }
+                contador++;
+            }
+
+            if (retornos.Count >0 && parametros.Count >0)
+            {
+                aux += ",";
+            }
+            contador = 0;
+            cantParametros = retornos.Count;
+            foreach (Parametros pa in retornos)
+            {
+                if (contador < cantParametros - 1)
+                {
+                    aux += "<\n";
+                    aux += "\"NAME\" = \"" + pa.id + "\",\n";
+                    if (pa.tipo.tipo == tipoDato.id)
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.id) + "\",\n";
+                    }
+                    else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor) + ">" + "\",\n";
+                    }
+                    else
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "\",\n";
+                    }
+
+                    aux += "\"AS\" = OUT\n";
+                    aux += ">,\n";
+                }
+                else
+                {
+                    aux += "<\n";
+                    aux += "\"NAME\" = \"" + pa.id + "\",\n";
+                    if (pa.tipo.tipo == tipoDato.id)
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.id) + "\",\n";
+                    }
+                    else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor) + ">" + "\",\n";
+                    }
+                    else
+                    {
+                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "\",\n";
+                    }
+
+                    aux += "\"AS\" = OUT\n";
+                    aux += ">\n";
+                }
+                contador++;
+            }
+
+            return aux;
         }
 
 
