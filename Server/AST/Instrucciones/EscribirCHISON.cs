@@ -254,6 +254,7 @@ namespace Server.AST.Instrucciones
                             chison += ", \n";
                         }
 
+                        //COLUMNAS
                         foreach (KeyValuePair<string, Tabla> sim in kvp.Value.Tabla)
                         {
                             if (contadorTablas < cantTablas - 1)
@@ -336,7 +337,17 @@ namespace Server.AST.Instrucciones
                                     contadorColumnas++;
                                 }
 
+                                chison += "], \n";
+
+                                #region DATA
+                                chison += ",";
+                                chison += "\"DATA\" = [\n";
+
+                                chison += EscribirDATAcolumna(sim.Value);
+
                                 chison += "] \n";
+                                #endregion
+
                                 chison += ">,\n";
                             }
                             else
@@ -420,7 +431,17 @@ namespace Server.AST.Instrucciones
                                     contadorColumnas++;
                                 }
 
+                                chison += "], \n";
+
+                                #region DATA
+                                chison += ",";
+                                chison += "\"DATA\" = [\n";
+
+                                chison += EscribirDATAcolumna(sim.Value);
+
                                 chison += "] \n";
+                                #endregion
+
                                 chison += ">\n";
                             }
                             contadorTablas++;
@@ -772,7 +793,7 @@ namespace Server.AST.Instrucciones
                                     contadorColumnas++;
                                 }
 
-                                chison += "] \n";
+                                chison += "], \n";
                                 #endregion
 
                                 #region DATA
