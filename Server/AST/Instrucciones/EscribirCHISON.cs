@@ -457,9 +457,23 @@ namespace Server.AST.Instrucciones
 
                         #region PROCEDIMIENTO
 
-                        if (kvp.Value.procedures.Count > 0)
+                        int cantColumnasDATA = 0;
+                        foreach (KeyValuePair<string, Tabla> sim in kvp.Value.Tabla) {
+
+                            foreach (KeyValuePair<string, Columna> col in sim.Value.columnasTabla)
+                            {
+                                cantColumnasDATA = col.Value.valorColumna.Count;
+                                break;
+                            }
+                            break;
+                        }
+                        if (kvp.Value.procedures.Count > 0 && cantColumnasDATA >0)
                         {
                             chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
+                        }
+                        else
+                        {
+                            chison += EscribirProcedimiento(kvp.Value.procedures);
                         }
 
                         #endregion
@@ -978,7 +992,14 @@ namespace Server.AST.Instrucciones
                     }
                     else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
                     {
-                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo)+ "<"+ Convert.ToString(pa.tipo.tipoValor) + ">" + "\",\n";
+                        if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
+                        {
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo)+ "< " + ConcatenarTipos(pa.tipo.tipoValor)+" >" + "\",\n";
+                        }
+                        else
+                        {
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
+                        }
                     }
                     else
                     {
@@ -998,7 +1019,14 @@ namespace Server.AST.Instrucciones
                     }
                     else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
                     {
-                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor) + ">" + "\",\n";
+                        if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
+                        {
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "< " + ConcatenarTipos(pa.tipo.tipoValor) + " >" + "\",\n";
+                        }
+                        else
+                        {
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
+                        }
                     }
                     else
                     {
@@ -1029,7 +1057,14 @@ namespace Server.AST.Instrucciones
                     }
                     else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
                     {
-                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor) + ">" + "\",\n";
+                        if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
+                        {
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "< " + ConcatenarTipos(pa.tipo.tipoValor) + " >" + "\",\n";
+                        }
+                        else
+                        {
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
+                        }
                     }
                     else
                     {
@@ -1049,7 +1084,14 @@ namespace Server.AST.Instrucciones
                     }
                     else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
                     {
-                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor) + ">" + "\",\n";
+                        if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
+                        {
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "< " + ConcatenarTipos(pa.tipo.tipoValor) + " >" + "\",\n";
+                        }
+                        else
+                        {
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
+                        }
                     }
                     else
                     {
@@ -1065,6 +1107,27 @@ namespace Server.AST.Instrucciones
             return aux;
         }
 
+
+        public String ConcatenarTipos(Tipo tipo)
+        {
+            String aux = Convert.ToString(tipo.tipo)+ "< ";
+            if (tipo.tipoValor != null) {
+                if (tipo.tipoValor.tipo == tipoDato.list || tipo.tipoValor.tipo == tipoDato.set)
+                {
+                    aux += ConcatenarTipos(tipo.tipoValor);
+                }
+                else
+                {
+                    aux += tipo.tipoValor.tipo;
+                }
+            }
+            else
+            {
+                aux += tipo.tipo;
+            }
+            aux += "> ";
+            return aux;
+        }
 
         public String EscribirDATAcolumna(Tabla tabla)
         {

@@ -6,9 +6,6 @@ $<
 "PERMISSIONS" = [ 
 < 
  "NAME"= "prueba1" 
- >, 
-< 
- "NAME"= "prueba2" 
  > 
 ] 
 > 
@@ -17,63 +14,23 @@ $<
 < 
 "NAME" = "prueba1", 
 "Data" = [
-<
-"CQL-TYPE" = "OBJECT", 
-"NAME" = "mascota", 
-"ATTRS" = [
-<
-"NAME" = "nombre", 
-"TYPE" = "cadena" 
->,
-<
-"NAME" = "raza", 
-"TYPE" = "cadena" 
->,
-<
-"NAME" = "familia", 
-"TYPE" = "cadena" 
->,
-<
-"NAME" = "fecha_nacimiento", 
-"TYPE" = "date" 
->,
-<
-"NAME" = "otraper", 
-"TYPE" = "mascota2" 
->
-] 
->,
-<
-"CQL-TYPE" = "OBJECT", 
-"NAME" = "persona", 
-"ATTRS" = [
-<
-"NAME" = "pet", 
-"TYPE" = "mascota" 
->,
-<
-"NAME" = "nombre", 
-"TYPE" = "cadena" 
->,
-<
-"NAME" = "edad", 
-"TYPE" = "entero" 
->
-] 
->
-,
 < 
 "CQL-TYPE" = "PROCEDURE",
-"NAME" = "ejemplo_procedure_entero_entero",
+"NAME" = "ejemplo_procedure_list_list_list",
 "PARAMETERS" = [
  <
 "NAME" = "@n",
-"TYPE" = "entero",
+"TYPE" = "list< list< set< entero> >  >",
 "AS" = IN
 >,
 <
 "NAME" = "@p",
-"TYPE" = "entero",
+"TYPE" = "list<entero>",
+"AS" = IN
+>,
+<
+"NAME" = "@o",
+"TYPE" = "list< set< cadena>  >",
 "AS" = IN
 >
 ,<
@@ -84,6 +41,11 @@ $<
 <
 "NAME" = "@ret2",
 "TYPE" = "entero",
+"AS" = OUT
+>,
+<
+"NAME" = "@hola",
+"TYPE" = "cadena",
 "AS" = OUT
 >
 ],
@@ -96,11 +58,6 @@ else { return @n , @n * 2 ; }
 
 $
 >
-] 
->, 
-< 
-"NAME" = "prueba2", 
-"Data" = [
 ] 
 > 
 ]
