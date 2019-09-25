@@ -849,9 +849,24 @@ namespace Server.AST.Instrucciones
 
                         #region PROCEDIMIENTO
 
-                        if (kvp.Value.procedures.Count > 0)
+                        int cantColumnasDATA = 0;
+                        foreach (KeyValuePair<string, Tabla> sim in kvp.Value.Tabla)
+                        {
+
+                            foreach (KeyValuePair<string, Columna> col in sim.Value.columnasTabla)
+                            {
+                                cantColumnasDATA = col.Value.valorColumna.Count;
+                                break;
+                            }
+                            break;
+                        }
+                        if (kvp.Value.procedures.Count > 0 && cantColumnasDATA > 0)
                         {
                             chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
+                        }
+                        else
+                        {
+                            chison += EscribirProcedimiento(kvp.Value.procedures);
                         }
 
                         #endregion
