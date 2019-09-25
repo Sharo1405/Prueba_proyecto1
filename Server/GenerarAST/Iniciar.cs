@@ -45,7 +45,8 @@ namespace Server.GenerarAST
                 Entorno global = new Entorno();
                 ErrorImpresion listas = new ErrorImpresion();
                 Administrador management = new Administrador();
-
+                management.usuarios.Add("admin",new userPass("admin","admin"));
+                
                 foreach (var item in ASTClases)
                 {
                     if (item != null) {

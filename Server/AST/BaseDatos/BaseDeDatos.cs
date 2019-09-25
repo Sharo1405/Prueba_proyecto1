@@ -51,6 +51,13 @@ namespace Server.AST.BaseDatos
             {
                 //this.idUsuarioPropietario = management.idUsarioEnUso; //el ultimo creado
                 management.basesExistentes.Add(idbase.ToLower(), this);
+                userPass encontrado = null;
+                management.usuarios.TryGetValue("admin", out encontrado);
+                BaseDeDatos buscarBase = new BaseDeDatos();
+                if (management.basesExistentes.TryGetValue(idbase.ToLower(), out buscarBase))
+                {
+                    encontrado.permisoBase.Add(idbase.ToLower());
+                }
             }
             catch (ArgumentException e)
             {                

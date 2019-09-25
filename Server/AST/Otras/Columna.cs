@@ -22,6 +22,16 @@ namespace Server.AST.Otras
 
         }
 
+        public Columna(String idCol, tipoDato tipo, tipoDato tipoValor,
+            String idTipo, Boolean pk)
+        {
+            this.idColumna = idCol;
+            this.tipo = tipo;
+            this.tipoValor = tipoValor;
+            this.idTipo = idTipo;
+            this.primaryKey = pk;
+        }
+
         public Columna(String idCol, tipoDato tipo, tipoDato tipoValor, 
             Boolean pk)
         {
