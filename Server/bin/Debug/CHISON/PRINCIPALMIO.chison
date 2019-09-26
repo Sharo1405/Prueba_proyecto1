@@ -14,49 +14,63 @@ $<
 < 
 "NAME" = "prueba1", 
 "Data" = [
-< 
-"CQL-TYPE" = "PROCEDURE",
-"NAME" = "ejemplo_procedure_list_list_list",
-"PARAMETERS" = [
- <
-"NAME" = "@n",
-"TYPE" = "list< list< set< entero> >  >",
-"AS" = IN
->,
 <
-"NAME" = "@p",
-"TYPE" = "list<entero>",
-"AS" = IN
->,
+"CQL-TYPE" = "OBJECT", 
+"NAME" = "mascota", 
+"ATTRS" = [
 <
-"NAME" = "@o",
-"TYPE" = "list< set< cadena>  >",
-"AS" = IN
+"NAME" = "nombre", 
+"TYPE" = "cadena" 
 >
-,<
-"NAME" = "@retorno1",
-"TYPE" = "entero",
-"AS" = OUT
+] 
 >,
 <
-"NAME" = "@ret2",
-"TYPE" = "entero",
-"AS" = OUT
+"CQL-TYPE" = "OBJECT", 
+"NAME" = "persona", 
+"ATTRS" = [
+<
+"NAME" = "pet", 
+"TYPE" = "mascota" 
 >,
 <
-"NAME" = "@hola",
-"TYPE" = "cadena",
-"AS" = OUT
+"NAME" = "nombre", 
+"TYPE" = "cadena" 
 >
-],
-"INSTR" = $ 
-int @a = 0 ; 
-call elemplo_Procedure ( ) ; 
-if ( @n == 0 ) { return 1 , 2 ; } 
-else { return @n , @n * 2 ; } 
-
-
-$
+] 
+>
+, 
+<
+"CQL-TYPE" = "TABLE", 
+"NAME" = "muro", 
+"COLUMNS" = [
+<
+"NAME" = "usuario_id", 
+"TYPE" = "list<entero>", 
+"PK" =  TRUE 
+>,
+<
+"NAME" = "mes_publicado", 
+"TYPE" = "list<persona>", 
+"PK" =  TRUE 
+>,
+<
+"NAME" = "hora_publicado", 
+"TYPE" = "persona", 
+"PK" =  TRUE 
+>,
+<
+"NAME" = "contenido", 
+"TYPE" = "cadena", 
+"PK" =  FALSE 
+>,
+<
+"NAME" = "publicado_por", 
+"TYPE" = "cadena", 
+"PK" =  FALSE 
+>
+], 
+"DATA" = [
+] 
 >
 ] 
 > 

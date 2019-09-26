@@ -124,6 +124,7 @@ namespace Server.Analizador_CHISON
 
             USUS.Rule = USUS + coma + menorq + LISTAITEMUSU + mayorq
                       | menorq + LISTAITEMUSU + mayorq
+                      | IMPORTAR
                       | Empty;
 
             LISTAITEMUSU.Rule = MakeStarRule(LISTAITEMUSU, coma, ITEMUSU);
@@ -137,7 +138,8 @@ namespace Server.Analizador_CHISON
                                 /*LISTAPERMISOS + coma + ITEMLISTAPERMISOS
                                | ITEMLISTAPERMISOS;*/
 
-            ITEMLISTAPERMISOS.Rule = menorq + comillas + name + comillas + igual + tstring + mayorq;
+            ITEMLISTAPERMISOS.Rule = menorq + comillas + name + comillas + igual + tstring + mayorq
+                                   | IMPORTAR;
 
 
 
@@ -153,8 +155,8 @@ namespace Server.Analizador_CHISON
             | ITEMB;*/
 
             ITEMB.Rule = comillas + name + comillas + igual + tstring
-                       | comillas + data + comillas + igual + acorchete + LISTACQLTYPE + ccorchete
-                       | IMPORTAR;
+                       | comillas + data + comillas + igual + acorchete + LISTACQLTYPE + ccorchete;
+                       //| IMPORTAR;
 
             LISTACQLTYPE.Rule = LISTACQLTYPE + coma + menorq + ITEMCQLTYPE + mayorq
                              | menorq + ITEMCQLTYPE + mayorq

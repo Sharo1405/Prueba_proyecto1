@@ -137,6 +137,13 @@ namespace Server.GenerarAST
                     MessageBox.Show("Error: " + item.Message + " Linea: " + item.Location.Line + " Columna: " + item.Location.Column);
                 }
             }
+            else
+            {
+                RecorrerCHISON recorrido = new RecorrerCHISON();
+                String CQL_Chison = recorrido.Sentencia(raiz);
+                recorrido.listas.impresiones.AddLast(CQL_Chison);
+                return recorrido.listas;
+            }
 
             return null;
         }
