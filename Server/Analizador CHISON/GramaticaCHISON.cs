@@ -35,6 +35,15 @@ namespace Server.Analizador_CHISON
             var falsee = ToTerm("false");
             var inn = ToTerm("in");
             var outt = ToTerm("out");
+            var intt = ToTerm("int");
+            var stringg = ToTerm("string");
+            var booleann = ToTerm("boolean");
+            var doublee = ToTerm("doublee");
+            var datee = ToTerm("date");
+            var timee = ToTerm("time");
+            var list = ToTerm("list");
+            var set = ToTerm("set");
+            var counter = ToTerm("counter");
             #endregion
 
 
@@ -86,6 +95,9 @@ namespace Server.Analizador_CHISON
             var LISTAA = new NonTerminal("LISTA");
             var SETT = new NonTerminal("SET");
             var OBJETOO = new NonTerminal("OBJETOO");
+            var TIPOS = new NonTerminal("TIPOS");
+            var TIPOSPRIMITIVOS = new NonTerminal("TIPOSPRIMITIVOS");
+            var LISTATIPOS = new NonTerminal("LISTATIPOS");
             #endregion
 
 
@@ -141,6 +153,26 @@ namespace Server.Analizador_CHISON
 
             ITEMLISTAPERMISOS.Rule = menorq + comillas + name + comillas + igual + tstring + mayorq
                                    | IMPORTAR;
+
+
+            //TIPOS TIPOS TIPOS
+            TIPOS.Rule = TIPOSPRIMITIVOS
+                   | counter
+                   | set + menorq + TIPOS + mayorq //para columnas de tablas
+                   | set
+                   | list + menorq + TIPOS + mayorq //para columnas de tablas
+                   | list
+                   | erid;
+
+            TIPOSPRIMITIVOS.Rule = intt
+                    | stringg
+                    | booleann
+                    | doublee
+                    | datee
+                    | timee;
+
+            LISTATIPOS.Rule = MakePlusRule(LISTATIPOS, coma, TIPOS);
+
 
 
 

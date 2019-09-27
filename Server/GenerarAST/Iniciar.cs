@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Server.GenerarAST
 {
@@ -32,7 +31,7 @@ namespace Server.GenerarAST
                 //hay errores
                 foreach (var item in arbol.ParserMessages)
                 {
-                    MessageBox.Show("Error: " + item.Message + " Linea: " + item.Location.Line + " Columna: " + item.Location.Column);
+                    //MessageBox.Show("Error: " + item.Message + " Linea: " + item.Location.Line + " Columna: " + item.Location.Column);
                 }
             }
             else
@@ -134,7 +133,7 @@ namespace Server.GenerarAST
                 //hay errores
                 foreach (var item in arbol.ParserMessages)
                 {
-                    MessageBox.Show("Error: " + item.Message + " Linea: " + item.Location.Line + " Columna: " + item.Location.Column);
+                    //MessageBox.Show("Error: " + item.Message + " Linea: " + item.Location.Line + " Columna: " + item.Location.Column);
                 }
             }
             else
