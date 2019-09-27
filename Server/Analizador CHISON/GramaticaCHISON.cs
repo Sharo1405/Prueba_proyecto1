@@ -14,6 +14,7 @@ namespace Server.Analizador_CHISON
         {
 
             MarkReservedWords("CQL-TYPE");
+            
 
             #region VARIABLES_PRESERVADAS
             var databases = ToTerm("databases");
@@ -148,6 +149,7 @@ namespace Server.Analizador_CHISON
 
             BASES.Rule = BASES + coma + menorq + LISTABASES + mayorq
                        | menorq + LISTABASES + mayorq
+                       | IMPORTAR
                        | Empty;
 
             LISTABASES.Rule = MakeStarRule(LISTABASES, coma, ITEMB);
@@ -173,8 +175,10 @@ namespace Server.Analizador_CHISON
                              | comillas + attrs + comillas + igual + acorchete + LISTACQLTYPE + ccorchete
                              | comillas + columns + comillas + igual + acorchete + LISTACQLTYPE + ccorchete
                              | comillas + data + comillas + igual + acorchete + LISTACQLTYPE + ccorchete
-                             | comillas + data + comillas + igual + acorchete + IMPORTAR + ccorchete
+                             //| comillas + data + comillas + igual + acorchete + IMPORTAR + ccorchete
                              | comillas + parameters + comillas + igual + acorchete + LISTACQLTYPE + ccorchete
+                             | comillas + ass + comillas + igual + inn
+                             | comillas + ass + comillas + igual + outt
                              | comillas + instr + comillas + igual + cadenaProcedimiento // SON SENTENCIAS DEL CQL
                              | comillas + instr + comillas + igual + IMPORTAR // SON SENTENCIAS DEL CQL                             
                              | IMPORTAR
@@ -188,20 +192,18 @@ namespace Server.Analizador_CHISON
                       | datetime
                       | falsee
                       | truee
-                      | inn
-                      | outt
                       | acorchete + LISTAA + ccorchete
                       | allave + SETT + cllave
                       | DATABASES;
-                      //| LISTACQLTYPE;
+            //| LISTACQLTYPE;
 
-            DATABASES.Rule = DATABASES + coma + LISTATRIBUTOS
-                           | LISTATRIBUTOS
-                           | IMPORTAR
-                           | Empty;
+            DATABASES.Rule = //DATABASES + coma + LISTATRIBUTOS
+                            menorq + ITEMCQLTYPE + mayorq;
+                            //| IMPORTAR
+                            //| Empty;
 
-            LISTATRIBUTOS.Rule = menorq + ITEMCQLTYPE + mayorq
-                               | ITEMCQLTYPE;
+            //LISTATRIBUTOS.Rule = menorq + ITEMCQLTYPE + mayorq;
+                               //| ITEMCQLTYPE;
 
             LISTAA.Rule = MakeStarRule(LISTAA, coma, VALOR);
 

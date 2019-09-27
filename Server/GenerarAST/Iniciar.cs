@@ -140,8 +140,8 @@ namespace Server.GenerarAST
             else
             {
                 RecorrerCHISON recorrido = new RecorrerCHISON();
-                String CQL_Chison = recorrido.Sentencia(raiz);
-                recorrido.listas.impresiones.AddLast(CQL_Chison);
+                //String CQL_Chison = recorrido.Sentencia(raiz);
+                //recorrido.listas.impresiones.AddLast(CQL_Chison);
                 return recorrido.listas;
             }
 

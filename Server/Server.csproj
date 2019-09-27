@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Analizador CHISON\GramaticaCHISON.cs" />
     <Compile Include="Analizador CHISON\RecorrerCHISON.cs" />
+    <Compile Include="Analizador CHISON\TipoIDParametro.cs" />
     <Compile Include="Analizador\GraficadorTree.cs" />
     <Compile Include="Analizador\Gramatica.cs" />
     <Compile Include="AST\BaseDatos\Administrador.cs" />

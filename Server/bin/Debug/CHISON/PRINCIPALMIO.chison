@@ -20,7 +20,7 @@ $<
 "ATTRS" = [
 <
 "NAME" = "nombre", 
-"TYPE" = "cadena" 
+"TYPE" = "string" 
 >
 ] 
 >,
@@ -34,7 +34,7 @@ $<
 >,
 <
 "NAME" = "nombre", 
-"TYPE" = "cadena" 
+"TYPE" = "string" 
 >
 ] 
 >
@@ -45,7 +45,7 @@ $<
 "COLUMNS" = [
 <
 "NAME" = "usuario_id", 
-"TYPE" = "list<entero>", 
+"TYPE" = "list<int>", 
 "PK" =  TRUE 
 >,
 <
@@ -60,13 +60,90 @@ $<
 >,
 <
 "NAME" = "contenido", 
-"TYPE" = "cadena", 
+"TYPE" = "string", 
+"PK" =  FALSE 
+>
+] 
+,"DATA" = [
+<
+"usuario_id" = [
+1,
+2,
+3
+],
+"mes_publicado" = [
+<
+"pet" = <
+"nombre" ="pepe"
+>
+, 
+"nombre" ="mascota"
+>
+,
+<
+"pet" = <
+"nombre" ="pepe2"
+>
+, 
+"nombre" ="mascota2"
+>
+
+],
+"hora_publicado" = <
+"pet" = <
+"nombre" ="pepeSolito"
+>
+, 
+"nombre" ="mascotaSolita"
+>,"contenido" = "soy el contenido 1"
+>,
+<
+"usuario_id" = [
+4,
+5,
+6
+],
+"mes_publicado" = [
+<
+"pet" = <
+"nombre" ="pepe2"
+>
+, 
+"nombre" ="mascota2"
+>
+,
+<
+"pet" = <
+"nombre" ="pepe22"
+>
+, 
+"nombre" ="mascota22"
+>
+
+],
+"hora_publicado" = <
+"pet" = <
+"nombre" ="pepeSolito2"
+>
+, 
+"nombre" ="mascotaSolita2"
+>,"contenido" = "soy el contenido 2"
+>
+] 
+>,
+<
+"CQL-TYPE" = "TABLE", 
+"NAME" = "muro23", 
+"COLUMNS" = [
+<
+"NAME" = "usuario_id", 
+"TYPE" = "list<int>", 
 "PK" =  FALSE 
 >,
 <
-"NAME" = "publicado_por", 
-"TYPE" = "cadena", 
-"PK" =  FALSE 
+"NAME" = "holalala", 
+"TYPE" = "int", 
+"PK" =  TRUE 
 >
 ], 
 "DATA" = [

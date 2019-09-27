@@ -24,6 +24,45 @@ namespace Server.AST.Instrucciones
             this.columna = columna;
         }
 
+        public String ResolverTipos(tipoDato tipo)
+        {
+            switch (tipo)
+            {
+                case tipoDato.booleano:
+                    return "booleano";
+
+                case tipoDato.cadena:
+                    return "string";
+
+                case tipoDato.counter:
+                    return "counter";
+
+                case tipoDato.date:
+                    return "date";
+
+                case tipoDato.decimall:
+                    return "decimal";
+
+                case tipoDato.cursor:
+                    return "cursor";
+
+                case tipoDato.entero:
+                    return "int";
+
+                case tipoDato.list:
+                    return "list";
+
+                case tipoDato.set:
+                    return "set";
+
+                case tipoDato.time:
+                    return "time";
+            }
+
+            return "";
+        }
+
+
         public object ejecutar(Entorno entorno, ErrorImpresion listas, Administrador management)
         {
             try
@@ -130,16 +169,20 @@ namespace Server.AST.Instrucciones
                                         {
                                             if (it.tipo.tipoValor.tipo == tipoDato.id)
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
+                                            }
+                                            else if (it.tipo.tipoValor.tipo == tipoDato.list || it.tipo.tipoValor.tipo == tipoDato.set)
+                                            {
+                                                chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "<" + ConcatenarTipos(it.tipo.tipoValor) + ">" + "\" \n";
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "<" + ResolverTipos(it.tipo.tipoValor.tipo) + ">" + "\" \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "\" \n";
                                         }
                                         chison += ">,\n";
                                     }
@@ -157,14 +200,18 @@ namespace Server.AST.Instrucciones
                                             {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
                                             }
+                                            else if(it.tipo.tipoValor.tipo == tipoDato.list || it.tipo.tipoValor.tipo == tipoDato.set)
+                                            {
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ConcatenarTipos(it.tipo.tipoValor) + ">" + "\" \n";
+                                            }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "<" + ResolverTipos(it.tipo.tipoValor.tipo) + ">" + "\" \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\"\n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "\"\n";
                                         }
                                         chison += ">\n";
                                     }
@@ -198,14 +245,18 @@ namespace Server.AST.Instrucciones
                                             {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
                                             }
+                                            else if (it.tipo.tipoValor.tipo == tipoDato.list || it.tipo.tipoValor.tipo == tipoDato.set)
+                                            {
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ConcatenarTipos(it.tipo.tipoValor) + ">" + "\" \n";
+                                            }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "<" + ResolverTipos(it.tipo.tipoValor.tipo) + ">" + "\" \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                            chison += "\"TYPE\" = \"" +ResolverTipos(it.tipo.tipo) + "\" \n";
                                         }
                                         chison += ">,\n";
                                     }
@@ -223,14 +274,18 @@ namespace Server.AST.Instrucciones
                                             {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
                                             }
+                                            else if (it.tipo.tipoValor.tipo == tipoDato.list || it.tipo.tipoValor.tipo == tipoDato.set)
+                                            {
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ConcatenarTipos(it.tipo.tipoValor) + ">" + "\" \n";
+                                            }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "<" + ResolverTipos(it.tipo.tipoValor.tipo) + ">" + "\" \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "\" \n";
                                         }
                                         chison += ">\n";
                                     }
@@ -285,12 +340,12 @@ namespace Server.AST.Instrucciones
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + col.Value.tipoValor + ">" + "\", \n";
+                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" +ResolverTipos(col.Value.tipoValor) + ">" + "\", \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + col.Value.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" +ResolverTipos(col.Value.tipo) + "\", \n";
                                         }
 
                                         if (col.Value.primaryKey == true) {
@@ -318,12 +373,12 @@ namespace Server.AST.Instrucciones
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + col.Value.tipoValor + ">" + "\", \n";
+                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + ResolverTipos(col.Value.tipoValor) + ">" + "\", \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + col.Value.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" +ResolverTipos(col.Value.tipo) + "\", \n";
                                         }
 
                                         if (col.Value.primaryKey == true)
@@ -380,12 +435,12 @@ namespace Server.AST.Instrucciones
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + col.Value.tipoValor + ">" + "\", \n";
+                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + ResolverTipos(col.Value.tipoValor) + ">" + "\", \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + col.Value.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(col.Value.tipo) + "\", \n";
                                         }
 
                                         if (col.Value.primaryKey == true)
@@ -414,12 +469,12 @@ namespace Server.AST.Instrucciones
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + col.Value.tipoValor + ">" + "\", \n";
+                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + ResolverTipos(col.Value.tipoValor) + ">" + "\", \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + col.Value.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(col.Value.tipo) + "\", \n";
                                         }
 
                                         if (col.Value.primaryKey == true)
@@ -458,7 +513,8 @@ namespace Server.AST.Instrucciones
                         #region PROCEDIMIENTO
 
                         int cantColumnasDATA = 0;
-                        foreach (KeyValuePair<string, Tabla> sim in kvp.Value.Tabla) {
+                        foreach (KeyValuePair<string, Tabla> sim in kvp.Value.Tabla)
+                        {
 
                             foreach (KeyValuePair<string, Columna> col in sim.Value.columnasTabla)
                             {
@@ -467,7 +523,15 @@ namespace Server.AST.Instrucciones
                             }
                             break;
                         }
-                        if (kvp.Value.procedures.Count > 0 && cantColumnasDATA >0)
+                        if (kvp.Value.procedures.Count > 0 && cantColumnasDATA > 0)
+                        {
+                            chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
+                        }
+                        else if (kvp.Value.Tabla.Count > 0 && kvp.Value.procedures.Count >0)
+                        {
+                            chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
+                        }
+                        else if (kvp.Value.procedures.Count > 0 && cantObjetos > 0)
                         {
                             chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
                         }
@@ -520,14 +584,18 @@ namespace Server.AST.Instrucciones
                                             {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
                                             }
+                                            else if (it.tipo.tipoValor.tipo == tipoDato.list || it.tipo.tipoValor.tipo == tipoDato.set)
+                                            {
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ConcatenarTipos(it.tipo.tipoValor) + ">" + "\" \n";
+                                            }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ResolverTipos(it.tipo.tipoValor.tipo) + ">" + "\" \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "\" \n";
                                         }
                                         chison += ">,\n";
                                     }
@@ -545,14 +613,18 @@ namespace Server.AST.Instrucciones
                                             {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
                                             }
+                                            else if (it.tipo.tipoValor.tipo == tipoDato.list || it.tipo.tipoValor.tipo == tipoDato.set)
+                                            {
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ConcatenarTipos(it.tipo.tipoValor) + ">" + "\" \n";
+                                            }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ResolverTipos(it.tipo.tipoValor.tipo) + ">" + "\" \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "\" \n";
                                         }
                                         chison += ">\n";
                                     }
@@ -586,14 +658,18 @@ namespace Server.AST.Instrucciones
                                             {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
                                             }
+                                            else if (it.tipo.tipoValor.tipo == tipoDato.list || it.tipo.tipoValor.tipo == tipoDato.set)
+                                            {
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ConcatenarTipos(it.tipo.tipoValor) + ">" + "\" \n";
+                                            }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ResolverTipos(it.tipo.tipoValor.tipo) + ">" + "\" \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "\" \n";
                                         }
                                         chison += ">,\n";
                                     }
@@ -611,14 +687,18 @@ namespace Server.AST.Instrucciones
                                             {
                                                 chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.id + ">" + "\" \n";
                                             }
+                                            else if (it.tipo.tipoValor.tipo == tipoDato.list || it.tipo.tipoValor.tipo == tipoDato.set)
+                                            {
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ConcatenarTipos(it.tipo.tipoValor) + ">" + "\" \n";
+                                            }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + it.tipo.tipoValor.tipo + ">" + "\" \n";
+                                                chison += "\"TYPE\" = \"" + it.tipo.tipo + "<" + ResolverTipos(it.tipo.tipoValor.tipo) + ">" + "\" \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + it.tipo.tipo + "\" \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(it.tipo.tipo) + "\" \n";
                                         }
                                         chison += ">\n";
                                     }
@@ -672,12 +752,12 @@ namespace Server.AST.Instrucciones
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + col.Value.tipoValor + ">" + "\", \n";
+                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + ResolverTipos(col.Value.tipoValor) + ">" + "\", \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + col.Value.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(col.Value.tipo) + "\", \n";
                                         }
 
                                         if (col.Value.primaryKey == true)
@@ -706,12 +786,12 @@ namespace Server.AST.Instrucciones
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + col.Value.tipoValor + ">" + "\", \n";
+                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + ResolverTipos(col.Value.tipoValor) + ">" + "\", \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + col.Value.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(col.Value.tipo) + "\", \n";
                                         }
 
                                         if (col.Value.primaryKey == true)
@@ -771,12 +851,12 @@ namespace Server.AST.Instrucciones
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + col.Value.tipoValor + ">" + "\", \n";
+                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + ResolverTipos(col.Value.tipoValor) + ">" + "\", \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + col.Value.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(col.Value.tipo) + "\", \n";
                                         }
 
                                         if (col.Value.primaryKey == true)
@@ -805,12 +885,12 @@ namespace Server.AST.Instrucciones
                                             }
                                             else
                                             {
-                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + col.Value.tipoValor + ">" + "\", \n";
+                                                chison += "\"TYPE\" = \"" + col.Value.tipo + "<" + ResolverTipos(col.Value.tipoValor) + ">" + "\", \n";
                                             }
                                         }
                                         else
                                         {
-                                            chison += "\"TYPE\" = \"" + col.Value.tipo + "\", \n";
+                                            chison += "\"TYPE\" = \"" + ResolverTipos(col.Value.tipo) + "\", \n";
                                         }
 
                                         if (col.Value.primaryKey == true)
@@ -861,6 +941,14 @@ namespace Server.AST.Instrucciones
                             break;
                         }
                         if (kvp.Value.procedures.Count > 0 && cantColumnasDATA > 0)
+                        {
+                            chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
+                        }
+                        else if (kvp.Value.Tabla.Count > 0 && kvp.Value.procedures.Count > 0)
+                        {
+                            chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
+                        }
+                        else if (kvp.Value.procedures.Count > 0 && cantObjetos > 0)
                         {
                             chison += ",\n" + EscribirProcedimiento(kvp.Value.procedures);
                         }
@@ -1007,18 +1095,22 @@ namespace Server.AST.Instrucciones
                     }
                     else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
                     {
-                        if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
+                        if (pa.tipo.tipoValor.tipo == tipoDato.id)
+                        {
+                            aux += "\"TYPE\" = \"" + pa.tipo.id + "\",\n";
+                        }
+                        else if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
                         {
                             aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo)+ "< " + ConcatenarTipos(pa.tipo.tipoValor)+" >" + "\",\n";
                         }
                         else
                         {
-                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + ResolverTipos(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
                         }
                     }
                     else
                     {
-                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "\",\n";
+                        aux += "\"TYPE\" = \"" + ResolverTipos(pa.tipo.tipo) + "\",\n";
                     }
 
                     aux += "\"AS\" = IN\n";
@@ -1034,18 +1126,23 @@ namespace Server.AST.Instrucciones
                     }
                     else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
                     {
-                        if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
+
+                        if (pa.tipo.tipoValor.tipo == tipoDato.id)
+                        {
+                            aux += "\"TYPE\" = \"" + pa.tipo.id + "\",\n";
+                        }
+                        else if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
                         {
                             aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "< " + ConcatenarTipos(pa.tipo.tipoValor) + " >" + "\",\n";
                         }
                         else
                         {
-                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + ResolverTipos(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
                         }
                     }
                     else
                     {
-                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "\",\n";
+                        aux += "\"TYPE\" = \"" + ResolverTipos(pa.tipo.tipo) + "\",\n";
                     }
 
                     aux += "\"AS\" = IN\n";
@@ -1072,18 +1169,22 @@ namespace Server.AST.Instrucciones
                     }
                     else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
                     {
-                        if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
+                        if (pa.tipo.tipoValor.tipo == tipoDato.id)
+                        {
+                            aux += "\"TYPE\" = \"" + pa.tipo.id + "\",\n";
+                        }
+                        else if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
                         {
                             aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "< " + ConcatenarTipos(pa.tipo.tipoValor) + " >" + "\",\n";
                         }
                         else
                         {
-                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + ResolverTipos(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
                         }
                     }
                     else
                     {
-                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "\",\n";
+                        aux += "\"TYPE\" = \"" + ResolverTipos(pa.tipo.tipo) + "\",\n";
                     }
 
                     aux += "\"AS\" = OUT\n";
@@ -1099,18 +1200,22 @@ namespace Server.AST.Instrucciones
                     }
                     else if (pa.tipo.tipo == tipoDato.set || pa.tipo.tipo == tipoDato.list)
                     {
-                        if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
+                        if (pa.tipo.tipoValor.tipo == tipoDato.id)
+                        {
+                            aux += "\"TYPE\" = \"" + pa.tipo.id + "\",\n";
+                        }
+                        else if (pa.tipo.tipoValor.tipo == tipoDato.list || pa.tipo.tipoValor.tipo == tipoDato.set)
                         {
                             aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "< " + ConcatenarTipos(pa.tipo.tipoValor) + " >" + "\",\n";
                         }
                         else
                         {
-                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + Convert.ToString(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
+                            aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "<" + ResolverTipos(pa.tipo.tipoValor.tipo) + ">" + "\",\n";
                         }
                     }
                     else
                     {
-                        aux += "\"TYPE\" = \"" + Convert.ToString(pa.tipo.tipo) + "\",\n";
+                        aux += "\"TYPE\" = \"" + ResolverTipos(pa.tipo.tipo) + "\",\n";
                     }
 
                     aux += "\"AS\" = OUT\n";
@@ -1127,18 +1232,22 @@ namespace Server.AST.Instrucciones
         {
             String aux = Convert.ToString(tipo.tipo)+ "< ";
             if (tipo.tipoValor != null) {
+                if (tipo.tipoValor.tipo == tipoDato.id)
+                {
+                    aux += tipo.id;
+                }
                 if (tipo.tipoValor.tipo == tipoDato.list || tipo.tipoValor.tipo == tipoDato.set)
                 {
                     aux += ConcatenarTipos(tipo.tipoValor);
                 }
                 else
                 {
-                    aux += tipo.tipoValor.tipo;
+                    aux += ResolverTipos(tipo.tipoValor.tipo);
                 }
             }
             else
             {
-                aux += tipo.tipo;
+                aux += ResolverTipos(tipo.tipo);
             }
             aux += "> ";
             return aux;
